@@ -1,7 +1,8 @@
 package de.lalaland.core.config;
 
 import de.lalaland.core.CorePlugin;
-import java.io.File;
+import de.lalaland.core.utils.io.GsonFileReader;
+import de.lalaland.core.utils.io.IReader;
 
 /*******************************************************
  * Copyright (C) 2015-2019 Piinguiin neuraxhd@gmail.com
@@ -22,9 +23,9 @@ public class ConfigFileHandler {
 
   public Config createIfNotExists() {
 
-    final File dir = new File(corePlugin.getDataFolder() + File.separator +"config.json");
-
-    return null;
+    final IReader reader = new GsonFileReader(corePlugin, corePlugin.getDataFolder(), "config");
+    final Config defaultConfig = Config.getDefaultConfig();
+    return (Config) reader.read(Config.class, defaultConfig);
   }
 
 }

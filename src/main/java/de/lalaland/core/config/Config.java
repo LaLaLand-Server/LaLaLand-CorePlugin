@@ -21,13 +21,13 @@ public class Config {
   @SerializedName("UnusedUserRemoverInterval")
   private final int unusedUserRemoverInterval;
 
-  public Config(final boolean saveDataInDatabase, final int unusedUserRemoverInterval) {
+  Config(final boolean saveDataInDatabase, final int unusedUserRemoverInterval) {
     this.saveDataInDatabase = saveDataInDatabase;
     this.unusedUserRemoverInterval = unusedUserRemoverInterval;
   }
 
 
-  public static Config getDefaultConfig(){
+  static Config getDefaultConfig(){
     return new Config(false,5);
   }
 
