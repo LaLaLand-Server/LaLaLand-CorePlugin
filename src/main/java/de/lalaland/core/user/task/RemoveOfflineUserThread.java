@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class RemoveOfflineUserThread implements Runnable {
 
   private final CorePlugin corePlugin;
+  private final int interval;
 
   /**
    * Instantiates a new Remove offline user thread. Remove User classes stored in cache when they
@@ -27,6 +28,7 @@ public class RemoveOfflineUserThread implements Runnable {
    */
   public RemoveOfflineUserThread(final CorePlugin corePlugin) {
     this.corePlugin = corePlugin;
+    interval = corePlugin.getCoreConfig().getUnusedUserRemoverInterval();
   }
 
   @Override
@@ -43,7 +45,7 @@ public class RemoveOfflineUserThread implements Runnable {
     }
 
     try {
-      Thread.sleep(TimeUnit.MINUTES.toMillis(5));
+      Thread.sleep(TimeUnit.MINUTES.toMillis(interval));
     } catch (final InterruptedException e) {
       corePlugin.getCoreLogger().error(e.getMessage());
     }
