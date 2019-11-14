@@ -12,6 +12,7 @@ import de.lalaland.core.utils.tuples.Unit;
 import java.io.File;
 import java.util.UUID;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -30,6 +31,9 @@ public class User {
 
   private final CorePlugin corePlugin;
   @Getter
+  @Setter
+  private boolean update;
+  @Getter
   private final UUID uuid;
   @Getter
   private final UserData userData;
@@ -44,6 +48,7 @@ public class User {
     userDataDirectory = new File(corePlugin.getDataFolder() + File.separator + "userdatas");
     userData = loadData();
     onlinePlayer = new Unit<>(Bukkit.getPlayer(uuid));
+    update = false;
   }
 
   public void save() {
@@ -71,8 +76,19 @@ public class User {
     return (UserData) reader.read(UserData.class, getDefaultUserData());
   }
 
+  public void addExp(final long amount) {
+
+    userData.addExp(amount);
+
+    if (userData.canLevelup()) {
+      userData.increaseLevel();
+      //TODO: Send player message
+    }
+    setUpdate(true);
+  }
+
   private UserData getDefaultUserData() {
-    return new UserData(); // everything set to 0 and new
+    return new UserData(1, 0); // everything set to 0 and new
   }
 
 }

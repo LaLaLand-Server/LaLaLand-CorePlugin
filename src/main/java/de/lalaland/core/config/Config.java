@@ -20,15 +20,18 @@ public class Config {
   @Getter
   @SerializedName("UnusedUserRemoverInterval")
   private final int unusedUserRemoverInterval;
+  @Getter
+  @SerializedName("UserSaveInterval")
+  private final int userSaveInterval;
 
-  Config(final boolean saveDataInDatabase, final int unusedUserRemoverInterval) {
+  public Config(final boolean saveDataInDatabase, final int unusedUserRemoverInterval, final int userSaveInterval) {
     this.saveDataInDatabase = saveDataInDatabase;
     this.unusedUserRemoverInterval = unusedUserRemoverInterval;
+    this.userSaveInterval = userSaveInterval;
   }
 
-
-  static Config getDefaultConfig(){
-    return new Config(false,5);
+  static Config getDefaultConfig() {
+    return new Config(false, 5,10);
   }
 
 }

@@ -14,8 +14,8 @@ import java.util.concurrent.TimeUnit;
  * CorePlugin can not be copied and/or distributed without the express
  * permission of the owner.
  *
- */
-public class RemoveOfflineUserThread implements Runnable {
+ *******************************************************/
+public class SaveUserDataThread implements Runnable {
 
   private final CorePlugin corePlugin;
   private final int interval;
@@ -26,9 +26,9 @@ public class RemoveOfflineUserThread implements Runnable {
    *
    * @param corePlugin the core plugin
    */
-  public RemoveOfflineUserThread(final CorePlugin corePlugin) {
+  public SaveUserDataThread(final CorePlugin corePlugin) {
     this.corePlugin = corePlugin;
-    interval = corePlugin.getCoreConfig().getUnusedUserRemoverInterval();
+    interval = corePlugin.getCoreConfig().getUserSaveInterval();
   }
 
   @Override
@@ -37,14 +37,14 @@ public class RemoveOfflineUserThread implements Runnable {
     final Object2ObjectOpenHashMap<UUID, User> cachedUsers = corePlugin.getUserManager()
         .getCachedUsers();
 
-    if(cachedUsers.isEmpty()){
+    if (cachedUsers.isEmpty()) {
       return;
     }
 
     for (final User user : cachedUsers.values()) {
 
-      if (!user.getOnlinePlayer().isPresent()) {
-        cachedUsers.remove(user.getUuid());
+      if (user.isUpdate()) {
+        user.save();
       }
 
     }
@@ -56,5 +56,6 @@ public class RemoveOfflineUserThread implements Runnable {
     }
 
   }
+
 
 }
