@@ -3,6 +3,7 @@ package de.lalaland.core.user;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.user.listener.PlayerJoinQuit;
 import de.lalaland.core.user.task.RemoveOfflineUserThread;
+import de.lalaland.core.user.task.SaveUserDataThread;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.UUID;
 import lombok.Getter;
@@ -36,6 +37,8 @@ public class UserManager {
     addAllOnlinePlayerToCache(); // in case of reload
     final RemoveOfflineUserThread removeOfflineUserThread = new RemoveOfflineUserThread(corePlugin);
     removeOfflineUserThread.run();
+    final SaveUserDataThread saveUserDataThread = new SaveUserDataThread(corePlugin);
+    saveUserDataThread.run();
   }
 
   private void registerAllListeners() {
