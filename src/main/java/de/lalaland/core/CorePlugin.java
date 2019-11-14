@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
  *******************************************************/
 public class CorePlugin extends JavaPlugin {
 
+  //test edit
+  
   @Getter
   private Logger coreLogger;
   @Getter
