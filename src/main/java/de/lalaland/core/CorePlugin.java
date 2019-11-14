@@ -5,7 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.sun.istack.internal.NotNull;
 import de.lalaland.core.config.Config;
 import de.lalaland.core.config.ConfigFileHandler;
+import de.lalaland.core.modules.IModule;
+import de.lalaland.core.modules.module.TestModule;
 import de.lalaland.core.user.UserManager;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -35,6 +39,9 @@ public class CorePlugin extends JavaPlugin {
   @Getter
   private UserManager userManager;
 
+  @Getter
+  private List<IModule> modules;
+
   @Override
   public void onLoad() {
 
@@ -43,11 +50,12 @@ public class CorePlugin extends JavaPlugin {
   @Override
   public void onEnable() {
     init();
+    enableModules();
   }
 
   @Override
   public void onDisable() {
-
+    disableModuels();
   }
 
   private void init() {
@@ -55,6 +63,41 @@ public class CorePlugin extends JavaPlugin {
     gson = new GsonBuilder().setPrettyPrinting().create();
     coreConfig = new ConfigFileHandler(this).createIfNotExists();
     userManager = new UserManager(this);
+    modules = new ArrayList<>();
+  }
+
+  private void enableModules() {
+
+    final IModule[] modules = new IModule[]{new TestModule()};
+
+    for (int i = 0; i < modules.length; i++) {
+      final IModule module = modules[i];
+      try {
+
+        module.enable();
+        this.modules.add(module);
+        coreLogger.info("Successfully enabled module '" + module.getModuleName() + "'.");
+      } catch (final Exception e) {
+        coreLogger.error("Cannot enable module '" + module.getModuleName() + "'.");
+        coreLogger.error(e.getMessage());
+      }
+
+    }
+
+  }
+
+  private void disableModuels() {
+
+    for (final IModule module : modules) {
+      try {
+        module.disable();
+        coreLogger.info("Successfully disable module '" + module.getModuleName() + "'.");
+      } catch (final Exception e) {
+        coreLogger.error("Cannot disable module '" + module.getModuleName() + "'.");
+        coreLogger.error(e.getMessage());
+      }
+    }
+
   }
 
   public void registerListener(final Listener listener) {
@@ -62,7 +105,7 @@ public class CorePlugin extends JavaPlugin {
     pluginManager.registerEvents(listener, this);
   }
 
-  public void registerCommand(final String label,@NotNull final CommandExecutor executor) {
+  public void registerCommand(final String label, @NotNull final CommandExecutor executor) {
     getCommand(label).setExecutor(executor);
   }
 

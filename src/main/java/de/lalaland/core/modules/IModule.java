@@ -11,8 +11,10 @@ package de.lalaland.core.modules;
  *******************************************************/
 public interface IModule {
 
-  void enable();
+  String getModuleName();
 
-  void disable();
+  void enable() throws Exception;
+
+  void disable() throws Exception;
 
 }
