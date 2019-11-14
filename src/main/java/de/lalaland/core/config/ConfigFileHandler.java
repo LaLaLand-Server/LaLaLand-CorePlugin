@@ -1,8 +1,8 @@
 package de.lalaland.core.config;
 
 import de.lalaland.core.CorePlugin;
-import de.lalaland.core.utils.io.GsonFileReader;
-import de.lalaland.core.utils.io.IReader;
+import de.lalaland.core.io.IReader;
+import de.lalaland.core.io.gson.GsonFileReader;
 
 /*******************************************************
  * Copyright (C) 2015-2019 Piinguiin neuraxhd@gmail.com

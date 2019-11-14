@@ -1,6 +1,8 @@
-package de.lalaland.core.utils.io;
+package de.lalaland.core.io.gson;
 
 import de.lalaland.core.CorePlugin;
+import de.lalaland.core.io.IReader;
+import de.lalaland.core.io.IWriter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;

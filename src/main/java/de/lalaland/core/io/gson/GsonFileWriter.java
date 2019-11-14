@@ -1,6 +1,7 @@
-package de.lalaland.core.utils.io;
+package de.lalaland.core.io.gson;
 
 import de.lalaland.core.CorePlugin;
+import de.lalaland.core.io.IWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,35 +33,35 @@ public class GsonFileWriter implements IWriter {
   @Override
   public void write(final Object dataClass) {
 
-    final File file = new File(this.path, this.fileName + ".json");
+    final File file = new File(path, fileName + ".json");
 
     final boolean dirCreated = file.getParentFile().mkdirs();
 
     if (dirCreated) {
-      this.plugin.getLogger().info("Directory for '" + this.fileName + ".json' created.");
+      plugin.getLogger().info("Directory for '" + fileName + ".json' created.");
     }
 
     final boolean fileCreated;
     try {
       fileCreated = file.createNewFile();
     } catch (final IOException e) {
-      this.plugin.getLogger().severe("Unable to create path/file.");
-      this.plugin.getLogger().severe(e.getMessage());
+      plugin.getLogger().severe("Unable to create path/file.");
+      plugin.getLogger().severe(e.getMessage());
       return;
     }
 
     if (fileCreated) {
-      this.plugin.getLogger().info("'" + this.fileName + ".json' created.");
+      plugin.getLogger().info("'" + fileName + ".json' created.");
     }
 
-    final String jsonString = this.plugin.getGson().toJson(dataClass, dataClass.getClass());
+    final String jsonString = plugin.getGson().toJson(dataClass, dataClass.getClass());
     final FileWriter writer;
     try {
       writer = new FileWriter(file);
       writer.write(jsonString);
       writer.close();
     } catch (final IOException e) {
-      this.plugin.getLogger().severe(e.getMessage());
+      plugin.getLogger().severe(e.getMessage());
     }
 
   }

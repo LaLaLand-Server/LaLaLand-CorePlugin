@@ -1,6 +1,6 @@
-package de.lalaland.core.utils.io.mongodb;
+package de.lalaland.core.io.mongodb;
 
-import de.lalaland.core.utils.io.IWriter;
+import de.lalaland.core.io.IReader;
 
 /*******************************************************
  * Copyright (C) 2015-2019 Piinguiin neuraxhd@gmail.com
@@ -11,10 +11,10 @@ import de.lalaland.core.utils.io.IWriter;
  * permission of the owner.
  *
  *******************************************************/
-public class MongoDataWriter implements IWriter {
+public class MongoDataReader implements IReader {
 
   @Override
-  public void write(final Object dataClass) {
-
+  public Object read(final Class clazzToDeserialize, final Object defaultValue) {
+    return null;
   }
 }

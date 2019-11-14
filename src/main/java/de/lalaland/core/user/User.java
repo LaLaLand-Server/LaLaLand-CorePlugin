@@ -1,13 +1,13 @@
 package de.lalaland.core.user;
 
 import de.lalaland.core.CorePlugin;
+import de.lalaland.core.io.IReader;
+import de.lalaland.core.io.IWriter;
+import de.lalaland.core.io.gson.GsonFileReader;
+import de.lalaland.core.io.gson.GsonFileWriter;
+import de.lalaland.core.io.mongodb.MongoDataReader;
+import de.lalaland.core.io.mongodb.MongoDataWriter;
 import de.lalaland.core.user.data.UserData;
-import de.lalaland.core.utils.io.GsonFileReader;
-import de.lalaland.core.utils.io.GsonFileWriter;
-import de.lalaland.core.utils.io.IReader;
-import de.lalaland.core.utils.io.IWriter;
-import de.lalaland.core.utils.io.mongodb.MongoDataReader;
-import de.lalaland.core.utils.io.mongodb.MongoDataWriter;
 import de.lalaland.core.utils.tuples.Unit;
 import java.io.File;
 import java.util.UUID;

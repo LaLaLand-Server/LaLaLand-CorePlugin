@@ -1,4 +1,4 @@
-package de.lalaland.core.utils.io;
+package de.lalaland.core.io;
 
 public interface IReader {
 	
