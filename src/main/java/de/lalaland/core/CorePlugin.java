@@ -2,10 +2,15 @@ package de.lalaland.core;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sun.istack.internal.NotNull;
 import de.lalaland.core.config.Config;
 import de.lalaland.core.config.ConfigFileHandler;
 import de.lalaland.core.user.UserManager;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +25,7 @@ import org.slf4j.LoggerFactory;
  *
  *******************************************************/
 public class CorePlugin extends JavaPlugin {
-  
+
   @Getter
   private Logger coreLogger;
   @Getter
@@ -48,8 +53,17 @@ public class CorePlugin extends JavaPlugin {
   private void init() {
     coreLogger = LoggerFactory.getLogger(getClass().getName());
     gson = new GsonBuilder().setPrettyPrinting().create();
-    coreConfig = new ConfigFileHandler().createIfNotExists();
+    coreConfig = new ConfigFileHandler(this).createIfNotExists();
     userManager = new UserManager(this);
+  }
+
+  public void registerListener(final Listener listener) {
+    final PluginManager pluginManager = Bukkit.getServer().getPluginManager();
+    pluginManager.registerEvents(listener, this);
+  }
+
+  public void registerCommand(final String label,@NotNull final CommandExecutor executor) {
+    getCommand(label).setExecutor(executor);
   }
 
 }

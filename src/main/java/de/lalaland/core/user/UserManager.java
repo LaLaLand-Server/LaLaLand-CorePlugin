@@ -8,7 +8,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.UUID;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginManager;
 
 /*******************************************************
  * Copyright (C) 2015-2019 Piinguiin neuraxhd@gmail.com
@@ -33,17 +32,12 @@ public class UserManager {
   public UserManager(final CorePlugin corePlugin) {
     this.corePlugin = corePlugin;
     cachedUsers = new Object2ObjectOpenHashMap<>();
-    registerAllListeners();
+    corePlugin.registerListener(new PlayerJoinQuit(corePlugin));
     addAllOnlinePlayerToCache(); // in case of reload
     final RemoveOfflineUserThread removeOfflineUserThread = new RemoveOfflineUserThread(corePlugin);
     removeOfflineUserThread.run();
     final SaveUserDataThread saveUserDataThread = new SaveUserDataThread(corePlugin);
     saveUserDataThread.run();
-  }
-
-  private void registerAllListeners() {
-    final PluginManager plm = corePlugin.getServer().getPluginManager();
-    plm.registerEvents(new PlayerJoinQuit(corePlugin), corePlugin);
   }
 
   private void addAllOnlinePlayerToCache() {
