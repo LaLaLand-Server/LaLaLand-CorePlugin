@@ -37,10 +37,13 @@ public class GsonFileReader implements IReader {
   @Override
   public Object read(final Class<?> classToDeserialize, final Object defaultValue) {
 
-    final File file = new File(this.directory, this.fileName + ".json");
+    final File file = new File(directory, fileName + ".json");
 
     if (!file.exists()) {
-      this.sendFileNotFoundMessage();
+      sendFileNotFoundMessage();
+      plugin.getCoreLogger().info("Saving default file.");
+      final IWriter writer = new GsonFileWriter(plugin, directory, fileName);
+      writer.write(defaultValue);
       return defaultValue;
     }
 
@@ -49,17 +52,17 @@ public class GsonFileReader implements IReader {
     try {
       reader = new BufferedReader(new FileReader(file));
     } catch (final FileNotFoundException e) {
-      this.sendFileNotFoundMessage();
-      this.plugin.getLogger().severe(e.getMessage());
+      sendFileNotFoundMessage();
+      plugin.getCoreLogger().error(e.getMessage());
       return defaultValue;
     }
 
-    return this.plugin.getGson().fromJson(reader, classToDeserialize);
+    return plugin.getGson().fromJson(reader, classToDeserialize);
   }
 
   private void sendFileNotFoundMessage() {
-    this.plugin.getLogger().severe(
-        "Cannot find file '" + this.fileName + "' in directory '" + this.directory.getAbsolutePath()
+    plugin.getCoreLogger().error(
+        "Cannot find file '" + fileName + "' in directory '" + directory.getAbsolutePath()
             + "'.");
   }
 

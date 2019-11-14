@@ -1,5 +1,8 @@
 package de.lalaland.core.config;
 
+import de.lalaland.core.CorePlugin;
+import java.io.File;
+
 /*******************************************************
  * Copyright (C) 2015-2019 Piinguiin neuraxhd@gmail.com
  *
@@ -11,8 +14,16 @@ package de.lalaland.core.config;
  *******************************************************/
 public class ConfigFileHandler {
 
+  private final CorePlugin corePlugin;
+
+  public ConfigFileHandler(final CorePlugin corePlugin) {
+    this.corePlugin = corePlugin;
+  }
+
   public Config createIfNotExists() {
-    //return config if exists. Else create one and return new.
+
+    final File dir = new File(corePlugin.getDataFolder() + File.separator +"config.json");
+
     return null;
   }
 
