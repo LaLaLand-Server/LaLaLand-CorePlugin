@@ -27,8 +27,6 @@ import org.bukkit.entity.Player;
  *******************************************************/
 public class User {
 
-  public static boolean SAVE_DATA_IN_DATABASE = false;
-
   private final CorePlugin corePlugin;
   @Getter
   @Setter
@@ -55,19 +53,20 @@ public class User {
 
     final IWriter writer;
 
-    if (SAVE_DATA_IN_DATABASE) {
+    if (corePlugin.getCoreConfig().isSaveDataInDatabase()) {
       writer = new MongoDataWriter();
     } else {
       writer = new GsonFileWriter(corePlugin, getUserDataDirectory(), uuid.toString());
     }
     writer.write(getUserData());
+    setUpdate(false);
   }
 
   private UserData loadData() {
 
     final IReader reader;
 
-    if (SAVE_DATA_IN_DATABASE) {
+    if (corePlugin.getCoreConfig().isSaveDataInDatabase()) {
       reader = new MongoDataReader();
     } else {
       reader = new GsonFileReader(corePlugin, getUserDataDirectory(), uuid.toString());
