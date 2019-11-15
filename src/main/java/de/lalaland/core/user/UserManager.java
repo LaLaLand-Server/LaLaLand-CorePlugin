@@ -40,6 +40,9 @@ public class UserManager implements Iterable<User> {
     executeTasks(corePlugin);
   }
 
+  /**
+   * Loads all current online players.
+   */
   private void addAllOnlinePlayerToCache() {
     Bukkit.getOnlinePlayers().forEach(player -> addUserToCache(player.getUniqueId()));
   }
