@@ -7,6 +7,7 @@ import de.lalaland.core.config.Config;
 import de.lalaland.core.config.ConfigFileHandler;
 import de.lalaland.core.modules.IModule;
 import de.lalaland.core.modules.module.TestModule;
+import de.lalaland.core.tasks.TaskManager;
 import de.lalaland.core.user.UserManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,8 @@ public class CorePlugin extends JavaPlugin {
   private Config coreConfig;
   @Getter
   private UserManager userManager;
+  @Getter
+  private TaskManager taskManager;
 
   @Getter
   private List<IModule> modules;
@@ -63,6 +66,7 @@ public class CorePlugin extends JavaPlugin {
     gson = new GsonBuilder().setPrettyPrinting().create();
     coreConfig = new ConfigFileHandler(this).createIfNotExists();
     userManager = new UserManager(this);
+    taskManager = new TaskManager(this);
     modules = new ArrayList<>();
   }
 
