@@ -9,7 +9,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 
 /*******************************************************
@@ -24,7 +23,6 @@ import org.bukkit.Bukkit;
 public class UserManager implements Iterable<User> {
 
   private final CorePlugin corePlugin;
-  @Getter
   private final Object2ObjectOpenHashMap<UUID, User> cachedUsers;
 
   /**
@@ -75,7 +73,7 @@ public class UserManager implements Iterable<User> {
       return;
     }
 
-    getCachedUsers().put(uuid, new User(corePlugin, uuid));
+    cachedUsers.put(uuid, new User(corePlugin, uuid));
   }
 
   /**
@@ -89,10 +87,9 @@ public class UserManager implements Iterable<User> {
       return;
     }
 
-    final User user = new User(corePlugin, uuid);
-    user.save();
+    cachedUsers.get(uuid).save();
 
-    getCachedUsers().remove(uuid);
+    cachedUsers.remove(uuid);
   }
 
   /**
@@ -107,13 +104,12 @@ public class UserManager implements Iterable<User> {
       addUserToCache(uuid);
     }
 
-    return getCachedUsers().get(uuid);
+    return cachedUsers.get(uuid);
   }
 
   private boolean isCached(final UUID uuid) {
     return cachedUsers.containsKey(uuid);
   }
-
 
   @Override
   public Iterator<User> iterator() {
