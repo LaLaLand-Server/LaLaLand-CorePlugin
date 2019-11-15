@@ -18,7 +18,6 @@ import java.util.Set;
 public class RemoveOfflineUserThread implements Runnable {
 
   private final CorePlugin corePlugin;
-  private final int interval;
 
   /**
    * Instantiates a new Remove offline user thread. Remove User classes stored in cache when they
@@ -28,24 +27,25 @@ public class RemoveOfflineUserThread implements Runnable {
    */
   public RemoveOfflineUserThread(final CorePlugin corePlugin) {
     this.corePlugin = corePlugin;
-    interval = corePlugin.getCoreConfig().getUnusedUserRemoverInterval();
   }
 
   @Override
   public void run() {
 
-    final UserManager userManager = corePlugin.getUserManager();
-    final Set<User> removeCandidates = Sets.newHashSet();
+    corePlugin.getTaskManager().runBukkitSync(() -> {
+      final UserManager userManager = corePlugin.getUserManager();
+      final Set<User> removeCandidates = Sets.newHashSet();
 
-    for (final User user : userManager) {
-      if (!user.getOnlinePlayer().isPresent()) {
-        removeCandidates.add(user);
+      for (final User user : userManager) {
+        if (!user.getOnlinePlayer().isPresent()) {
+          removeCandidates.add(user);
+        }
       }
-    }
 
-    for (final User offlineUser : removeCandidates) {
-      userManager.removeUserFromCache(offlineUser.getUuid());
-    }
+      for (final User offlineUser : removeCandidates) {
+        userManager.removeUserFromCache(offlineUser.getUuid());
+      }
+    });
 
   }
 

@@ -35,7 +35,7 @@ public class UserManager implements Iterable<User> {
     cachedUsers = new Object2ObjectOpenHashMap<>();
     corePlugin.registerListener(new PlayerJoinQuit(corePlugin));
     addAllOnlinePlayerToCache(); // in case of reload
-    executeTasks(corePlugin);
+    executeTasks();
   }
 
   /**
@@ -47,9 +47,8 @@ public class UserManager implements Iterable<User> {
 
   /**
    * Starts Threads that cleans offline users from cachedUsers collection.
-   * @param plugin
    */
-  private void executeTasks(final CorePlugin plugin) {
+  private void executeTasks() {
     final TaskManager taskManager = corePlugin.getTaskManager();
     int interval;
 
@@ -87,8 +86,7 @@ public class UserManager implements Iterable<User> {
       return;
     }
 
-    cachedUsers.get(uuid).save();
-
+    getUser(uuid).save();
     cachedUsers.remove(uuid);
   }
 
