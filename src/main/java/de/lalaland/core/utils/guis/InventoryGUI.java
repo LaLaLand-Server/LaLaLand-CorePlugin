@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.function.Consumer;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
 
 public class InventoryGUI {
 
@@ -12,22 +13,31 @@ public class InventoryGUI {
     return new InventoryGUIBuilder();
   }
 
-  protected InventoryGUI() {
+  protected InventoryGUI(final Inventory inventory) {
     clickHandler = new Int2ObjectOpenHashMap<>();
     closeHandler = Unit.of(null);
+    localClickHandler = Unit.of(null);
+    this.inventory = inventory;
+    GUIManager.getInstance().addInventoryGUI(inventory, this);
   }
 
+  private final Inventory inventory;
   private final Int2ObjectOpenHashMap<Consumer<InventoryClickEvent>> clickHandler;
   private final Unit<Consumer<InventoryCloseEvent>> closeHandler;
+  private final Unit<Consumer<InventoryClickEvent>> localClickHandler;
 
   protected void handleClickEvent(final InventoryClickEvent event) {
+    event.setCancelled(true);
+    if (localClickHandler.isPresent()) {
+      localClickHandler.getValue().accept(event);
+    }
     final Consumer<InventoryClickEvent> eventConsumer = clickHandler.get(event.getSlot());
     if (eventConsumer != null) {
       eventConsumer.accept(event);
     }
   }
 
-  protected void addClickHandler(final int slot,
+  protected void setClickHandler(final int slot,
       final Consumer<InventoryClickEvent> eventConsumer) {
     clickHandler.put(slot, eventConsumer);
   }
@@ -38,8 +48,12 @@ public class InventoryGUI {
     }
   }
 
-  protected void addCloseHandler(final Consumer<InventoryCloseEvent> eventConsumer) {
+  protected void setCloseHandler(final Consumer<InventoryCloseEvent> eventConsumer) {
     closeHandler.setValue(eventConsumer);
+  }
+
+  protected void setLocalClickHandler(final Consumer<InventoryClickEvent> eventConsumer) {
+    localClickHandler.setValue(eventConsumer);
   }
 
 }

@@ -9,6 +9,7 @@ import de.lalaland.core.modules.IModule;
 import de.lalaland.core.modules.module.TestModule;
 import de.lalaland.core.tasks.TaskManager;
 import de.lalaland.core.user.UserManager;
+import de.lalaland.core.utils.UtilModule;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -72,13 +73,13 @@ public class CorePlugin extends JavaPlugin {
 
   private void enableModules() {
 
-    final IModule[] modules = new IModule[]{new TestModule()};
+    final IModule[] modules = new IModule[]{new UtilModule()};
 
     for (int i = 0; i < modules.length; i++) {
       final IModule module = modules[i];
       try {
 
-        module.enable();
+        module.enable(this);
         this.modules.add(module);
         coreLogger.info("Successfully enabled module '" + module.getModuleName() + "'.");
       } catch (final Exception e) {
@@ -94,7 +95,7 @@ public class CorePlugin extends JavaPlugin {
 
     for (final IModule module : modules) {
       try {
-        module.disable();
+        module.disable(this);
         coreLogger.info("Successfully disable module '" + module.getModuleName() + "'.");
       } catch (final Exception e) {
         coreLogger.error("Cannot disable module '" + module.getModuleName() + "'.");

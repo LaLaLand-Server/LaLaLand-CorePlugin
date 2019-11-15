@@ -1,5 +1,7 @@
 package de.lalaland.core.modules;
 
+import de.lalaland.core.CorePlugin;
+
 /*******************************************************
  * Copyright (C) 2015-2019 Piinguiin neuraxhd@gmail.com
  *
@@ -13,8 +15,8 @@ public interface IModule {
 
   String getModuleName();
 
-  void enable() throws Exception;
+  void enable(CorePlugin plugin) throws Exception;
 
-  void disable() throws Exception;
+  void disable(CorePlugin plugin) throws Exception;
 
 }

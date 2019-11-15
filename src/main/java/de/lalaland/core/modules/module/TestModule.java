@@ -1,5 +1,6 @@
 package de.lalaland.core.modules.module;
 
+import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
 
 /*******************************************************
@@ -14,17 +15,17 @@ import de.lalaland.core.modules.IModule;
 public class TestModule implements IModule {
 
   @Override
-  public void enable() throws Exception {
-
-  }
-
-  @Override
-  public void disable() throws Exception {
-
-  }
-
-  @Override
   public String getModuleName() {
     return "TestModule";
+  }
+
+  @Override
+  public void enable(CorePlugin plugin) throws Exception {
+
+  }
+
+  @Override
+  public void disable(CorePlugin plugin) throws Exception {
+
   }
 }
