@@ -11,6 +11,7 @@ import de.lalaland.core.user.data.UserData;
 import de.lalaland.core.utils.tuples.Unit;
 import java.io.File;
 import java.util.UUID;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -29,8 +30,8 @@ public class User {
 
   private final CorePlugin corePlugin;
   @Getter
-  @Setter
-  private boolean update;
+  @Setter(AccessLevel.PRIVATE)
+  private boolean updateCandidate;
   @Getter
   private final UUID uuid;
   @Getter
@@ -46,7 +47,7 @@ public class User {
     userDataDirectory = new File(corePlugin.getDataFolder() + File.separator + "userdatas");
     userData = loadData();
     onlinePlayer = new Unit<>(Bukkit.getPlayer(uuid));
-    update = false;
+    updateCandidate = false;
   }
 
   public void save() {
@@ -59,7 +60,7 @@ public class User {
       writer = new GsonFileWriter(corePlugin, getUserDataDirectory(), uuid.toString());
     }
     writer.write(getUserData());
-    setUpdate(false);
+    setUpdateCandidate(false);
   }
 
   private UserData loadData() {
@@ -83,7 +84,7 @@ public class User {
       userData.increaseLevel();
       //TODO: Send player message
     }
-    setUpdate(true);
+    setUpdateCandidate(true);
   }
 
   private UserData getDefaultUserData() {

@@ -1,11 +1,14 @@
 package de.lalaland.core.user;
 
 import de.lalaland.core.CorePlugin;
+import de.lalaland.core.tasks.TaskManager;
 import de.lalaland.core.user.listener.PlayerJoinQuit;
 import de.lalaland.core.user.task.RemoveOfflineUserThread;
 import de.lalaland.core.user.task.SaveUserDataThread;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Iterator;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
@@ -18,7 +21,7 @@ import org.bukkit.Bukkit;
  * permission of the owner.
  *
  */
-public class UserManager {
+public class UserManager implements Iterable<User> {
 
   private final CorePlugin corePlugin;
   @Getter
@@ -34,14 +37,28 @@ public class UserManager {
     cachedUsers = new Object2ObjectOpenHashMap<>();
     corePlugin.registerListener(new PlayerJoinQuit(corePlugin));
     addAllOnlinePlayerToCache(); // in case of reload
-    final RemoveOfflineUserThread removeOfflineUserThread = new RemoveOfflineUserThread(corePlugin);
-    removeOfflineUserThread.run();
-    final SaveUserDataThread saveUserDataThread = new SaveUserDataThread(corePlugin);
-    saveUserDataThread.run();
+    executeTasks(corePlugin);
   }
 
   private void addAllOnlinePlayerToCache() {
     Bukkit.getOnlinePlayers().forEach(player -> addUserToCache(player.getUniqueId()));
+  }
+
+  /**
+   * Starts Threads that cleans offline users from cachedUsers collection.
+   * @param plugin
+   */
+  private void executeTasks(final CorePlugin plugin) {
+    final TaskManager taskManager = corePlugin.getTaskManager();
+    int interval;
+
+    interval = corePlugin.getCoreConfig().getUnusedUserRemoverInterval();
+    final RemoveOfflineUserThread removeUserThread = new RemoveOfflineUserThread(corePlugin);
+    taskManager.executeScheduledTask(removeUserThread, 0L, interval, TimeUnit.MINUTES);
+
+    interval = corePlugin.getCoreConfig().getUserSaveInterval();
+    final SaveUserDataThread saveUserThread = new SaveUserDataThread(corePlugin);
+    taskManager.executeScheduledTask(saveUserThread, 0L, interval, TimeUnit.MINUTES);
   }
 
   /**
@@ -94,5 +111,10 @@ public class UserManager {
     return cachedUsers.containsKey(uuid);
   }
 
+
+  @Override
+  public Iterator<User> iterator() {
+    return cachedUsers.values().iterator();
+  }
 
 }

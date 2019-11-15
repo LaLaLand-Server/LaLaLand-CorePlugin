@@ -1,10 +1,10 @@
 package de.lalaland.core.user.task;
 
+import com.google.common.collect.Sets;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.user.User;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+import de.lalaland.core.user.UserManager;
+import java.util.Set;
 
 /*******************************************************
  * Copyright (C) 2015-2019 Piinguiin neuraxhd@gmail.com
@@ -34,25 +34,17 @@ public class RemoveOfflineUserThread implements Runnable {
   @Override
   public void run() {
 
-    final Object2ObjectOpenHashMap<UUID, User> cachedUsers = corePlugin.getUserManager()
-        .getCachedUsers();
+    final UserManager userManager = corePlugin.getUserManager();
+    final Set<User> removeCandidates = Sets.newHashSet();
 
-    if(cachedUsers.isEmpty()){
-      return;
-    }
-
-    for (final User user : cachedUsers.values()) {
-
+    for (final User user : userManager) {
       if (!user.getOnlinePlayer().isPresent()) {
-        cachedUsers.remove(user.getUuid());
+        removeCandidates.add(user);
       }
-
     }
 
-    try {
-      Thread.sleep(TimeUnit.MINUTES.toMillis(interval));
-    } catch (final InterruptedException e) {
-      corePlugin.getCoreLogger().error(e.getMessage());
+    for (final User offlineUser : removeCandidates) {
+      userManager.removeUserFromCache(offlineUser.getUuid());
     }
 
   }

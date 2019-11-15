@@ -5,7 +5,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
@@ -20,9 +19,7 @@ public class TaskManager {
     this.plugin = plugin;
   }
 
-  @Getter
   private final BukkitScheduler bukkitScheduler;
-  @Getter
   private final ScheduledExecutorService scheduler;
   private final CorePlugin plugin;
 
