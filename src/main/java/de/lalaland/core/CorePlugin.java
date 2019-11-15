@@ -6,7 +6,6 @@ import com.sun.istack.internal.NotNull;
 import de.lalaland.core.config.Config;
 import de.lalaland.core.config.ConfigFileHandler;
 import de.lalaland.core.modules.IModule;
-import de.lalaland.core.modules.module.TestModule;
 import de.lalaland.core.tasks.TaskManager;
 import de.lalaland.core.user.UserManager;
 import de.lalaland.core.utils.UtilModule;
