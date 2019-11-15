@@ -28,11 +28,13 @@ public class SaveUserDataThread implements Runnable {
 
   @Override
   public void run() {
-    for (final User user : corePlugin.getUserManager()) {
-      if (user.isUpdateCandidate()) {
-        user.save();
+    corePlugin.getTaskManager().runBukkitSync(() ->{
+      for (final User user : corePlugin.getUserManager()) {
+        if (user.isUpdateCandidate()) {
+          user.save();
+        }
       }
-    }
+    });
   }
 
 

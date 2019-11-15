@@ -20,20 +20,28 @@
       <id>papermc</id>
       <url>https://papermc.io/repo/repository/maven-public/</url>
     </repository>
+    <repository>
+      <id>aikar</id>
+      <url>https://repo.aikar.co/content/groups/aikar/</url>
+    </repository>
   </repositories>
 
   <dependencies>
+    <!-- Fast utils-->
     <dependency>
       <groupId>it.unimi.dsi</groupId>
       <artifactId>fastutil</artifactId>
       <version>8.3.0</version>
+      <scope>compile</scope>
     </dependency>
+    <!-- Papermc-->
     <dependency>
       <groupId>com.destroystokyo.paper</groupId>
       <artifactId>paper-api</artifactId>
       <version>1.14.2-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
+    <!-- Lombok-->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -45,6 +53,13 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>1.1.7</version>
+      <scope>compile</scope>
+    </dependency>
+    <!-- acf-->
+    <dependency>
+      <groupId>co.aikar</groupId>
+      <artifactId>acf-paper</artifactId> <!-- Don't forget to replace this -->
+      <version>0.5.0-SNAPSHOT</version> <!-- Replace this as well -->
       <scope>compile</scope>
     </dependency>
   </dependencies>
