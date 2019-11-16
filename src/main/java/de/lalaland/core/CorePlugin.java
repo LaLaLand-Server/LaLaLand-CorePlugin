@@ -14,8 +14,10 @@ import de.lalaland.core.modules.IModule;
 import de.lalaland.core.tasks.TaskManager;
 import de.lalaland.core.user.UserManager;
 import de.lalaland.core.utils.UtilModule;
+import de.lalaland.core.utils.items.display.ItemDisplayCompiler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
@@ -50,6 +52,8 @@ public class CorePlugin extends JavaPlugin {
   private PaperCommandManager commandManager;
   @Getter
   private ProtocolManager protocolManager;
+  @Getter @Setter
+  private ItemDisplayCompiler displayCompiler;
 
   private Object2ObjectLinkedOpenHashMap<Class<? extends IModule>, IModule> moduleMap;
 

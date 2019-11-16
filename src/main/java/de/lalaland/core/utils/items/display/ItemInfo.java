@@ -15,7 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  */
 public class ItemInfo {
 
-  protected ItemInfo(ItemStack inputItem) {
+  public ItemInfo(ItemStack inputItem) {
     this.inputClone = inputItem.clone();
     meta = inputItem.getItemMeta();
     if (meta.hasDisplayName()) {
