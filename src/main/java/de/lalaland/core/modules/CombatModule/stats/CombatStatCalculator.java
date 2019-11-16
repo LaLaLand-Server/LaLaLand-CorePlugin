@@ -1,9 +1,7 @@
 package de.lalaland.core.modules.CombatModule.stats;
 
-import com.google.common.collect.Maps;
 import de.lalaland.core.modules.CombatModule.weapons.StatItem;
 import java.util.Map;
-import org.bukkit.EntityEffect;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
@@ -25,7 +23,13 @@ public class CombatStatCalculator {
 
   }
 
-  protected void recalculateBaseValues(CombatStatHolder holder) {
+  /**
+   * Recalculates the item values of
+   * any {@link CombatStatHolder}.
+   *
+   * @param holder
+   */
+  protected void recalculateValues(CombatStatHolder holder) {
     LivingEntity entity = holder.getBukkitEntity();
     if (entity instanceof Player) {
       this.calculateForPlayer((Player) entity, holder);
@@ -34,37 +38,74 @@ public class CombatStatCalculator {
     }
   }
 
+  /**
+   * Calculation for human entities.
+   *
+   * @param player
+   * @param holder
+   */
   private void calculateForPlayer(Player player, CombatStatHolder holder) {
     PlayerInventory inventory = player.getInventory();
-    Map<CombatStat, Double> statMap = Maps.newHashMap();
-    Map<CombatStat, Double> itemStats = null;
+    Map<CombatStat, Double> statMap = CombatStat.getEmptyMap();
+    ItemStack[] validStatItems = new ItemStack[6];
+    validStatItems[4] = inventory.getItemInMainHand();
+    validStatItems[5] = inventory.getItemInOffHand();
+    ItemStack[] armor = inventory.getArmorContents();
 
-    for (ItemStack armorItem : inventory.getArmorContents()) {
-      StatItem statItem = StatItem.of(armorItem);
-      itemStats = statItem.getCombatStatMap();
-      if (itemStats != null) {
-        itemStats.forEach((stat, value) -> statMap.merge(stat, value, (v1, v2) -> v1 + v2));
+    for (int index = 0; index < 4; index++) {
+      validStatItems[index] = armor[index];
+    }
+
+    for (ItemStack item : validStatItems) {
+      if (item == null) {
+        continue;
       }
-    }
-
-    itemStats = StatItem.of(inventory.getItemInMainHand()).getCombatStatMap();
-    if (itemStats != null) {
-      itemStats.forEach((stat, value) -> statMap.merge(stat, value, (v1, v2) -> v1 + v2));
-    }
-
-    itemStats = StatItem.of(inventory.getItemInOffHand()).getCombatStatMap();
-    if (itemStats != null) {
-      itemStats.forEach((stat, value) -> statMap.merge(stat, value, (v1, v2) -> v1 + v2));
+      mergeStats(StatItem.of(item), statMap);
     }
 
     statMap.forEach((stat, value) -> holder.setValue(stat, value));
   }
 
+  /**
+   * Calculation for random entities.
+   *
+   * @param entity
+   * @param holder
+   */
   private void calculateForEntity(LivingEntity entity, CombatStatHolder holder) {
+    Map<CombatStat, Double> statMap = CombatStat.getEmptyMap();
     EntityEquipment equipment = entity.getEquipment();
-    if(equipment != null){
 
+    if (equipment == null) {
+      return;
     }
+    ItemStack[] validStatItems = new ItemStack[6];
+    validStatItems[4] = equipment.getItemInMainHand();
+    validStatItems[5] = equipment.getItemInOffHand();
+    ItemStack[] armor = equipment.getArmorContents();
+    for (int index = 0; index < 4; index++) {
+      validStatItems[index] = armor[index];
+    }
+    for(ItemStack item : validStatItems){
+      if(item == null) continue;
+      mergeStats(StatItem.of(item), statMap);
+    }
+
+    statMap.forEach((stat, value) -> holder.setValue(stat, value));
+  }
+
+  /**
+   * Util method for merging.
+   *
+   * @param statItem
+   * @param valueMap
+   */
+  private void mergeStats(StatItem statItem, Map<CombatStat, Double> valueMap) {
+    Map<CombatStat, Double> itemMap = statItem.getCombatStatMap();
+    if (itemMap == null) {
+      return;
+    }
+    itemMap.forEach((stat, value) -> valueMap.merge(stat, value, (v1, v2) -> v1 + v2));
   }
 
 }

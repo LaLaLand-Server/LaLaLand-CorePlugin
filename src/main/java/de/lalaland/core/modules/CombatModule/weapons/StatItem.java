@@ -1,5 +1,6 @@
 package de.lalaland.core.modules.CombatModule.weapons;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import de.lalaland.core.modules.CombatModule.stats.CombatStat;
 import de.lalaland.core.utils.nbtapi.NBTCompound;
@@ -20,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 public class StatItem {
 
   public static StatItem of(ItemStack item) {
+    Preconditions.checkNotNull(item, "ItemStack can not be null.");
     return of(new NBTItem(item));
   }
 
@@ -27,6 +29,11 @@ public class StatItem {
     return new StatItem(nbtItem);
   }
 
+  /**
+   * This class is used to fetch stats from any ItemStack.
+   *
+   * @param nbt the item as NBTItem
+   */
   private StatItem(NBTItem nbt) {
     this.nbt = nbt;
     this.hasCombatStats = nbt.hasKey(CombatStat.COMPOUND_KEY);
@@ -37,6 +44,11 @@ public class StatItem {
   private final boolean hasCombatStats;
   private final boolean hasItemStats;
 
+  /**
+   * Fetches a full mapping of combat stats.
+   *
+   * @return a map or null if no stats are present.
+   */
   @Nullable
   public Map<CombatStat, Double> getCombatStatMap() {
     Map<CombatStat, Double> map = null;
@@ -52,6 +64,11 @@ public class StatItem {
     return map;
   }
 
+  /**
+   * Fetches the value of one specific stat.
+   * @param stat
+   * @return the value or 0
+   */
   public double getCombatStatValue(CombatStat stat) {
     if (this.hasCombatStats) {
       NBTCompound statComp = nbt.getCompound(CombatStat.COMPOUND_KEY);
@@ -63,6 +80,10 @@ public class StatItem {
     return 0D;
   }
 
+  /**
+   * Fetches the WeponType of this item.
+   * @return the type or null
+   */
   @Nullable
   public WeaponType getWeaponType() {
     if (this.hasItemStats) {
@@ -75,6 +96,10 @@ public class StatItem {
     return null;
   }
 
+  /**
+   * Fetches the MaxDurability of this item.
+   * @return the value or null
+   */
   @Nullable
   public Integer getMaxDurability() {
     if (this.hasItemStats) {
@@ -86,6 +111,10 @@ public class StatItem {
     return null;
   }
 
+  /**
+   * Fetches the Durability of this item.
+   * @return the value or null
+   */
   @Nullable
   public Integer getDurability() {
     if (this.hasItemStats) {
@@ -97,6 +126,10 @@ public class StatItem {
     return null;
   }
 
+  /**
+   * Fetches the Version of this item.
+   * @return the version or null
+   */
   @Nullable
   public String getVersion() {
     if (this.hasItemStats) {
@@ -108,6 +141,10 @@ public class StatItem {
     return null;
   }
 
+  /**
+   * Fetches the CreationDate of this item as Unix long.
+   * @return the unix time or null
+   */
   @Nullable
   public Long getCreationDate() {
     if (this.hasItemStats) {
@@ -119,6 +156,10 @@ public class StatItem {
     return null;
   }
 
+  /**
+   * Fetches the Unbreakable state of this item.
+   * @return if unbreakable. Default is true.
+   */
   @Nullable
   public Boolean getUnbreakable() {
     if (this.hasItemStats) {
@@ -127,9 +168,15 @@ public class StatItem {
         return itemStatCompound.getBoolean(ItemStat.UNBREAKABLE.getNbtKey());
       }
     }
-    return null;
+    return true;
   }
 
+  /**
+   * Fetches the ItemCreator as String.
+   * Might be some players UUID or SERVER
+   *
+   * @return the unix time or null
+   */
   @Nullable
   public String getItemCreator() {
     if (this.hasItemStats) {

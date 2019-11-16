@@ -1,9 +1,10 @@
 package de.lalaland.core.modules.CombatModule.stats;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import de.lalaland.core.utils.tuples.Pair;
 import java.util.EnumMap;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.entity.LivingEntity;
@@ -20,12 +21,12 @@ import org.bukkit.entity.Player;
  */
 public class CombatStatHolder {
 
-  protected CombatStatHolder(LivingEntity bukkitEntity, boolean isHumanEntity) {
+  protected CombatStatHolder(LivingEntity bukkitEntity) {
     this.bukkitEntity = bukkitEntity;
     this.entityID = bukkitEntity.getUniqueId();
-    this.combatStatMappings = Maps.newEnumMap(CombatStat.getBaseMap(isHumanEntity));
-    this.baseValues = Maps.newEnumMap(CombatStat.class);
     this.human = bukkitEntity instanceof Player;
+    this.combatStatMappings = Maps.newEnumMap(CombatStat.getBaseMap(human));
+    this.baseValues = Maps.newEnumMap(CombatStat.class);
   }
 
   @Getter(AccessLevel.PROTECTED)
@@ -46,28 +47,58 @@ public class CombatStatHolder {
     return combatStatMappings.get(stat);
   }
 
+  /**
+   * Gets only the base value of a stat.
+   *
+   * @param stat
+   * @return
+   */
   public double getStatBaseValue(CombatStat stat) {
     return this.baseValues.getOrDefault(stat, 0D);
   }
 
-  public void setBaseValue(CombatStat stat, double value) {
+  /**
+   * Sets the base value of a stat.
+   *
+   * @param stat
+   * @param value
+   */
+  public void setStatBaseValue(CombatStat stat, double value) {
     this.baseValues.put(stat, value);
   }
 
   /**
-   * Rebases a new value for of a stat.
+   * This will return a Pair of two Maps.
+   * The first map includes a copy of the base values of this holder.
+   * The second map includes a copy of the complete calculated combat map.
+   *
+   *  Those Maps do not have any reflective impact on the base maps.
+   *
+   * @return a pair of two ImmutableMaps
+   */
+  public Pair<ImmutableMap<CombatStat, Double>, ImmutableMap<CombatStat, Double>> getValueMappings() {
+    return Pair
+        .of(ImmutableMap.copyOf(this.baseValues), ImmutableMap.copyOf(this.combatStatMappings));
+  }
+
+  /**
+   * Rebases a new value of a stat.
    *
    * @param stat  the stat
    * @param value the value
    * @return the old value.
    */
   protected double setValue(CombatStat stat, double value) {
-    return this.combatStatMappings.put(stat, stat.getBaseValue(this.human) + value);
+    return this.combatStatMappings
+        .put(stat, getStatBaseValue(stat) + stat.getBaseValue(this.human) + value);
   }
 
-  protected void resetMap() {
+  /**
+   * Resets the stat map with base value imports.
+   */
+  protected void resetStatMap() {
     for (CombatStat stat : CombatStat.values()) {
-      this.combatStatMappings.put(stat, stat.getBaseValue(this.human));
+      this.combatStatMappings.put(stat, getStatBaseValue(stat) + stat.getBaseValue(this.human));
     }
   }
 

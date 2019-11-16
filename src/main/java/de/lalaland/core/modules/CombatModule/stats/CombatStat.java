@@ -39,6 +39,12 @@ public enum CombatStat {
   @Getter
   private final boolean percentageStyle;
 
+  /**
+   * Gets the base value of this stat.
+   *
+   * @param forHuman if base value is for human entity.
+   * @return the base value.
+   */
   public double getBaseValue(boolean forHuman) {
     if (forHuman) {
       return this.playerBaseValue;
@@ -66,6 +72,19 @@ public enum CombatStat {
       }
     }
 
+    return map;
+  }
+
+  /**
+   * Creates an empty EnumMap
+   *
+   * @return
+   */
+  public static Map<CombatStat, Double> getEmptyMap() {
+    Map<CombatStat, Double> map = Maps.newHashMap();
+    for (CombatStat stat : CombatStat.values()) {
+      map.put(stat, 0D);
+    }
     return map;
   }
 

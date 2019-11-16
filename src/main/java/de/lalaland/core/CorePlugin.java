@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.sun.istack.internal.NotNull;
 import de.lalaland.core.config.Config;
 import de.lalaland.core.config.ConfigFileHandler;
+import de.lalaland.core.modules.CombatModule.CombatModule;
 import de.lalaland.core.modules.IModule;
 import de.lalaland.core.tasks.TaskManager;
 import de.lalaland.core.user.UserManager;
@@ -72,7 +73,9 @@ public class CorePlugin extends JavaPlugin {
 
   private void enableModules() {
 
-    final IModule[] modules = new IModule[]{new UtilModule()};
+    final IModule[] modules = new IModule[]{
+        new UtilModule(),
+        new CombatModule()};
 
     for (int i = 0; i < modules.length; i++) {
       final IModule module = modules[i];
