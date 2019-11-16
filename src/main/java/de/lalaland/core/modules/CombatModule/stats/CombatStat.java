@@ -20,6 +20,7 @@ public enum CombatStat {
   HEALTH("Lebenspunkte", 100, 1, 2E6D, false),
   MEELE_DAMAGE("Nahkampfschaden", 5, 0.5, 2E6D, false),
   RANGE_DAMAGE("Fernkampfschaden", 4, 0.5, 2E6D, false),
+  ATTACK_SPEED("Angriffsgeschwindigkeit", 50, 1, 500, false),
   CRIT_CHANCE("Kritische Trefferchance", 0.0D, 0.0D, 100.0D, true),
   CRIT_DAMAGE("Kritischer Zusatzschaden", 50.0D, 25.0D, 500D, true),
   PHYSICAL_ARMOR("Verteidigung", 20, 0D, 2E6D, false),

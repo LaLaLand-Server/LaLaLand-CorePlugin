@@ -6,6 +6,7 @@ import de.lalaland.core.modules.CombatModule.stats.CombatStat;
 import de.lalaland.core.utils.nbtapi.NBTCompound;
 import de.lalaland.core.utils.nbtapi.NBTItem;
 import java.util.Map;
+import java.util.UUID;
 import javax.annotation.Nullable;
 import org.bukkit.inventory.ItemStack;
 
@@ -41,8 +42,16 @@ public class StatItem {
   }
 
   private final NBTItem nbt;
-  private final boolean hasCombatStats;
-  private final boolean hasItemStats;
+  private boolean hasCombatStats;
+  private boolean hasItemStats;
+
+  public ItemStack getItemStack() {
+    return nbt.getItem();
+  }
+
+  public NBTItem getNbtItem() {
+    return this.nbt;
+  }
 
   /**
    * Fetches a full mapping of combat stats.
@@ -66,6 +75,7 @@ public class StatItem {
 
   /**
    * Fetches the value of one specific stat.
+   *
    * @param stat
    * @return the value or 0
    */
@@ -82,6 +92,7 @@ public class StatItem {
 
   /**
    * Fetches the WeponType of this item.
+   *
    * @return the type or null
    */
   @Nullable
@@ -98,6 +109,7 @@ public class StatItem {
 
   /**
    * Fetches the MaxDurability of this item.
+   *
    * @return the value or null
    */
   @Nullable
@@ -113,6 +125,7 @@ public class StatItem {
 
   /**
    * Fetches the Durability of this item.
+   *
    * @return the value or null
    */
   @Nullable
@@ -128,6 +141,7 @@ public class StatItem {
 
   /**
    * Fetches the Version of this item.
+   *
    * @return the version or null
    */
   @Nullable
@@ -143,6 +157,7 @@ public class StatItem {
 
   /**
    * Fetches the CreationDate of this item as Unix long.
+   *
    * @return the unix time or null
    */
   @Nullable
@@ -158,6 +173,7 @@ public class StatItem {
 
   /**
    * Fetches the Unbreakable state of this item.
+   *
    * @return if unbreakable. Default is true.
    */
   @Nullable
@@ -186,6 +202,170 @@ public class StatItem {
       }
     }
     return null;
+  }
+
+  /**
+   * Sets a combat stat on this item.
+   * If the CombatStat NBTCompound is not set it will create one.
+   *
+   * @param stat  the CombatStat
+   * @param value the value
+   */
+  public void setCombatStat(CombatStat stat, double value) {
+    NBTCompound statCompound;
+
+    if (!this.hasCombatStats) {
+      statCompound = this.nbt.addCompound(CombatStat.COMPOUND_KEY);
+      this.hasCombatStats = true;
+    } else {
+      statCompound = nbt.getCompound(CombatStat.COMPOUND_KEY);
+    }
+
+    statCompound.setDouble(stat.toString(), value);
+
+  }
+
+  /**
+   * Sets the WeaponType of this item.
+   * If the ItemStat NBTCompound is not set it will create one.
+   *
+   * @param type
+   */
+  public void setWeaponType(WeaponType type) {
+    NBTCompound itemStatCompound;
+
+    if (!this.hasItemStats) {
+      itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
+      this.hasItemStats = true;
+    } else {
+      itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+    }
+
+    itemStatCompound.setString(ItemStat.WEAPON_TYPE.getNbtKey(), type.toString());
+  }
+
+  /**
+   * Sets the MaxDurability of this item.
+   * If the ItemStat NBTCompound is not set it will create one.
+   *
+   * @param durability
+   */
+  public void setMaxDurability(int durability) {
+    NBTCompound itemStatCompound;
+
+    if (!this.hasItemStats) {
+      itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
+      this.hasItemStats = true;
+    } else {
+      itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+    }
+
+    itemStatCompound.setInteger(ItemStat.MAX_DURABILITY.getNbtKey(), durability);
+  }
+
+  /**
+   * Sets the Durability of this item.
+   * If the ItemStat NBTCompound is not set it will create one.
+   *
+   * @param durability
+   */
+  public void setDurability(int durability) {
+    NBTCompound itemStatCompound;
+
+    if (!this.hasItemStats) {
+      itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
+      this.hasItemStats = true;
+    } else {
+      itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+    }
+
+    itemStatCompound.setInteger(ItemStat.DURABILITY.getNbtKey(), durability);
+  }
+
+  /**
+   * Sets the Version of this item.
+   * If the ItemStat NBTCompound is not set it will create one.
+   *
+   * @param version
+   */
+  public void setVersion(String version) {
+    NBTCompound itemStatCompound;
+
+    if (!this.hasItemStats) {
+      itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
+      this.hasItemStats = true;
+    } else {
+      itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+    }
+
+    itemStatCompound.setString(ItemStat.VERSION.getNbtKey(), version);
+  }
+
+  /**
+   * Sets the CreationDate of this item.
+   * If the ItemStat NBTCompound is not set it will create one.
+   *
+   * @param creationDate
+   */
+  public void setCreationDate(long creationDate) {
+    NBTCompound itemStatCompound;
+
+    if (!this.hasItemStats) {
+      itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
+      this.hasItemStats = true;
+    } else {
+      itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+    }
+
+    itemStatCompound.setLong(ItemStat.CREATION_DATE.getNbtKey(), creationDate);
+  }
+
+  /**
+   * Sets the Unbreakable state of this item.
+   * If the ItemStat NBTCompound is not set it will create one.
+   *
+   * @param state
+   */
+  public void setUnbreakable(boolean state) {
+    NBTCompound itemStatCompound;
+
+    if (!this.hasItemStats) {
+      itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
+      this.hasItemStats = true;
+    } else {
+      itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+    }
+
+    itemStatCompound.setBoolean(ItemStat.UNBREAKABLE.getNbtKey(), state);
+  }
+
+  /**
+   * Sets the Creator of this item.
+   * If the ItemStat NBTCompound is not set it will create one.
+   *
+   * @param creator
+   */
+  public void setCreator(String creator) {
+    NBTCompound itemStatCompound;
+
+    if (!this.hasItemStats) {
+      itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
+      this.hasItemStats = true;
+    } else {
+      itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+    }
+
+    itemStatCompound.setString(ItemStat.VERSION.getNbtKey(), creator);
+  }
+
+  /**
+   * Sets the Creator of this item.
+   * If the ItemStat NBTCompound is not set it will create one.
+   *
+   * @param creator
+   */
+  public void setCreator(UUID creator) {
+    this.setCreator(creator.toString());
   }
 
 }
