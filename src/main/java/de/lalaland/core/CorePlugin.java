@@ -1,6 +1,8 @@
 package de.lalaland.core;
 
 import co.aikar.commands.PaperCommandManager;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -46,6 +48,8 @@ public class CorePlugin extends JavaPlugin {
   private TaskManager taskManager;
   @Getter
   private PaperCommandManager commandManager;
+  @Getter
+  private ProtocolManager protocolManager;
 
   private Object2ObjectLinkedOpenHashMap<Class<? extends IModule>, IModule> moduleMap;
 
@@ -70,6 +74,7 @@ public class CorePlugin extends JavaPlugin {
     coreLogger = LoggerFactory.getLogger(getClass().getName());
     gson = new GsonBuilder().setPrettyPrinting().create();
     coreConfig = new ConfigFileHandler(this).createIfNotExists();
+    protocolManager = ProtocolLibrary.getProtocolManager();
     taskManager = new TaskManager(this);
     userManager = new UserManager(this);
     commandManager = new PaperCommandManager(this);
