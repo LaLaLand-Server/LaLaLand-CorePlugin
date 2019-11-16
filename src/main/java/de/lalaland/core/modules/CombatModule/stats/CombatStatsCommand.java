@@ -6,13 +6,10 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import com.google.common.collect.ImmutableMap;
-import com.sun.xml.internal.ws.resources.SenderMessages;
 import de.lalaland.core.modules.CombatModule.CombatModule;
 import de.lalaland.core.utils.common.UtilMath;
-import de.lalaland.core.utils.items.ItemBuilder;
 import de.lalaland.core.utils.tuples.Pair;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -54,7 +51,9 @@ public class CombatStatsCommand extends BaseCommand {
       fullValue = UtilMath.cut(fullValue, 1);
       delta = UtilMath.cut(delta, 1);
 
-      String name = "§9" + stat.getDisplayName() + " >> §e" + fullValue + " [" + baseValue + " + " + delta + "]";
+      String name =
+          "§9" + stat.getDisplayName() + " >> §e" + fullValue + " [" + baseValue + " + " + delta
+              + "]";
       sender.sendMessage(name);
     }
 

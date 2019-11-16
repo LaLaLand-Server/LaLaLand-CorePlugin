@@ -1,0 +1,7 @@
+main: de.lalaland.core.CorePlugin
+name: LaLaLandCore
+version: 1.0
+description: Komplette LaLaLand Funktionalität.
+api-version: 1.14
+authors: [Gestankbratwurst, Piinguiin]
+prefix: CorePlugin

@@ -23,7 +23,7 @@ public class CombatStatManager {
     this.plugin = plugin;
     this.combatStatCalculator = new CombatStatCalculator();
     this.combatStatEntityMapping = new Object2ObjectOpenHashMap<>();
-    Bukkit.getPluginManager().registerEvents(new CombatCalculationListener(this), plugin);
+
   }
 
   private final CorePlugin plugin;

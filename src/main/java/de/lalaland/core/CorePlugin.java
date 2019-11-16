@@ -4,7 +4,6 @@ import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sun.istack.internal.NotNull;
 import de.lalaland.core.communication.Com;
 import de.lalaland.core.config.Config;
 import de.lalaland.core.config.ConfigFileHandler;
@@ -20,6 +19,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,8 +70,8 @@ public class CorePlugin extends JavaPlugin {
     coreLogger = LoggerFactory.getLogger(getClass().getName());
     gson = new GsonBuilder().setPrettyPrinting().create();
     coreConfig = new ConfigFileHandler(this).createIfNotExists();
-    userManager = new UserManager(this);
     taskManager = new TaskManager(this);
+    userManager = new UserManager(this);
     commandManager = new PaperCommandManager(this);
     moduleMap = new Object2ObjectLinkedOpenHashMap<>();
   }

@@ -23,11 +23,11 @@ import org.bukkit.inventory.ItemStack;
 @AllArgsConstructor
 public enum CombatStat {
 
-  HEALTH("Lebenspunkte", 100, 1, 2E6D,
+  HEALTH("Lebenspunkte", 100, 1, 5E4D,
       false, 8000, Lists.newArrayList("§7Erhöht deine Trefferpunkte.")),
-  MEELE_DAMAGE("Nahkampfschaden", 5, 0.5, 2E6D,
+  MEELE_DAMAGE("Nahkampfschaden", 5, 0.5, 2E4,
       false, 8001, Lists.newArrayList("§7Erhöht deinen Schaden mit", "§7allen Nahkampfwaffen.")),
-  RANGE_DAMAGE("Fernkampfschaden", 4, 0.5, 2E6D,
+  RANGE_DAMAGE("Fernkampfschaden", 4, 0.5, 2E4D,
       false, 8002, Lists.newArrayList("§7Erhöht deinen Schaden mit","§7allen Fernkampfwaffen.")),
   ATTACK_SPEED("Angriffsgeschwindigkeit", 50, 1, 500,
       false, 8003, Lists.newArrayList("§7Legt die Geschwindigkeit zwischen", "§7Angriffen fest.")),
@@ -35,14 +35,15 @@ public enum CombatStat {
       true, 8004, Lists.newArrayList("§7Erhöht deine Chance auf Kritische Treffer.")),
   CRIT_DAMAGE("Kritischer Zusatzschaden", 50.0D, 25.0D, 500D,
       true, 8005, Lists.newArrayList("§7Legt den zusätzlichen Schaden von", "§7kritischen Treffern fest.")),
-  PHYSICAL_ARMOR("Verteidigung", 20, 0D, 2E6D,
+  PHYSICAL_ARMOR("Verteidigung", 20, 0D, 2E4D,
       false, 8006, Lists.newArrayList("§7Verringert physikalischen Schaden", "§7durch z.B. Waffenangriffe.")),
-  MYSTIC_ARMOR("Mystischer Widerstand", 10, 0D, 2E6D,
+  MYSTIC_ARMOR("Mystischer Widerstand", 10, 0D, 2E4D,
       false, 8007, Lists.newArrayList("§7Verringert den Schaden durch mystische", "§7Quellen wie z.B. ...")),
-  BIO_ARMOR("Bio Widerstand", 10, 0D, 2E6D,
+  BIO_ARMOR("Bio Widerstand", 10, 0D, 2E4D,
       false, 8008, Lists.newArrayList("&7Verringert den Schaden durch", "§7Biologische Angriffe wie", "§7Gift oder Radioaktivität."));
 
-  public static String COMPOUND_KEY = "CombatStats";
+  protected static final String COMPOUND_KEY = "CombatStats";
+  protected static final double DEFENCE_HARD_CAP = 2E4;
 
   @Getter
   private final String displayName;
