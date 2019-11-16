@@ -54,7 +54,7 @@ public class CombatStatsCommand extends BaseCommand {
       fullValue = UtilMath.cut(fullValue, 1);
       delta = UtilMath.cut(delta, 1);
 
-      String name = "§9" + stat.getDisplayName() + " >> §e" + baseValue + " (+" + delta + ")";
+      String name = "§9" + stat.getDisplayName() + " >> §e" + fullValue + " [" + baseValue + " + " + delta + "]";
       sender.sendMessage(name);
     }
 
