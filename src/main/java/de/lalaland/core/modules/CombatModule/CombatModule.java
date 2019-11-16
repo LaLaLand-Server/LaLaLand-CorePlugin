@@ -2,13 +2,9 @@ package de.lalaland.core.modules.CombatModule;
 
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.CombatModule.stats.CombatStatManager;
+import de.lalaland.core.modules.CombatModule.items.BaseItemCommand;
 import de.lalaland.core.modules.IModule;
-import de.lalaland.core.utils.nbtapi.NBTCompound;
-import de.lalaland.core.utils.nbtapi.NBTIntegerList;
-import de.lalaland.core.utils.nbtapi.NBTItem;
 import lombok.Getter;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -31,6 +27,7 @@ public class CombatModule implements IModule {
 
   @Override
   public void enable(CorePlugin plugin) throws Exception {
+    plugin.getCommandManager().registerCommand(new BaseItemCommand());
     this.combatStatManager = new CombatStatManager(plugin);
   }
 

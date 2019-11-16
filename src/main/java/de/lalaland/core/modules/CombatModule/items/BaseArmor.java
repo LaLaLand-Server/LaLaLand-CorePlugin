@@ -1,7 +1,6 @@
-package de.lalaland.core.modules.CombatModule.weapons;
+package de.lalaland.core.modules.CombatModule.items;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -13,18 +12,13 @@ import lombok.Getter;
  *
  */
 @AllArgsConstructor
-public enum WeaponType {
+public enum BaseArmor {
 
-  SWORD("Schwert"),
-  AXE("Axt"),
-  DAGGER("Dolch"),
-  MACE("Streitkolben"),
-  HELMET("Helm"),
-  CHESTPLATE("Brustharnisch"),
-  LEGGINS("Beinschienen"),
-  BOOTS("Stiefel");
+  CLOTH_HELMET("Stoff Helm"),
+  CLOTH_CHESTPLATE("Stoff Brustharnisch"),
+  CLOTH_LEGGINS("Stoff Beinschienen"),
+  CLOTH_BOOTS("Stoff Stiefel");
 
-  @Getter
   private final String displayName;
 
 }

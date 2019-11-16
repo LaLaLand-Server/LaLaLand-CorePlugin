@@ -1,4 +1,4 @@
-package de.lalaland.core.modules.CombatModule.weapons;
+package de.lalaland.core.modules.CombatModule.items;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;

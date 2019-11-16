@@ -1,9 +1,8 @@
-package de.lalaland.core.modules.CombatModule.weapons;
+package de.lalaland.core.modules.CombatModule.items;
 
 import de.lalaland.core.modules.CombatModule.stats.CombatStat;
 import de.lalaland.core.utils.items.ItemBuilder;
 import de.lalaland.core.utils.nbtapi.NBTItem;
-import de.lalaland.core.utils.tuples.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.Material;

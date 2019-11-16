@@ -1,4 +1,4 @@
-package de.lalaland.core.modules.CombatModule.weapons;
+package de.lalaland.core.modules.CombatModule.items;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,18 +13,13 @@ import lombok.Getter;
  *
  */
 @AllArgsConstructor
-public enum ItemStat {
+public enum BaseTool {
 
-  WEAPON_TYPE("WeaponType"),
-  MAX_DURABILITY("MaxDurability"),
-  DURABILITY("Durability"),
-  VERSION("Version"),
-  CREATION_DATE("CreationDate"),
-  UNBREAKABLE("Unbreakable"),
-  CREATOR("Creator");
-
-  public static String COMPOUND_KEY = "ItemStats";
+  WOODEN_PICKAXE("Holz Spitzhacke"),
+  WOODEN_WOODCUTTING_AXE("Holz Axt"),
+  WOODEN_SPADE("Holz Spaten");
 
   @Getter
-  private final String nbtKey;
+  private final String displayName;
+
 }

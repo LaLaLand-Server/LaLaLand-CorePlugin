@@ -1,8 +1,11 @@
 package de.lalaland.core;
 
+import co.aikar.commands.PaperCommandManager;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.istack.internal.NotNull;
+import de.lalaland.core.communication.Com;
 import de.lalaland.core.config.Config;
 import de.lalaland.core.config.ConfigFileHandler;
 import de.lalaland.core.modules.CombatModule.CombatModule;
@@ -10,8 +13,7 @@ import de.lalaland.core.modules.IModule;
 import de.lalaland.core.tasks.TaskManager;
 import de.lalaland.core.user.UserManager;
 import de.lalaland.core.utils.UtilModule;
-import java.util.ArrayList;
-import java.util.List;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -42,9 +44,10 @@ public class CorePlugin extends JavaPlugin {
   private UserManager userManager;
   @Getter
   private TaskManager taskManager;
-
   @Getter
-  private List<IModule> modules;
+  private PaperCommandManager commandManager;
+
+  private Object2ObjectLinkedOpenHashMap<Class<? extends IModule>, IModule> moduleMap;
 
   @Override
   public void onLoad() {
@@ -63,39 +66,39 @@ public class CorePlugin extends JavaPlugin {
   }
 
   private void init() {
+    Com.init(this);
     coreLogger = LoggerFactory.getLogger(getClass().getName());
     gson = new GsonBuilder().setPrettyPrinting().create();
     coreConfig = new ConfigFileHandler(this).createIfNotExists();
     userManager = new UserManager(this);
     taskManager = new TaskManager(this);
-    modules = new ArrayList<>();
+    commandManager = new PaperCommandManager(this);
+    moduleMap = new Object2ObjectLinkedOpenHashMap<>();
   }
 
   private void enableModules() {
 
-    final IModule[] modules = new IModule[]{
-        new UtilModule(),
-        new CombatModule()};
+    final ImmutableMap<Class<? extends IModule>, IModule> modules = ImmutableMap.<Class<? extends IModule>, IModule>builder()
+        .put(UtilModule.class, new UtilModule())
+        .put(CombatModule.class, new CombatModule())
+        .build();
 
-    for (int i = 0; i < modules.length; i++) {
-      final IModule module = modules[i];
+    modules.forEach((clazz, module) -> {
       try {
-
         module.enable(this);
-        this.modules.add(module);
+        this.moduleMap.put(clazz, module);
         coreLogger.info("Successfully enabled module '" + module.getModuleName() + "'.");
       } catch (final Exception e) {
         coreLogger.error("Cannot enable module '" + module.getModuleName() + "'.");
         coreLogger.error(e.getMessage());
       }
-
-    }
+    });
 
   }
 
   private void disableModuels() {
 
-    for (final IModule module : modules) {
+    for (final IModule module : moduleMap.values()) {
       try {
         module.disable(this);
         coreLogger.info("Successfully disable module '" + module.getModuleName() + "'.");
@@ -114,6 +117,10 @@ public class CorePlugin extends JavaPlugin {
 
   public void registerCommand(final String label, @NotNull final CommandExecutor executor) {
     getCommand(label).setExecutor(executor);
+  }
+
+  public IModule getModule(Class<? extends IModule> moduleClass) {
+    return this.moduleMap.get(moduleClass);
   }
 
 }
