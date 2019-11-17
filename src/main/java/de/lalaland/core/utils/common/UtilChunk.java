@@ -6,7 +6,6 @@ import de.lalaland.core.utils.events.PlayerReceiveChunkEvent;
 import de.lalaland.core.utils.events.PlayerUnloadsChunkEvent;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Set;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
@@ -82,7 +81,7 @@ public class UtilChunk implements Listener {
   }
 
   public static Chunk keyToChunk(World world, long chunkID) {
-    Validate.notNull(world, "World cannot be null");
+    Preconditions.checkArgument(world != null, "World cannot be null");
     return world.getChunkAt((int) chunkID, (int) (chunkID >> 32));
   }
 

@@ -27,6 +27,7 @@ public class UtilModule implements IModule {
     plugin.setDisplayCompiler(new ItemDisplayCompiler(plugin));
     plugin.getProtocolManager().addPacketListener(plugin.getDisplayCompiler());
     this.hologramManager = new HologramManager(plugin);
+    plugin.getCommandManager().registerCommand(new TestCommand(this.hologramManager));
   }
 
   @Override
