@@ -1,6 +1,7 @@
 package de.lalaland.core.modules.CombatModule;
 
 import de.lalaland.core.CorePlugin;
+import de.lalaland.core.modules.CombatModule.items.ItemInfoCompiler;
 import de.lalaland.core.modules.CombatModule.stats.CombatCalculationListener;
 import de.lalaland.core.modules.CombatModule.stats.CombatDamageListener;
 import de.lalaland.core.modules.CombatModule.stats.CombatStatManager;
@@ -31,11 +32,12 @@ public class CombatModule implements IModule {
 
   @Override
   public void enable(CorePlugin plugin) throws Exception {
+    this.combatStatManager = new CombatStatManager(plugin);
     plugin.getCommandManager().registerCommand(new BaseItemCommand());
     plugin.getCommandManager().registerCommand(new CombatStatsCommand(this));
-    this.combatStatManager = new CombatStatManager(plugin);
     Bukkit.getPluginManager().registerEvents(new CombatCalculationListener(combatStatManager), plugin);
     Bukkit.getPluginManager().registerEvents(new CombatDamageListener(combatStatManager), plugin);
+    plugin.getDisplayCompiler().registerConverter(new ItemInfoCompiler());
   }
 
   @Override

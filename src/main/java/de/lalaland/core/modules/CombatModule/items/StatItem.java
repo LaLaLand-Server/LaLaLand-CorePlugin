@@ -3,6 +3,7 @@ package de.lalaland.core.modules.CombatModule.items;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import de.lalaland.core.modules.CombatModule.stats.CombatStat;
+import de.lalaland.core.utils.items.display.ItemDisplayCompiler;
 import de.lalaland.core.utils.nbtapi.NBTCompound;
 import de.lalaland.core.utils.nbtapi.NBTItem;
 import java.util.Map;
@@ -71,6 +72,10 @@ public class StatItem {
     }
 
     return map;
+  }
+
+  public void addItemInfoCompiler() {
+    ItemDisplayCompiler.addDisplayCompileKey(ItemInfoCompiler.NBT_VALUE, this.nbt);
   }
 
   /**
@@ -188,8 +193,7 @@ public class StatItem {
   }
 
   /**
-   * Fetches the ItemCreator as String.
-   * Might be some players UUID or SERVER
+   * Fetches the ItemCreator as String. Might be some players UUID or SERVER
    *
    * @return the unix time or null
    */
@@ -205,8 +209,7 @@ public class StatItem {
   }
 
   /**
-   * Sets a combat stat on this item.
-   * If the CombatStat NBTCompound is not set it will create one.
+   * Sets a combat stat on this item. If the CombatStat NBTCompound is not set it will create one.
    *
    * @param stat  the CombatStat
    * @param value the value
@@ -226,8 +229,7 @@ public class StatItem {
   }
 
   /**
-   * Sets the WeaponType of this item.
-   * If the ItemStat NBTCompound is not set it will create one.
+   * Sets the WeaponType of this item. If the ItemStat NBTCompound is not set it will create one.
    *
    * @param type
    */
@@ -245,8 +247,8 @@ public class StatItem {
   }
 
   /**
-   * Sets the MaxDurability of this item.
-   * If the ItemStat NBTCompound is not set it will create one.
+   * Sets the MaxDurability of this item. If the ItemStat NBTCompound is not set it will create
+   * one.
    *
    * @param durability
    */
@@ -264,8 +266,7 @@ public class StatItem {
   }
 
   /**
-   * Sets the Durability of this item.
-   * If the ItemStat NBTCompound is not set it will create one.
+   * Sets the Durability of this item. If the ItemStat NBTCompound is not set it will create one.
    *
    * @param durability
    */
@@ -283,8 +284,7 @@ public class StatItem {
   }
 
   /**
-   * Sets the Version of this item.
-   * If the ItemStat NBTCompound is not set it will create one.
+   * Sets the Version of this item. If the ItemStat NBTCompound is not set it will create one.
    *
    * @param version
    */
@@ -302,8 +302,7 @@ public class StatItem {
   }
 
   /**
-   * Sets the CreationDate of this item.
-   * If the ItemStat NBTCompound is not set it will create one.
+   * Sets the CreationDate of this item. If the ItemStat NBTCompound is not set it will create one.
    *
    * @param creationDate
    */
@@ -321,8 +320,8 @@ public class StatItem {
   }
 
   /**
-   * Sets the Unbreakable state of this item.
-   * If the ItemStat NBTCompound is not set it will create one.
+   * Sets the Unbreakable state of this item. If the ItemStat NBTCompound is not set it will create
+   * one.
    *
    * @param state
    */
@@ -340,8 +339,7 @@ public class StatItem {
   }
 
   /**
-   * Sets the Creator of this item.
-   * If the ItemStat NBTCompound is not set it will create one.
+   * Sets the Creator of this item. If the ItemStat NBTCompound is not set it will create one.
    *
    * @param creator
    */
@@ -359,8 +357,7 @@ public class StatItem {
   }
 
   /**
-   * Sets the Creator of this item.
-   * If the ItemStat NBTCompound is not set it will create one.
+   * Sets the Creator of this item. If the ItemStat NBTCompound is not set it will create one.
    *
    * @param creator
    */

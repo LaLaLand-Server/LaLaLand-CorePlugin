@@ -42,7 +42,7 @@ public enum CombatStat {
   BIO_ARMOR("Bio Widerstand", 10, 0D, 2E4D,
       false, 8008, Lists.newArrayList("&7Verringert den Schaden durch", "§7Biologische Angriffe wie", "§7Gift oder Radioaktivität."));
 
-  protected static final String COMPOUND_KEY = "CombatStats";
+  public static final String COMPOUND_KEY = "CombatStats";
   protected static final double DEFENCE_HARD_CAP = 2E4;
 
   @Getter

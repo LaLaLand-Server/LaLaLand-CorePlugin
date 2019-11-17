@@ -25,8 +25,8 @@ public class CombatStatHolder {
     this.bukkitEntity = bukkitEntity;
     this.entityID = bukkitEntity.getUniqueId();
     this.human = bukkitEntity instanceof Player;
-    this.combatStatMappings = Maps.newEnumMap(CombatStat.getBaseMap(human));
-    this.baseValues = Maps.newEnumMap(CombatStat.class);
+    this.combatStatMappings = Maps.newEnumMap(CombatStat.getEmptyMap());
+    this.baseValues = Maps.newEnumMap(CombatStat.getBaseMap(human));
   }
 
   @Getter(AccessLevel.PROTECTED)
@@ -64,7 +64,7 @@ public class CombatStatHolder {
    * @param value
    */
   public void setStatBaseValue(CombatStat stat, double value) {
-    this.baseValues.put(stat, value);
+    this.baseValues.put(stat, value + stat.getBaseValue(this.human));
   }
 
   /**
@@ -90,7 +90,7 @@ public class CombatStatHolder {
    */
   protected double setValue(CombatStat stat, double value) {
     return this.combatStatMappings
-        .put(stat, getStatBaseValue(stat) + stat.getBaseValue(this.human) + value);
+        .put(stat, getStatBaseValue(stat) + value);
   }
 
   /**
@@ -98,7 +98,7 @@ public class CombatStatHolder {
    */
   protected void resetStatMap() {
     for (CombatStat stat : CombatStat.values()) {
-      this.combatStatMappings.put(stat, getStatBaseValue(stat) + stat.getBaseValue(this.human));
+      this.combatStatMappings.put(stat, getStatBaseValue(stat));
     }
   }
 

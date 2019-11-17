@@ -1,5 +1,6 @@
 package de.lalaland.core.utils.items.display;
 
+import com.google.common.collect.Lists;
 import java.util.List;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,15 +16,15 @@ import org.bukkit.inventory.meta.ItemMeta;
  */
 public class ItemInfo {
 
-  protected ItemInfo(ItemStack inputItem) {
+  public ItemInfo(ItemStack inputItem) {
     this.inputClone = inputItem.clone();
-    meta = inputItem.getItemMeta();
+    meta = inputClone.getItemMeta();
     if (meta.hasDisplayName()) {
       this.displayName = meta.getDisplayName();
+    }else{
+      this.displayName = "NO_NAME";
     }
-    if (meta.hasLore()) {
-      this.lores = meta.getLore();
-    }
+    this.lores = Lists.newArrayList();
   }
 
   private final ItemStack inputClone;

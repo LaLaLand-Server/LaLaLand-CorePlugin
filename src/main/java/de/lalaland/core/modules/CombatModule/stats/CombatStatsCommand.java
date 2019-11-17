@@ -44,17 +44,17 @@ public class CombatStatsCommand extends BaseCommand {
     sender.sendMessage("§eKampf Stats: ");
 
     for (CombatStat stat : CombatStat.values()) {
-      double baseValue = maps.getLeft().get(stat);
-      double fullValue = maps.getRight().get(stat);
+      double baseValue = maps.getLeft().getOrDefault(stat, 0D);
+      double fullValue = maps.getRight().getOrDefault(stat, 0D);
       double delta = fullValue - baseValue;
       baseValue = UtilMath.cut(baseValue, 1);
       fullValue = UtilMath.cut(fullValue, 1);
       delta = UtilMath.cut(delta, 1);
 
-      String name =
-          "§9" + stat.getDisplayName() + " >> §e" + fullValue + " [" + baseValue + " + " + delta
-              + "]";
-      sender.sendMessage(name);
+      String line =
+          "§f- " + "§9" + stat.getDisplayName() + " §f>> §e" + fullValue + " [§7" + baseValue + " + " + delta
+              + "§e]";
+      sender.sendMessage(line);
     }
 
   }

@@ -1,11 +1,12 @@
 package de.lalaland.core.modules.CombatModule.stats;
 
-import com.google.common.base.Preconditions;
 import de.lalaland.core.CorePlugin;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 /*******************************************************
@@ -23,7 +24,13 @@ public class CombatStatManager {
     this.plugin = plugin;
     this.combatStatCalculator = new CombatStatCalculator();
     this.combatStatEntityMapping = new Object2ObjectOpenHashMap<>();
-
+    for (World world : Bukkit.getWorlds()) {
+      for (Entity entity : world.getEntities()) {
+        if (entity instanceof LivingEntity) {
+          this.initEntity((LivingEntity) entity);
+        }
+      }
+    }
   }
 
   private final CorePlugin plugin;
@@ -42,13 +49,14 @@ public class CombatStatManager {
 
   /**
    * Gets the mapped {@link CombatStatHolder} of this uuid.
+   *
    * @param entityID
    * @return
    */
   @Nullable
   public CombatStatHolder getCombatStatHolder(UUID entityID) {
     CombatStatHolder holder = this.combatStatEntityMapping.get(entityID);
-    if(holder == null) {
+    if (holder == null) {
       this.plugin.getLogger().warning("Tried to request holder of non mapped entity.");
     }
     return holder;
@@ -62,6 +70,7 @@ public class CombatStatManager {
   protected void initEntity(LivingEntity entity) {
     CombatStatHolder holder = new CombatStatHolder(entity);
     combatStatCalculator.recalculateValues(holder);
+    this.combatStatEntityMapping.put(entity.getUniqueId(), holder);
   }
 
   /**

@@ -18,7 +18,24 @@ public class UtilMath {
   }
 
   public static int round(double value) {
-    return (int)(value + 0.5);
+    return (int) (value + 0.5);
+  }
+
+  public static String getPercentageBar(double current, double max, int size, String segment) {
+    StringBuilder builder = new StringBuilder();
+    int lows = (int) (size * ((1D / max) * current));
+    int highs = size - lows;
+    builder.append("§a");
+    while (lows > 0) {
+      builder.append(segment);
+      lows--;
+    }
+    builder.append("§c");
+    while (highs > 0) {
+      builder.append(segment);
+      highs--;
+    }
+    return builder.toString();
   }
 
 }

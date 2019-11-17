@@ -47,8 +47,10 @@ public enum BaseWeapon {
     StatItem statItem = StatItem.of(nbt);
 
     statItem.setDurability(this.baseMaxDurability);
+    statItem.setMaxDurability(this.baseMaxDurability);
     statItem.setCombatStat(CombatStat.ATTACK_SPEED, this.baseAttackSpeed);
     statItem.setCombatStat(CombatStat.MEELE_DAMAGE, this.baseDamage);
+    statItem.addItemInfoCompiler();
 
     return statItem.getItemStack();
   }
