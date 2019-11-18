@@ -1,4 +1,4 @@
-package de.lalaland.core.modules.CombatModule.items;
+package de.lalaland.core.modules.combat.items;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

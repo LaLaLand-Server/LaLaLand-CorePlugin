@@ -1,8 +1,8 @@
-package de.lalaland.core.modules.CombatModule.stats;
+package de.lalaland.core.modules.combat.stats;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import de.lalaland.core.modules.CombatModule.items.StatItem;
+import de.lalaland.core.modules.combat.items.StatItem;
 import de.lalaland.core.utils.common.UtilMath;
 import de.lalaland.core.utils.common.UtilPlayer;
 import de.lalaland.core.utils.holograms.MovingHologram;

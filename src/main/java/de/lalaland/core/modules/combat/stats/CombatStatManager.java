@@ -1,4 +1,4 @@
-package de.lalaland.core.modules.CombatModule.stats;
+package de.lalaland.core.modules.combat.stats;
 
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.tasks.TaskManager;

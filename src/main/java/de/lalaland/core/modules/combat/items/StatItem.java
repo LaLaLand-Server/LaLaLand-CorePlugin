@@ -1,8 +1,8 @@
-package de.lalaland.core.modules.CombatModule.items;
+package de.lalaland.core.modules.combat.items;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import de.lalaland.core.modules.CombatModule.stats.CombatStat;
+import de.lalaland.core.modules.combat.stats.CombatStat;
 import de.lalaland.core.utils.items.display.ItemDisplayCompiler;
 import de.lalaland.core.utils.nbtapi.NBTCompound;
 import de.lalaland.core.utils.nbtapi.NBTItem;

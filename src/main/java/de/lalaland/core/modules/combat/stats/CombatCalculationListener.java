@@ -1,7 +1,7 @@
-package de.lalaland.core.modules.CombatModule.stats;
+package de.lalaland.core.modules.combat.stats;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
-import de.lalaland.core.modules.CombatModule.items.StatItem;
+import de.lalaland.core.modules.combat.items.StatItem;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;

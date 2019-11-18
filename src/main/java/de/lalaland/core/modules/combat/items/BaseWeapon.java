@@ -1,6 +1,6 @@
-package de.lalaland.core.modules.CombatModule.items;
+package de.lalaland.core.modules.combat.items;
 
-import de.lalaland.core.modules.CombatModule.stats.CombatStat;
+import de.lalaland.core.modules.combat.stats.CombatStat;
 import de.lalaland.core.utils.items.ItemBuilder;
 import de.lalaland.core.utils.nbtapi.NBTItem;
 import lombok.AllArgsConstructor;

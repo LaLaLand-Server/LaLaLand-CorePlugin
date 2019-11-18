@@ -1,6 +1,7 @@
-package de.lalaland.core.modules.CombatModule.items;
+package de.lalaland.core.modules.combat.items;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -12,13 +13,13 @@ import lombok.AllArgsConstructor;
  *
  */
 @AllArgsConstructor
-public enum BaseArmor {
+public enum BaseTool {
 
-  CLOTH_HELMET("Stoff Helm"),
-  CLOTH_CHESTPLATE("Stoff Brustharnisch"),
-  CLOTH_LEGGINS("Stoff Beinschienen"),
-  CLOTH_BOOTS("Stoff Stiefel");
+  WOODEN_PICKAXE("Holz Spitzhacke"),
+  WOODEN_WOODCUTTING_AXE("Holz Axt"),
+  WOODEN_SPADE("Holz Spaten");
 
+  @Getter
   private final String displayName;
 
 }

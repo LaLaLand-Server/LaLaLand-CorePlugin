@@ -1,4 +1,4 @@
-package de.lalaland.core.modules.CombatModule.stats;
+package de.lalaland.core.modules.combat.stats;
 
 
 import com.google.common.collect.ImmutableMap;

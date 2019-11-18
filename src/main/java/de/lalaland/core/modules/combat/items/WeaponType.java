@@ -1,4 +1,4 @@
-package de.lalaland.core.modules.CombatModule.items;
+package de.lalaland.core.modules.combat.items;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,11 +13,16 @@ import lombok.Getter;
  *
  */
 @AllArgsConstructor
-public enum BaseTool {
+public enum WeaponType {
 
-  WOODEN_PICKAXE("Holz Spitzhacke"),
-  WOODEN_WOODCUTTING_AXE("Holz Axt"),
-  WOODEN_SPADE("Holz Spaten");
+  SWORD("Schwert"),
+  AXE("Axt"),
+  DAGGER("Dolch"),
+  MACE("Streitkolben"),
+  HELMET("Helm"),
+  CHESTPLATE("Brustharnisch"),
+  LEGGINS("Beinschienen"),
+  BOOTS("Stiefel");
 
   @Getter
   private final String displayName;

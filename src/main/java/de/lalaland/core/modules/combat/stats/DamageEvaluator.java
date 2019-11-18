@@ -1,6 +1,4 @@
-package de.lalaland.core.modules.CombatModule.stats;
-
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+package de.lalaland.core.modules.combat.stats;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com

@@ -1,12 +1,12 @@
-package de.lalaland.core.modules.CombatModule;
+package de.lalaland.core.modules.combat;
 
 import de.lalaland.core.CorePlugin;
-import de.lalaland.core.modules.CombatModule.items.BaseItemCommand;
-import de.lalaland.core.modules.CombatModule.items.ItemInfoCompiler;
-import de.lalaland.core.modules.CombatModule.stats.CombatCalculationListener;
-import de.lalaland.core.modules.CombatModule.stats.CombatDamageListener;
-import de.lalaland.core.modules.CombatModule.stats.CombatStatManager;
-import de.lalaland.core.modules.CombatModule.stats.CombatStatsCommand;
+import de.lalaland.core.modules.combat.items.BaseItemCommand;
+import de.lalaland.core.modules.combat.items.ItemInfoCompiler;
+import de.lalaland.core.modules.combat.stats.CombatCalculationListener;
+import de.lalaland.core.modules.combat.stats.CombatDamageListener;
+import de.lalaland.core.modules.combat.stats.CombatStatManager;
+import de.lalaland.core.modules.combat.stats.CombatStatsCommand;
 import de.lalaland.core.modules.IModule;
 import de.lalaland.core.utils.UtilModule;
 import de.lalaland.core.utils.holograms.impl.HologramManager;

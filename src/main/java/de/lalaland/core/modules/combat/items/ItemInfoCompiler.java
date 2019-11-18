@@ -1,6 +1,6 @@
-package de.lalaland.core.modules.CombatModule.items;
+package de.lalaland.core.modules.combat.items;
 
-import de.lalaland.core.modules.CombatModule.stats.CombatStat;
+import de.lalaland.core.modules.combat.stats.CombatStat;
 import de.lalaland.core.utils.common.UtilMath;
 import de.lalaland.core.utils.items.display.DisplayConverter;
 import de.lalaland.core.utils.items.display.ItemInfo;

@@ -1,4 +1,4 @@
-package de.lalaland.core.modules.CombatModule.stats;
+package de.lalaland.core.modules.combat.stats;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
@@ -6,7 +6,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import com.google.common.collect.ImmutableMap;
-import de.lalaland.core.modules.CombatModule.CombatModule;
+import de.lalaland.core.modules.combat.CombatModule;
 import de.lalaland.core.utils.common.UtilMath;
 import de.lalaland.core.utils.tuples.Pair;
 import org.bukkit.entity.Player;

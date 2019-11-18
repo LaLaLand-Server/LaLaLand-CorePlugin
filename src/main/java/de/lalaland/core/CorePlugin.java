@@ -6,10 +6,10 @@ import com.comphenix.protocol.ProtocolManager;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import de.lalaland.core.communication.Com;
+import de.lalaland.core.ui.Message;
 import de.lalaland.core.config.Config;
 import de.lalaland.core.config.ConfigFileHandler;
-import de.lalaland.core.modules.CombatModule.CombatModule;
+import de.lalaland.core.modules.combat.CombatModule;
 import de.lalaland.core.modules.IModule;
 import de.lalaland.core.tasks.TaskManager;
 import de.lalaland.core.user.UserManager;
@@ -74,7 +74,7 @@ public class CorePlugin extends JavaPlugin {
   }
 
   private void init() {
-    Com.init(this);
+    Message.init(this);
     coreLogger = LoggerFactory.getLogger(getClass().getName());
     gson = new GsonBuilder().setPrettyPrinting().create();
     coreConfig = new ConfigFileHandler(this).createIfNotExists();

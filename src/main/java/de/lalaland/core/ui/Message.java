@@ -1,4 +1,4 @@
-package de.lalaland.core.communication;
+package de.lalaland.core.ui;
 
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
  * permission of the owner.
  *
  */
-public class Com {
+public class Message {
 
   public static void init(CorePlugin plugin) {
     corePlugin = plugin;

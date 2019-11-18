@@ -7,12 +7,11 @@ import de.lalaland.core.io.gson.GsonFileReader;
 import de.lalaland.core.io.gson.GsonFileWriter;
 import de.lalaland.core.io.mongodb.MongoDataReader;
 import de.lalaland.core.io.mongodb.MongoDataWriter;
-import de.lalaland.core.modules.CombatModule.stats.CombatStatHolder;
 import de.lalaland.core.user.data.UserData;
 import de.lalaland.core.utils.tuples.Unit;
 import java.io.File;
 import java.util.UUID;
-import javax.annotation.Nullable;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

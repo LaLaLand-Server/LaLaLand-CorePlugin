@@ -1,6 +1,6 @@
-package de.lalaland.core.modules.CombatModule.stats;
+package de.lalaland.core.modules.combat.stats;
 
-import de.lalaland.core.modules.CombatModule.items.StatItem;
+import de.lalaland.core.modules.combat.items.StatItem;
 import java.util.Map;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
