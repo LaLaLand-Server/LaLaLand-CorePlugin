@@ -2,6 +2,7 @@ package de.lalaland.core.modules.CombatModule.stats;
 
 import de.lalaland.core.modules.CombatModule.items.StatItem;
 import java.util.Map;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
@@ -24,8 +25,7 @@ public class CombatStatCalculator {
   }
 
   /**
-   * Recalculates the item values of
-   * any {@link CombatStatHolder}.
+   * Recalculates the item values of any {@link CombatStatHolder}.
    *
    * @param holder
    */
@@ -73,6 +73,7 @@ public class CombatStatCalculator {
    * @param holder
    */
   private void calculateForEntity(LivingEntity entity, CombatStatHolder holder) {
+    double preHealth = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
     Map<CombatStat, Double> statMap = CombatStat.getEmptyMap();
     EntityEquipment equipment = entity.getEquipment();
 
@@ -86,12 +87,18 @@ public class CombatStatCalculator {
     for (int index = 0; index < 4; index++) {
       validStatItems[index] = armor[index];
     }
-    for(ItemStack item : validStatItems){
-      if(item == null) continue;
+    for (ItemStack item : validStatItems) {
+      if (item == null) {
+        continue;
+      }
       mergeStats(StatItem.of(item), statMap);
     }
 
     statMap.forEach((stat, value) -> holder.setValue(stat, value));
+    double postHealth = holder.getStatValue(CombatStat.HEALTH);
+    if (preHealth != postHealth) {
+      entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(postHealth);
+    }
   }
 
   /**

@@ -17,9 +17,9 @@ public class DamageEvaluator {
     return damage * (CombatStat.DEFENCE_HARD_CAP / CombatStat.DEFENCE_HARD_CAP + (3 * defence));
   }
 
-  protected static double calculateDamage(CombatStatHolder holder, double damage,
+  protected static double calculateDamage(CombatStatHolder defender, double damage,
       CombatDamageType type) {
-    return evaluate(damage, holder.getStatValue(type.getDefendingStat()));
+    return evaluate(damage, defender.getStatValue(type.getDefendingStat()));
   }
 
 }

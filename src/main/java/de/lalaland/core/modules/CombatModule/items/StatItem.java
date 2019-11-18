@@ -9,6 +9,7 @@ import de.lalaland.core.utils.nbtapi.NBTItem;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
 /*******************************************************
@@ -38,13 +39,15 @@ public class StatItem {
    */
   private StatItem(NBTItem nbt) {
     this.nbt = nbt;
-    this.hasCombatStats = nbt.hasKey(CombatStat.COMPOUND_KEY);
-    this.hasItemStats = nbt.hasKey(ItemStat.COMPOUND_KEY);
+    this.combatStatComponent = nbt.hasKey(CombatStat.COMPOUND_KEY);
+    this.itemStatComponent = nbt.hasKey(ItemStat.COMPOUND_KEY);
   }
 
   private final NBTItem nbt;
-  private boolean hasCombatStats;
-  private boolean hasItemStats;
+  @Getter
+  private boolean combatStatComponent;
+  @Getter
+  private boolean itemStatComponent;
 
   public ItemStack getItemStack() {
     return nbt.getItem();
@@ -63,7 +66,7 @@ public class StatItem {
   public Map<CombatStat, Double> getCombatStatMap() {
     Map<CombatStat, Double> map = null;
 
-    if (this.hasCombatStats) {
+    if (this.combatStatComponent) {
       map = Maps.newHashMap();
       NBTCompound statComp = nbt.getCompound(CombatStat.COMPOUND_KEY);
       for (String key : statComp.getKeys()) {
@@ -85,7 +88,7 @@ public class StatItem {
    * @return the value or 0
    */
   public double getCombatStatValue(CombatStat stat) {
-    if (this.hasCombatStats) {
+    if (this.combatStatComponent) {
       NBTCompound statComp = nbt.getCompound(CombatStat.COMPOUND_KEY);
       if (statComp.hasKey(stat.toString())) {
         return statComp.getDouble(stat.toString());
@@ -102,7 +105,7 @@ public class StatItem {
    */
   @Nullable
   public WeaponType getWeaponType() {
-    if (this.hasItemStats) {
+    if (this.itemStatComponent) {
       NBTCompound itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
       if (itemStatCompound.hasKey(ItemStat.WEAPON_TYPE.getNbtKey())) {
         return WeaponType
@@ -119,7 +122,7 @@ public class StatItem {
    */
   @Nullable
   public Integer getMaxDurability() {
-    if (this.hasItemStats) {
+    if (this.itemStatComponent) {
       NBTCompound itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
       if (itemStatCompound.hasKey(ItemStat.MAX_DURABILITY.getNbtKey())) {
         return itemStatCompound.getInteger(ItemStat.MAX_DURABILITY.getNbtKey());
@@ -135,7 +138,7 @@ public class StatItem {
    */
   @Nullable
   public Integer getDurability() {
-    if (this.hasItemStats) {
+    if (this.itemStatComponent) {
       NBTCompound itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
       if (itemStatCompound.hasKey(ItemStat.DURABILITY.getNbtKey())) {
         return itemStatCompound.getInteger(ItemStat.DURABILITY.getNbtKey());
@@ -151,7 +154,7 @@ public class StatItem {
    */
   @Nullable
   public String getVersion() {
-    if (this.hasItemStats) {
+    if (this.itemStatComponent) {
       NBTCompound itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
       if (itemStatCompound.hasKey(ItemStat.VERSION.getNbtKey())) {
         return itemStatCompound.getString(ItemStat.VERSION.getNbtKey());
@@ -167,7 +170,7 @@ public class StatItem {
    */
   @Nullable
   public Long getCreationDate() {
-    if (this.hasItemStats) {
+    if (this.itemStatComponent) {
       NBTCompound itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
       if (itemStatCompound.hasKey(ItemStat.CREATION_DATE.getNbtKey())) {
         return itemStatCompound.getLong(ItemStat.CREATION_DATE.getNbtKey());
@@ -183,7 +186,7 @@ public class StatItem {
    */
   @Nullable
   public Boolean getUnbreakable() {
-    if (this.hasItemStats) {
+    if (this.itemStatComponent) {
       NBTCompound itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
       if (itemStatCompound.hasKey(ItemStat.UNBREAKABLE.getNbtKey())) {
         return itemStatCompound.getBoolean(ItemStat.UNBREAKABLE.getNbtKey());
@@ -199,7 +202,7 @@ public class StatItem {
    */
   @Nullable
   public String getItemCreator() {
-    if (this.hasItemStats) {
+    if (this.itemStatComponent) {
       NBTCompound itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
       if (itemStatCompound.hasKey(ItemStat.CREATOR.getNbtKey())) {
         return itemStatCompound.getString(ItemStat.CREATOR.getNbtKey());
@@ -217,9 +220,9 @@ public class StatItem {
   public void setCombatStat(CombatStat stat, double value) {
     NBTCompound statCompound;
 
-    if (!this.hasCombatStats) {
+    if (!this.combatStatComponent) {
       statCompound = this.nbt.addCompound(CombatStat.COMPOUND_KEY);
-      this.hasCombatStats = true;
+      this.combatStatComponent = true;
     } else {
       statCompound = nbt.getCompound(CombatStat.COMPOUND_KEY);
     }
@@ -236,9 +239,9 @@ public class StatItem {
   public void setWeaponType(WeaponType type) {
     NBTCompound itemStatCompound;
 
-    if (!this.hasItemStats) {
+    if (!this.itemStatComponent) {
       itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
-      this.hasItemStats = true;
+      this.itemStatComponent = true;
     } else {
       itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
     }
@@ -255,9 +258,9 @@ public class StatItem {
   public void setMaxDurability(int durability) {
     NBTCompound itemStatCompound;
 
-    if (!this.hasItemStats) {
+    if (!this.itemStatComponent) {
       itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
-      this.hasItemStats = true;
+      this.itemStatComponent = true;
     } else {
       itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
     }
@@ -273,9 +276,9 @@ public class StatItem {
   public void setDurability(int durability) {
     NBTCompound itemStatCompound;
 
-    if (!this.hasItemStats) {
+    if (!this.itemStatComponent) {
       itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
-      this.hasItemStats = true;
+      this.itemStatComponent = true;
     } else {
       itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
     }
@@ -291,9 +294,9 @@ public class StatItem {
   public void setVersion(String version) {
     NBTCompound itemStatCompound;
 
-    if (!this.hasItemStats) {
+    if (!this.itemStatComponent) {
       itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
-      this.hasItemStats = true;
+      this.itemStatComponent = true;
     } else {
       itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
     }
@@ -309,9 +312,9 @@ public class StatItem {
   public void setCreationDate(long creationDate) {
     NBTCompound itemStatCompound;
 
-    if (!this.hasItemStats) {
+    if (!this.itemStatComponent) {
       itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
-      this.hasItemStats = true;
+      this.itemStatComponent = true;
     } else {
       itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
     }
@@ -328,9 +331,9 @@ public class StatItem {
   public void setUnbreakable(boolean state) {
     NBTCompound itemStatCompound;
 
-    if (!this.hasItemStats) {
+    if (!this.itemStatComponent) {
       itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
-      this.hasItemStats = true;
+      this.itemStatComponent = true;
     } else {
       itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
     }
@@ -346,9 +349,9 @@ public class StatItem {
   public void setCreator(String creator) {
     NBTCompound itemStatCompound;
 
-    if (!this.hasItemStats) {
+    if (!this.itemStatComponent) {
       itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
-      this.hasItemStats = true;
+      this.itemStatComponent = true;
     } else {
       itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
     }

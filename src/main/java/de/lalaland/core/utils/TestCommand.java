@@ -4,8 +4,10 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Subcommand;
 import de.lalaland.core.utils.holograms.AbstractHologram;
+import de.lalaland.core.utils.holograms.MovingHologram;
 import de.lalaland.core.utils.holograms.impl.HologramManager;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -27,8 +29,8 @@ public class TestCommand extends BaseCommand {
 
   @Subcommand("holo")
   public void onHolo(Player sender, String line) {
-    AbstractHologram hologram = this.holoManager.createHologram(sender.getLocation());
-    hologram.appendTextLine(line);
+    MovingHologram hologram = this.holoManager.createMovingHologram(sender.getLocation(), new Vector(0,0.1,0), 60);
+    hologram.getHologram().appendTextLine("§eTest");
   }
 
 }

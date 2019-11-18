@@ -8,9 +8,11 @@ import de.lalaland.core.utils.holograms.impl.HologramManager;
 import de.lalaland.core.utils.items.display.ItemDisplayCompiler;
 import de.lalaland.core.utils.packets.adapter.ChunkTracker;
 import de.lalaland.core.utils.packets.adapter.EntityTracker;
+import lombok.Getter;
 
 public class UtilModule implements IModule {
 
+  @Getter
   private HologramManager hologramManager;
 
   @Override

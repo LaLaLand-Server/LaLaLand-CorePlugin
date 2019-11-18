@@ -1,7 +1,9 @@
 package de.lalaland.core.modules.CombatModule.stats;
 
 import de.lalaland.core.CorePlugin;
+import de.lalaland.core.tasks.TaskManager;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
@@ -18,12 +20,14 @@ import org.bukkit.entity.LivingEntity;
  * permission of the owner.
  *
  */
-public class CombatStatManager {
+public class CombatStatManager implements Runnable {
 
   public CombatStatManager(CorePlugin plugin) {
     this.plugin = plugin;
+    this.taskManager = plugin.getTaskManager();
     this.combatStatCalculator = new CombatStatCalculator();
     this.combatStatEntityMapping = new Object2ObjectOpenHashMap<>();
+    this.scheduledRecalculations = new ObjectOpenHashSet<UUID>();
     for (World world : Bukkit.getWorlds()) {
       for (Entity entity : world.getEntities()) {
         if (entity instanceof LivingEntity) {
@@ -36,6 +40,8 @@ public class CombatStatManager {
   private final CorePlugin plugin;
   private final CombatStatCalculator combatStatCalculator;
   private final Object2ObjectOpenHashMap<UUID, CombatStatHolder> combatStatEntityMapping;
+  private final TaskManager taskManager;
+  private final ObjectOpenHashSet<UUID> scheduledRecalculations;
 
   /**
    * Gets the mapped {@link CombatStatHolder} of this entity.
@@ -75,6 +81,8 @@ public class CombatStatManager {
 
   /**
    * Internal recalculation call for a CombatStatHolder.
+   * <p>
+   * Recalculation is executed one Tick after calling.
    *
    * @param entityID
    */
@@ -84,7 +92,12 @@ public class CombatStatManager {
       plugin.getLogger().warning("Tried to call recalculation on non mapped entity.");
       return;
     }
-    this.combatStatCalculator.recalculateValues(holder);
+    if (holder.isRecalculatingSheduled()) {
+      return;
+    }
+    holder.setRecalculatingSheduled(true);
+    this.scheduledRecalculations.add(entityID);
+    this.taskManager.runBukkitSync(this);
   }
 
   /**
@@ -101,4 +114,14 @@ public class CombatStatManager {
     this.combatStatEntityMapping.remove(entity.getUniqueId());
   }
 
+  @Override
+  public void run() {
+    for (UUID schedID : this.scheduledRecalculations) {
+      CombatStatHolder holder = this.combatStatEntityMapping.get(schedID);
+      if (holder != null) {
+        this.combatStatCalculator.recalculateValues(holder);
+        holder.setRecalculatingSheduled(false);
+      }
+    }
+  }
 }

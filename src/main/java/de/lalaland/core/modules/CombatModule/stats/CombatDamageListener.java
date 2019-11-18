@@ -1,16 +1,27 @@
 package de.lalaland.core.modules.CombatModule.stats;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import de.lalaland.core.modules.CombatModule.items.StatItem;
 import de.lalaland.core.utils.common.UtilMath;
+import de.lalaland.core.utils.common.UtilPlayer;
+import de.lalaland.core.utils.holograms.MovingHologram;
+import de.lalaland.core.utils.holograms.impl.HologramManager;
+import java.util.concurrent.ThreadLocalRandom;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.util.Vector;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -23,6 +34,9 @@ import org.bukkit.projectiles.ProjectileSource;
  */
 public class CombatDamageListener implements Listener {
 
+  private static final int HOLOGRAM_LIFE_TICKS = 30;
+  private static final Vector BASE_HOLOGRAM_VELOCITY = new Vector(0, 0.075, 0);
+  private static final Vector BASE_SCALAR_XZ = new Vector(1, 0, 1);
   private static final ImmutableMap<DamageCause, Double> ENVIRONMENTAL_BASE_PERCENTAGE = ImmutableMap.<DamageCause, Double>builder()
       .put(DamageCause.BLOCK_EXPLOSION, 25D)
       .put(DamageCause.CONTACT, 2.5D)
@@ -51,11 +65,16 @@ public class CombatDamageListener implements Listener {
       .put(DamageCause.WITHER, 8.5D)
       .build();
 
-  public CombatDamageListener(CombatStatManager combatStatManager) {
+  public CombatDamageListener(CombatStatManager combatStatManager,
+      HologramManager hologramManager) {
     this.combatStatManager = combatStatManager;
+    this.critChanceRandom = ThreadLocalRandom.current();
+    this.hologramManager = hologramManager;
   }
 
   private final CombatStatManager combatStatManager;
+  private final ThreadLocalRandom critChanceRandom;
+  private final HologramManager hologramManager;
 
   @EventHandler
   public void onDamage(EntityDamageEvent event) {
@@ -102,20 +121,78 @@ public class CombatDamageListener implements Listener {
     }
 
     LivingEntity defenderLiving = (LivingEntity) defender;
-    CombatStatHolder attackHolder = combatStatManager.getCombatStatHolder((LivingEntity) attacker);
+    LivingEntity attackerLiving = (LivingEntity) attacker;
+    CombatStatHolder attackHolder = combatStatManager.getCombatStatHolder(attackerLiving);
     CombatStatHolder defenceHolder = combatStatManager.getCombatStatHolder(defenderLiving);
+    boolean isPlayerAttacker = attacker instanceof Player;
 
     event.setDamage(0);
     double damage = attackHolder
-        .getStatValue(isRanged ? CombatStat.MEELE_DAMAGE : CombatStat.RANGE_DAMAGE);
+        .getStatValue(isRanged ? CombatStat.RANGE_DAMAGE : CombatStat.MEELE_DAMAGE);
+
+    boolean crit = attackHolder.getStatValue(CombatStat.CRIT_CHANCE) >= this.critChanceRandom
+        .nextDouble(0, 100);
+
+    if (crit) {
+      double dmgMulti = (1D / 100D) * attackHolder.getStatValue(CombatStat.CRIT_DAMAGE);
+      damage *= dmgMulti;
+    }
 
     damage = DamageEvaluator
         .calculateDamage(defenceHolder, damage, CombatDamageType.ofBukkit(event.getCause()));
 
+    ItemStack attackItem = attackerLiving.getActiveItem();
+    if (isPlayerAttacker) {
+      float multi = UtilPlayer.getAttackCooldown((Player)attacker);
+      if(multi < 0.9F){
+        damage *= 0.05;
+      }else{
+        damage *= multi;
+      }
+      attackItem = ((Player) attacker).getInventory().getItemInMainHand();
+    }
+    if (attackItem != null && attackItem.getType() != Material.AIR) {
+      StatItem statItem = StatItem.of(attackItem);
+      if (statItem.isItemStatComponent()) {
+        int durability = statItem.getDurability();
+        Preconditions.checkState(durability >= 0, "Item durability is below 0");
+        if (durability == 0) {
+          damage *= 0.025;
+        } else if (durability > 0) {
+          statItem.setDurability(durability - 1);
+          if(isPlayerAttacker){
+            ((Player) attacker).getInventory().setItemInMainHand(statItem.getItemStack());
+          }else{
+            attackerLiving.getEquipment().setItemInMainHand(statItem.getItemStack());
+          }
+        }
+      }
+    }
+
     damage = UtilMath.cut(damage, 1);
 
-    defenderLiving.setHealth(defenderLiving.getHealth() - damage);
+    if (isPlayerAttacker) {
+      Player attackerPlayer = (Player) attacker;
+      this.createDamageHologram(attackerPlayer, defender, crit, damage);
+    }
 
+    double healthLeft = defenderLiving.getHealth() - damage;
+    if (healthLeft <= 0) {
+      healthLeft = 0;
+    }
+    defenderLiving.setHealth(healthLeft);
+
+  }
+
+  private void createDamageHologram(Player attackerPlayer, Entity def, boolean crit, double dmg) {
+    String holoMsg = (crit ? "§c" : "§e") + dmg;
+    Location defLoc = def.getLocation().clone().add(0, 0.5, 0);
+    Vector directionAdjustVec = attackerPlayer.getLocation().getDirection().clone()
+        .multiply(BASE_SCALAR_XZ).normalize().multiply(0.05);
+    Vector holoVel = BASE_HOLOGRAM_VELOCITY.clone().add(directionAdjustVec);
+    MovingHologram moving = this.hologramManager
+        .createMovingHologram(defLoc, holoVel, HOLOGRAM_LIFE_TICKS);
+    moving.getHologram().appendTextLine(holoMsg);
   }
 
 }

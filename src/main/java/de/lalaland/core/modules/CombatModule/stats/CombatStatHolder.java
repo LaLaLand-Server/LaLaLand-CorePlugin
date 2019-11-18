@@ -7,6 +7,7 @@ import java.util.EnumMap;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -27,8 +28,12 @@ public class CombatStatHolder {
     this.human = bukkitEntity instanceof Player;
     this.combatStatMappings = Maps.newEnumMap(CombatStat.getEmptyMap());
     this.baseValues = Maps.newEnumMap(CombatStat.getBaseMap(human));
+    this.recalculatingSheduled = false;
   }
 
+  @Setter(AccessLevel.PROTECTED)
+  @Getter(AccessLevel.PROTECTED)
+  private boolean recalculatingSheduled;
   @Getter(AccessLevel.PROTECTED)
   private final LivingEntity bukkitEntity;
   @Getter

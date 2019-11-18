@@ -1,13 +1,15 @@
 package de.lalaland.core.modules.CombatModule;
 
 import de.lalaland.core.CorePlugin;
+import de.lalaland.core.modules.CombatModule.items.BaseItemCommand;
 import de.lalaland.core.modules.CombatModule.items.ItemInfoCompiler;
 import de.lalaland.core.modules.CombatModule.stats.CombatCalculationListener;
 import de.lalaland.core.modules.CombatModule.stats.CombatDamageListener;
 import de.lalaland.core.modules.CombatModule.stats.CombatStatManager;
-import de.lalaland.core.modules.CombatModule.items.BaseItemCommand;
 import de.lalaland.core.modules.CombatModule.stats.CombatStatsCommand;
 import de.lalaland.core.modules.IModule;
+import de.lalaland.core.utils.UtilModule;
+import de.lalaland.core.utils.holograms.impl.HologramManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
@@ -35,8 +37,11 @@ public class CombatModule implements IModule {
     this.combatStatManager = new CombatStatManager(plugin);
     plugin.getCommandManager().registerCommand(new BaseItemCommand());
     plugin.getCommandManager().registerCommand(new CombatStatsCommand(this));
-    Bukkit.getPluginManager().registerEvents(new CombatCalculationListener(combatStatManager), plugin);
-    Bukkit.getPluginManager().registerEvents(new CombatDamageListener(combatStatManager), plugin);
+    Bukkit.getPluginManager()
+        .registerEvents(new CombatCalculationListener(combatStatManager), plugin);
+    HologramManager holo = plugin.getModule(UtilModule.class).getHologramManager();
+    Bukkit.getPluginManager()
+        .registerEvents(new CombatDamageListener(combatStatManager, holo), plugin);
     plugin.getDisplayCompiler().registerConverter(new ItemInfoCompiler());
   }
 

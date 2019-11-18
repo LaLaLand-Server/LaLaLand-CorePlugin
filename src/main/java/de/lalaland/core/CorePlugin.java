@@ -128,8 +128,8 @@ public class CorePlugin extends JavaPlugin {
     getCommand(label).setExecutor(executor);
   }
 
-  public IModule getModule(Class<? extends IModule> moduleClass) {
-    return this.moduleMap.get(moduleClass);
+  public <T extends IModule> T getModule(Class<T> moduleClass) {
+    return (T)this.moduleMap.get(moduleClass);
   }
 
 }

@@ -1,10 +1,12 @@
 package de.lalaland.core.utils.common;
 
 import com.google.common.base.Preconditions;
+import de.lalaland.core.CorePlugin;
 import de.lalaland.core.utils.events.PlayerReceiveEntityEvent;
 import de.lalaland.core.utils.events.PlayerUnloadsEntityEvent;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
@@ -14,7 +16,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 /*******************************************************
@@ -26,24 +27,27 @@ import org.bukkit.util.Vector;
  * permission of the owner.
  *
  */
-public class UtilPlayer implements Listener {
+public class UtilPlayer implements Listener, Runnable {
 
   private static UtilPlayer instance;
   private static boolean initialized = false;
   private static final Vector UP_VEC = new Vector(0, 1, 0);
   private static final Vector DOWN_VEC = new Vector(0, -1, 0);
   private final Object2ObjectOpenHashMap<Player, IntSet> playerViews;
+  private final Object2FloatOpenHashMap<Player> attackCooldowns;
 
   private UtilPlayer() {
     this.playerViews = new Object2ObjectOpenHashMap<Player, IntSet>();
     Bukkit.getOnlinePlayers()
         .forEach(player -> playerViews.put(player, new IntOpenHashSet())); //  fix for reloads
+    attackCooldowns = new Object2FloatOpenHashMap<Player>();
   }
 
-  public static void init(JavaPlugin host) {
+  public static void init(CorePlugin host) {
     Preconditions.checkArgument(!initialized, "UtilPlayer is already initialized!");
     instance = new UtilPlayer();
     Bukkit.getPluginManager().registerEvents(instance, host);
+    host.getTaskManager().runRepeatedBukkit(instance, 1L, 1L);
   }
 
   @EventHandler
@@ -53,6 +57,7 @@ public class UtilPlayer implements Listener {
 
   @EventHandler
   public void onQuit(PlayerQuitEvent event) {
+    this.attackCooldowns.remove(event.getPlayer());
     this.playerViews.remove(event.getPlayer());
   }
 
@@ -69,6 +74,10 @@ public class UtilPlayer implements Listener {
     }
   }
 
+  public static float getAttackCooldown(Player player) {
+    return instance.attackCooldowns.getFloat(player);
+  }
+
   public static IntSet getEntityViewOf(Player player) {
     return instance.playerViews.get(player);
   }
@@ -83,4 +92,10 @@ public class UtilPlayer implements Listener {
     return player.getFacing();
   }
 
+  @Override
+  public void run() {
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      this.attackCooldowns.put(player, player.getCooledAttackStrength(0F));
+    }
+  }
 }
