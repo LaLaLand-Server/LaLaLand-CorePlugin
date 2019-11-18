@@ -19,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
@@ -100,6 +101,14 @@ public class CombatDamageListener implements Listener {
   }
 
   @EventHandler
+  public void onHeal(EntityRegainHealthEvent event) {
+    if (!(event.getEntity() instanceof LivingEntity)) {
+      return;
+    }
+    createHealingHologram((LivingEntity) event.getEntity(), UtilMath.cut(event.getAmount(), 1));
+  }
+
+  @EventHandler
   public void onCombat(EntityDamageByEntityEvent event) {
     Entity attacker = event.getDamager();
     Entity defender = event.getEntity();
@@ -143,10 +152,10 @@ public class CombatDamageListener implements Listener {
 
     ItemStack attackItem = attackerLiving.getActiveItem();
     if (isPlayerAttacker) {
-      float multi = UtilPlayer.getAttackCooldown((Player)attacker);
-      if(multi < 0.9F){
+      float multi = UtilPlayer.getAttackCooldown((Player) attacker);
+      if (multi < 0.9F) {
         damage *= 0.05;
-      }else{
+      } else {
         damage *= multi;
       }
       attackItem = ((Player) attacker).getInventory().getItemInMainHand();
@@ -154,16 +163,22 @@ public class CombatDamageListener implements Listener {
     if (attackItem != null && attackItem.getType() != Material.AIR) {
       StatItem statItem = StatItem.of(attackItem);
       if (statItem.isItemStatComponent()) {
-        int durability = statItem.getDurability();
-        Preconditions.checkState(durability >= 0, "Item durability is below 0");
-        if (durability == 0) {
-          damage *= 0.025;
-        } else if (durability > 0) {
-          statItem.setDurability(durability - 1);
-          if(isPlayerAttacker){
-            ((Player) attacker).getInventory().setItemInMainHand(statItem.getItemStack());
-          }else{
-            attackerLiving.getEquipment().setItemInMainHand(statItem.getItemStack());
+        Integer durability = statItem.getDurability();
+        if (durability != null) {
+          Preconditions.checkState(durability >= 0, "Item durability is below 0");
+          if (durability == 0) {
+            damage *= 0.025;
+          } else if (durability > 0) {
+            int leftDurability = durability - 1;
+            if (leftDurability == 0) {
+              // TODO effect for breaking tool
+            }
+            statItem.setDurability(leftDurability);
+            if (isPlayerAttacker) {
+              ((Player) attacker).getInventory().setItemInMainHand(statItem.getItemStack());
+            } else {
+              attackerLiving.getEquipment().setItemInMainHand(statItem.getItemStack());
+            }
           }
         }
       }
@@ -190,6 +205,15 @@ public class CombatDamageListener implements Listener {
     Vector directionAdjustVec = attackerPlayer.getLocation().getDirection().clone()
         .multiply(BASE_SCALAR_XZ).normalize().multiply(0.05);
     Vector holoVel = BASE_HOLOGRAM_VELOCITY.clone().add(directionAdjustVec);
+    MovingHologram moving = this.hologramManager
+        .createMovingHologram(defLoc, holoVel, HOLOGRAM_LIFE_TICKS);
+    moving.getHologram().appendTextLine(holoMsg);
+  }
+
+  private void createHealingHologram(LivingEntity livingDefender, double heal) {
+    String holoMsg = "§a+" + heal;
+    Location defLoc = livingDefender.getLocation().clone().add(0, 0.5, 0);
+    Vector holoVel = BASE_HOLOGRAM_VELOCITY.clone().multiply(1.2);
     MovingHologram moving = this.hologramManager
         .createMovingHologram(defLoc, holoVel, HOLOGRAM_LIFE_TICKS);
     moving.getHologram().appendTextLine(holoMsg);
