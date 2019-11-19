@@ -1,5 +1,6 @@
 package de.lalaland.core.user.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /*******************************************************
@@ -13,6 +14,7 @@ import lombok.Data;
  *******************************************************/
 
 @Data
+@AllArgsConstructor
 public class UserData {
 
   public static long[] NEED_EXP_LEVEL = new long[]{0, 100, 250, 575, 1050, 2250, 5000, 7500, 10000,
@@ -20,11 +22,8 @@ public class UserData {
 
   private int level;
   private long exp;
-
-  public UserData(final int level, final long exp) {
-    this.level = level;
-    this.exp = exp;
-  }
+  private int moneyOnHand;
+  private int moneyOnBank;
 
   public boolean canLevelup() {
     return exp >= getNeedExp();

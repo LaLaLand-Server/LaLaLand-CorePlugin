@@ -6,6 +6,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.lalaland.core.modules.economy.EconomyModule;
 import de.lalaland.core.ui.Message;
 import de.lalaland.core.config.Config;
 import de.lalaland.core.config.ConfigFileHandler;
@@ -53,7 +54,8 @@ public class CorePlugin extends JavaPlugin {
   private PaperCommandManager commandManager;
   @Getter
   private ProtocolManager protocolManager;
-  @Getter @Setter
+  @Getter
+  @Setter
   private ItemDisplayCompiler displayCompiler;
   @Getter
   private GuiManager guiManager;
@@ -94,6 +96,7 @@ public class CorePlugin extends JavaPlugin {
     final ImmutableMap<Class<? extends IModule>, IModule> modules = ImmutableMap.<Class<? extends IModule>, IModule>builder()
         .put(UtilModule.class, new UtilModule())
         .put(CombatModule.class, new CombatModule())
+        .put(EconomyModule.class, new EconomyModule(this))
         .build();
 
     modules.forEach((clazz, module) -> {
@@ -124,7 +127,7 @@ public class CorePlugin extends JavaPlugin {
   }
 
   public <T extends IModule> T getModule(Class<T> moduleClass) {
-    return (T)this.moduleMap.get(moduleClass);
+    return (T) this.moduleMap.get(moduleClass);
   }
 
 }

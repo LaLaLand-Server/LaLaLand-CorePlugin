@@ -11,7 +11,6 @@ import de.lalaland.core.user.data.UserData;
 import de.lalaland.core.utils.tuples.Unit;
 import java.io.File;
 import java.util.UUID;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -88,8 +87,65 @@ public class User {
     setUpdateCandidate(true);
   }
 
+  public void addMoney(final int amount, final boolean bank) {
+
+    if (bank) {
+      userData.setMoneyOnBank(userData.getMoneyOnBank() + amount);
+    } else {
+      userData.setMoneyOnHand(userData.getMoneyOnHand() + amount);
+    }
+    setUpdateCandidate(true);
+  }
+
+
+  public void removeMoney(final int amount, final boolean bank) {
+
+    if (bank) {
+
+      if (userData.getMoneyOnBank() - amount > 0) {
+        userData.setMoneyOnBank(0);
+      } else {
+        userData.setMoneyOnBank(userData.getMoneyOnBank() - amount);
+      }
+
+    } else {
+
+      if (userData.getMoneyOnHand() - amount > 0) {
+        userData.setMoneyOnHand(0);
+      } else {
+        userData.setMoneyOnHand(userData.getMoneyOnHand() - amount);
+      }
+
+    }
+    setUpdateCandidate(true);
+  }
+
+  public boolean hasEnoughMoney(final int amount, final boolean bank) {
+    if (bank) {
+      return userData.getMoneyOnBank() >= amount;
+    }
+
+    return userData.getMoneyOnHand() >= amount;
+  }
+
+  //if handToBank = true transfers money from the hand to the bank
+  //if handToBank = false transfers money from the bank to the hand
+  public void transferMoney(final int amount, final boolean handToBank) {
+
+    if (handToBank) {
+
+      removeMoney(amount, false);
+      addMoney(amount, true);
+    } else {
+      removeMoney(amount, true);
+      addMoney(amount, false);
+    }
+
+  }
+
+
   private UserData getDefaultUserData() {
-    return new UserData(1, 0); // everything set to 0 and new
+    return new UserData(1, 0, 0, 0); // everything set to 0 and new
   }
 
 }

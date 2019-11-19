@@ -28,14 +28,14 @@ public class ProtectionModule implements IModule {
   }
 
   @Override
-  public void enable(CorePlugin plugin) throws Exception {
-    this.regionManager = new RegionManager();
-    Bukkit.getPluginManager().registerEvents(new RegionListener(this.regionManager), plugin);
-    plugin.getCommandManager().registerCommand(new RegionCommand(this.regionManager));
+  public void enable(final CorePlugin plugin) throws Exception {
+    regionManager = new RegionManager();
+    Bukkit.getPluginManager().registerEvents(new RegionListener(regionManager), plugin);
+    plugin.getCommandManager().registerCommand(new RegionCommand(regionManager));
   }
 
   @Override
-  public void disable(CorePlugin plugin) throws Exception {
+  public void disable(final CorePlugin plugin) throws Exception {
 
   }
 }

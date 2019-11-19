@@ -26,20 +26,20 @@ import org.bukkit.entity.Player;
 @CommandPermission("admin")
 public class RegionCommand extends BaseCommand {
 
-  public RegionCommand(RegionManager regionManager) {
+  public RegionCommand(final RegionManager regionManager) {
     this.regionManager = regionManager;
   }
 
   private final RegionManager regionManager;
 
   @Default
-  public void onRegion(Player sender) {
+  public void onRegion(final Player sender) {
     sender.sendMessage("§e -------- Regionen --------");
-    Set<ProtectedRegion> regionSet = this.regionManager.getRegionsAt(sender.getLocation());
-    int regionAmount = regionSet == null ? 0 : regionSet.size();
+    final Set<ProtectedRegion> regionSet = regionManager.getRegionsAt(sender.getLocation());
+    final int regionAmount = regionSet == null ? 0 : regionSet.size();
     sender.sendMessage("§eAnzahl der Regionen: §9" + regionAmount);
-    ProtectedRegion region = this.regionManager.getMostRelevantRegion(sender.getLocation());
-    String regionName = region == null ? "§cKeine" : "§9" + region.getName();
+    final ProtectedRegion region = regionManager.getMostRelevantRegion(sender.getLocation());
+    final String regionName = region == null ? "§cKeine" : "§9" + region.getName();
     sender.sendMessage("§eWichtigste Region: " + regionName);
     sender.sendMessage("");
     if (region == null) {
@@ -48,14 +48,14 @@ public class RegionCommand extends BaseCommand {
     sender.sendMessage("§eRegeln:");
     sender.sendMessage("§eFreunde | Feinde | Neutral");
 
-    RuleSet ruleSet = region.getRuleSet();
+    final RuleSet ruleSet = region.getRuleSet();
 
-    for (RegionRule rule : RegionRule.values()) {
-      StringBuilder builder = new StringBuilder("§e" + rule.toString());
-      int index = 0;
-      for (Relation relation : Relation.values()) {
-        Permit permit = ruleSet.getPermit(relation, rule);
-        String color = permit == Permit.DENY ? "§c" : "§a";
+    for (final RegionRule rule : RegionRule.values()) {
+      final StringBuilder builder = new StringBuilder("§e" + rule.toString());
+      final int index = 0;
+      for (final Relation relation : Relation.values()) {
+        final Permit permit = ruleSet.getPermit(relation, rule);
+        final String color = permit == Permit.DENY ? "§c" : "§a";
 
       }
     }

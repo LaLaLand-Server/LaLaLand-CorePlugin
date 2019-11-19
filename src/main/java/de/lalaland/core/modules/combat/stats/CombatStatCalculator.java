@@ -20,10 +20,6 @@ import org.bukkit.inventory.PlayerInventory;
  */
 public class CombatStatCalculator {
 
-  protected void CombatStatCalculator() {
-
-  }
-
   /**
    * Recalculates the item values of any {@link CombatStatHolder}.
    *
