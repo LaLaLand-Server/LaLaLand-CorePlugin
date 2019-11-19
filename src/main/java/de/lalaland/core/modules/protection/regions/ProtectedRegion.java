@@ -1,5 +1,6 @@
 package de.lalaland.core.modules.protection.regions;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,13 +23,32 @@ public class ProtectedRegion {
   protected ProtectedRegion(BoundingBox region, UUID regionID) {
     this.regionID = regionID;
     this.boundingBox = region;
+    this.ruleSet = new RuleSet();
+    this.playerRelations = new Object2ObjectOpenHashMap<UUID, Relation>();
   }
 
   private final BoundingBox boundingBox;
   @Getter
   private final UUID regionID;
-  @Getter @Setter
+  @Getter
+  @Setter
   private int priority;
+  @Getter
+  private RuleSet ruleSet;
+  private final Object2ObjectOpenHashMap<UUID, Relation> playerRelations;
+
+  public void setRealation(UUID playerID, Relation relation) {
+    this.playerRelations.put(playerID, relation);
+  }
+
+  public void clearRealation(UUID playerID) {
+    this.playerRelations.remove(playerID);
+  }
+
+  public Permit getPermit(UUID playerID, RegionRule rule) {
+    Relation relation = this.playerRelations.getOrDefault(playerID, Relation.NEUTRAL);
+    return this.ruleSet.getPermit(relation, rule);
+  }
 
   public boolean contains(Vector vector) {
     return this.boundingBox.contains(vector);

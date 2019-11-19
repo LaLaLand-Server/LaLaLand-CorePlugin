@@ -1,5 +1,8 @@
 package de.lalaland.core.modules.protection.regions;
 
+import com.google.common.collect.ImmutableMap;
+import lombok.AllArgsConstructor;
+
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
  *
@@ -9,14 +12,59 @@ package de.lalaland.core.modules.protection.regions;
  * permission of the owner.
  *
  */
+@AllArgsConstructor
 public enum RegionRule {
 
-  BLOCK_PLACE,
-  BLOCK_BREAK,
-  INTERACT_AT_BLOCK,
-  INTERACT_AT_ENTITY,
-  DAMAGE_ENTITY,
-  DAMAGE_ARMORSTAND,
+  BLOCK_PLACE(ImmutableMap.<Relation, Permit>builder()
+      .put(Relation.FRIENDLY, Permit.ALLOW)
+      .put(Relation.HOSTILE, Permit.DENY)
+      .put(Relation.NEUTRAL, Permit.DENY)
+      .build()),
+  BLOCK_BREAK(ImmutableMap.<Relation, Permit>builder()
+      .put(Relation.FRIENDLY, Permit.ALLOW)
+      .put(Relation.HOSTILE, Permit.DENY)
+      .put(Relation.NEUTRAL, Permit.DENY)
+      .build()),
+  RIGHT_CLICK_BLOCK(ImmutableMap.<Relation, Permit>builder()
+      .put(Relation.FRIENDLY, Permit.ALLOW)
+      .put(Relation.HOSTILE, Permit.DENY)
+      .put(Relation.NEUTRAL, Permit.ALLOW)
+      .build()),
+  INTERACT_AT_ENTITY(ImmutableMap.<Relation, Permit>builder()
+      .put(Relation.FRIENDLY, Permit.ALLOW)
+      .put(Relation.HOSTILE, Permit.DENY)
+      .put(Relation.NEUTRAL, Permit.ALLOW)
+      .build()),
+  OPEN_CHEST(ImmutableMap.<Relation, Permit>builder()
+      .put(Relation.FRIENDLY, Permit.ALLOW)
+      .put(Relation.HOSTILE, Permit.DENY)
+      .put(Relation.NEUTRAL, Permit.ALLOW)
+      .build()),
+  DAMAGE_ENTITY(ImmutableMap.<Relation, Permit>builder()
+      .put(Relation.FRIENDLY, Permit.ALLOW)
+      .put(Relation.HOSTILE, Permit.ALLOW)
+      .put(Relation.NEUTRAL, Permit.ALLOW)
+      .build()),
+  DAMAGE_ARMORSTAND(ImmutableMap.<Relation, Permit>builder()
+      .put(Relation.FRIENDLY, Permit.ALLOW)
+      .put(Relation.HOSTILE, Permit.DENY)
+      .put(Relation.NEUTRAL, Permit.DENY)
+      .build()),
+  PISTON_EXTEND(ImmutableMap.<Relation, Permit>builder()
+      .put(Relation.FRIENDLY, Permit.DENY)
+      .put(Relation.HOSTILE, Permit.DENY)
+      .put(Relation.NEUTRAL, Permit.DENY)
+      .build()),
+  BLOCK_EXPLODE(ImmutableMap.<Relation, Permit>builder()
+      .put(Relation.FRIENDLY, Permit.DENY)
+      .put(Relation.HOSTILE, Permit.DENY)
+      .put(Relation.NEUTRAL, Permit.DENY)
+      .build());
 
+  private final ImmutableMap<Relation, Permit> defaultPermits;
+
+  public Permit getDefaultPermit(Relation relation) {
+    return defaultPermits.getOrDefault(relation, Permit.DENY);
+  }
 
 }
