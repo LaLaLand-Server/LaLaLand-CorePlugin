@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.UUID;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.util.BoundingBox;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -30,6 +32,16 @@ public class RegionManager {
 
   public ProtectedRegion getRegionByID(UUID regionID) {
     return regionIDCashe.get(regionID);
+  }
+
+  public ProtectedRegion createRegion(Location corner1, Location corner2) {
+    return this.createRegion(corner1.getBlock(), corner2.getBlock());
+  }
+
+  public ProtectedRegion createRegion(Block corner1, Block corner2) {
+    BoundingBox box = BoundingBox.of(corner1, corner2);
+    ProtectedRegion region = new ProtectedRegion(box, UUID.randomUUID());
+    return region;
   }
 
   public Set<ProtectedRegion> getRegionsAt(Location location) {

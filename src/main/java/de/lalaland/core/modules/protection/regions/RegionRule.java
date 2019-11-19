@@ -35,12 +35,17 @@ public enum RegionRule {
       .put(Relation.HOSTILE, Permit.DENY)
       .put(Relation.NEUTRAL, Permit.ALLOW)
       .build()),
-  OPEN_CHEST(ImmutableMap.<Relation, Permit>builder()
+  OPEN_INVENTORY_BLOCK(ImmutableMap.<Relation, Permit>builder()
       .put(Relation.FRIENDLY, Permit.ALLOW)
       .put(Relation.HOSTILE, Permit.DENY)
       .put(Relation.NEUTRAL, Permit.ALLOW)
       .build()),
   DAMAGE_ENTITY(ImmutableMap.<Relation, Permit>builder()
+      .put(Relation.FRIENDLY, Permit.ALLOW)
+      .put(Relation.HOSTILE, Permit.ALLOW)
+      .put(Relation.NEUTRAL, Permit.ALLOW)
+      .build()),
+  DAMAGE_PLAYER(ImmutableMap.<Relation, Permit>builder()
       .put(Relation.FRIENDLY, Permit.ALLOW)
       .put(Relation.HOSTILE, Permit.ALLOW)
       .put(Relation.NEUTRAL, Permit.ALLOW)
@@ -59,6 +64,11 @@ public enum RegionRule {
       .put(Relation.FRIENDLY, Permit.DENY)
       .put(Relation.HOSTILE, Permit.DENY)
       .put(Relation.NEUTRAL, Permit.DENY)
+      .build()),
+  ITEM_PICKUP(ImmutableMap.<Relation, Permit>builder()
+      .put(Relation.FRIENDLY, Permit.ALLOW)
+      .put(Relation.HOSTILE, Permit.DENY)
+      .put(Relation.NEUTRAL, Permit.ALLOW)
       .build());
 
   private final ImmutableMap<Relation, Permit> defaultPermits;

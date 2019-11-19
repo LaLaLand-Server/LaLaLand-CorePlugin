@@ -4,6 +4,7 @@ import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
 import de.lalaland.core.modules.protection.regions.RegionListener;
 import de.lalaland.core.modules.protection.regions.RegionManager;
+import de.lalaland.core.modules.protection.regions.editor.RegionCommand;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
@@ -30,6 +31,7 @@ public class ProtectionModule implements IModule {
   public void enable(CorePlugin plugin) throws Exception {
     this.regionManager = new RegionManager();
     Bukkit.getPluginManager().registerEvents(new RegionListener(this.regionManager), plugin);
+    plugin.getCommandManager().registerCommand(new RegionCommand(this.regionManager));
   }
 
   @Override

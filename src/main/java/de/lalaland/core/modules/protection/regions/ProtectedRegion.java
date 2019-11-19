@@ -27,6 +27,9 @@ public class ProtectedRegion {
     this.playerRelations = new Object2ObjectOpenHashMap<UUID, Relation>();
   }
 
+  @Getter
+  @Setter
+  private String name = "NO_NAME";
   private final BoundingBox boundingBox;
   @Getter
   private final UUID regionID;
