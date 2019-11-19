@@ -112,7 +112,7 @@ public class CombatStatCalculator {
     if (itemMap == null) {
       return;
     }
-    itemMap.forEach((stat, value) -> valueMap.merge(stat, value, (v1, v2) -> v1 + v2));
+    itemMap.forEach((stat, value) -> valueMap.merge(stat, value, Double::sum));
   }
 
 }

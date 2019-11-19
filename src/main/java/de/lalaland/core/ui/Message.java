@@ -26,8 +26,8 @@ public class Message {
   private static final String MESSAGE_COLOR = "§7";
   private static final String ELEMENT_COLOR = "§e";
 
-  public static void msg(Player player, Class<? extends IModule> clazz, String message) {
-    msg(player, corePlugin.getModule(clazz).getModuleName(), message);
+  public static void send(Player player, Class<? extends IModule> clazz, String message) {
+    send(player, corePlugin.getModule(clazz).getModuleName(), message);
   }
 
   /**
@@ -37,7 +37,7 @@ public class Message {
    * @param module  the prefix
    * @param message the message
    */
-  public static void msg(Player player, String module, String message) {
+  public static void send(Player player, String module, String message) {
     player.sendMessage(MODULE_COLOR + module + "> " + MESSAGE_COLOR + message);
   }
 

@@ -2,15 +2,21 @@ package de.lalaland.core.ui.gui.impl;
 
 
 import de.lalaland.core.ui.gui.icon.impl.IIcon;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
 
 public interface IGui {
 
     String getTitle();
 
-    HashMap<Integer, IIcon> getIcons();
+    Int2ObjectOpenHashMap<IIcon> getIcons();
+
+    Inventory getBukkitInventory();
 
     void fill();
 
@@ -25,5 +31,7 @@ public interface IGui {
     void changeIcon(int slot, IIcon icon);
 
     void update();
+
+    void handleClickEvent(InventoryClickEvent event);
 
 }

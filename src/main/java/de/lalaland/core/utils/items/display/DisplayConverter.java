@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public interface DisplayConverter {
 
-  public String getDisplayKey();
-  public ItemInfo compileInfo(Player player, ItemStack item);
+  String getDisplayKey();
+  ItemInfo compileInfo(Player player, ItemStack item);
 
 }

@@ -12,6 +12,7 @@ import de.lalaland.core.config.ConfigFileHandler;
 import de.lalaland.core.modules.combat.CombatModule;
 import de.lalaland.core.modules.IModule;
 import de.lalaland.core.tasks.TaskManager;
+import de.lalaland.core.ui.gui.manager.GuiManager;
 import de.lalaland.core.user.UserManager;
 import de.lalaland.core.utils.UtilModule;
 import de.lalaland.core.utils.items.display.ItemDisplayCompiler;
@@ -54,6 +55,8 @@ public class CorePlugin extends JavaPlugin {
   private ProtocolManager protocolManager;
   @Getter @Setter
   private ItemDisplayCompiler displayCompiler;
+  @Getter
+  private GuiManager guiManager;
 
   private Object2ObjectLinkedOpenHashMap<Class<? extends IModule>, IModule> moduleMap;
 
@@ -83,6 +86,7 @@ public class CorePlugin extends JavaPlugin {
     userManager = new UserManager(this);
     commandManager = new PaperCommandManager(this);
     moduleMap = new Object2ObjectLinkedOpenHashMap<>();
+    guiManager = new GuiManager(this);
   }
 
   private void enableModules() {

@@ -1,102 +1,147 @@
 package de.lalaland.core.ui.gui.impl;
 
+import de.lalaland.core.ui.gui.PublicGui;
+import de.lalaland.core.ui.gui.icon.impl.Clickable;
 import de.lalaland.core.ui.gui.icon.impl.IIcon;
+import de.lalaland.core.ui.gui.manager.GuiManager;
 import de.lalaland.core.utils.items.ItemBuilder;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import java.util.Map;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public abstract class AbstractGui implements IGui {
 
-    @Getter
-    private final String title;
-    @Getter
-    private final ItemStack placeHolder;
-    private Inventory bukkitInventory;
-    @Getter
-    private HashMap<Integer, IIcon> icons;
-    @Getter
-    private final boolean filled;
+  private GuiManager guiManager;
+  @Getter
+  private final String title;
+  @Getter
+  private final ItemStack placeHolder;
+  @Getter
+  private Inventory bukkitInventory;
+  @Getter
+  private final Int2ObjectOpenHashMap<IIcon> icons;
+  @Getter
+  private final boolean filled;
 
-    public AbstractGui(String title, InventoryType type, int raws, boolean filled){
-        this.title = title;
-        this.placeHolder = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).name(" ").build();
-        this.icons = new HashMap<Integer, IIcon>();
-        this.filled = filled;
-        buildBukkitInventory(type,raws);
-        update();
+  @Override
+  public void handleClickEvent(InventoryClickEvent event) {
+    IIcon icon = this.icons.get(event.getSlot());
+    if (icon == null || !(icon instanceof Clickable)) {
+      return;
     }
 
-    public AbstractGui(String title, InventoryType type, boolean filled){
-        this(title,type,0,filled);
+    Clickable clickable = ((Clickable) icon);
+
+    if (event.getClick() == ClickType.RIGHT) {
+      clickable.handleRightClick(event);
     }
 
-    public AbstractGui(String title, int raws, boolean filled){
-        this(title,InventoryType.CHEST,raws, filled);
+    if (event.getClick() == ClickType.LEFT) {
+      clickable.handleLeftClick(event);
     }
 
-    private void buildBukkitInventory(InventoryType type, int raws){
-        Inventory inventory;
+  }
 
-        if(!type.equals(InventoryType.CHEST)){
-            inventory = Bukkit.createInventory(null,type,title);
-        }else{
-            inventory = Bukkit.createInventory(null,9*raws,title);
-        }
+  public AbstractGui(final GuiManager guiManager, final String title, final InventoryType type,
+      final int raws, final boolean filled) {
+    this.title = title;
+    placeHolder = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).name(" ").build();
+    icons = new Int2ObjectOpenHashMap<>();
+    this.filled = filled;
+    buildBukkitInventory(type, raws);
+    update();
+    this.guiManager = guiManager;
+    guiManager.addGui(this);
+  }
 
-        this.bukkitInventory = inventory;
+  public AbstractGui(final GuiManager guiManager, final String title, final InventoryType type,
+      final boolean filled) {
+    this(guiManager, title, type, 0, filled);
+  }
+
+  public AbstractGui(
+      final GuiManager guiManager, final String title, final int raws, final boolean filled) {
+    this(guiManager, title, InventoryType.CHEST, raws, filled);
+  }
+
+  private void buildBukkitInventory(final InventoryType type, final int raws) {
+    final Inventory inventory;
+
+    if (!type.equals(InventoryType.CHEST)) {
+      inventory = Bukkit.createInventory(null, type, title);
+    } else {
+      inventory = Bukkit.createInventory(null, 9 * raws, title);
     }
 
-    public void removeIcon(int slot, boolean update) {
+    bukkitInventory = inventory;
+  }
 
-        icons.remove(slot);
+  public void closeAndRemove(Player player) {
 
-        if(update){
-            this.bukkitInventory.setItem(slot,placeHolder);
-        }
+    if(!(this instanceof PublicGui)) return;
 
+    guiManager.removeGui(this);
+    close(player);
+  }
+
+  @Override
+  public void removeIcon(final int slot, final boolean update) {
+
+    icons.remove(slot);
+
+    if (update) {
+      bukkitInventory.setItem(slot, placeHolder);
     }
 
-    public void setIcon(int slot, IIcon icon, boolean update) {
+  }
 
-        this.icons.put(slot,icon);
+  @Override
+  public void setIcon(final int slot, final IIcon icon, final boolean update) {
 
-        if(update){
-            this.bukkitInventory.setItem(slot,icon.getDisplayItem());
-        }
+    icons.put(slot, icon);
 
+    if (update) {
+      bukkitInventory.setItem(slot, icon.getDisplayItem());
     }
 
-    public void changeIcon(int slot, IIcon icon) {
-        removeIcon(slot,false);
-        setIcon(slot,icon, true);
+  }
+
+  @Override
+  public void changeIcon(final int slot, final IIcon icon) {
+    removeIcon(slot, false);
+    setIcon(slot, icon, true);
+  }
+
+  @Override
+  public void update() {
+
+    bukkitInventory.clear();
+
+    if (filled) {
+      fill();
     }
 
-    public void update() {
-
-        this.bukkitInventory.clear();
-
-        if(filled){
-            fill();
-        }
-
-        for(Map.Entry<Integer, IIcon> entry : this.icons.entrySet()){
-            this.bukkitInventory.setItem(entry.getKey(),entry.getValue().getDisplayItem());
-        }
-
+    for (final Map.Entry<Integer, IIcon> entry : icons.entrySet()) {
+      bukkitInventory.setItem(entry.getKey(), entry.getValue().getDisplayItem());
     }
 
-    public void fill() {
+  }
 
-        for(int i = 0; i < this.bukkitInventory.getSize(); i++){
-            this.bukkitInventory.setItem(i,placeHolder);
-        }
+  @Override
+  public void fill() {
 
+    for (int i = 0; i < bukkitInventory.getSize(); i++) {
+      bukkitInventory.setItem(i, placeHolder);
     }
+
+  }
 }
