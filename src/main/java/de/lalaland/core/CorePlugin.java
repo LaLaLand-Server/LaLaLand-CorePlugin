@@ -123,15 +123,6 @@ public class CorePlugin extends JavaPlugin {
 
   }
 
-  public void registerListener(final Listener listener) {
-    final PluginManager pluginManager = Bukkit.getServer().getPluginManager();
-    pluginManager.registerEvents(listener, this);
-  }
-
-  public void registerCommand(final String label, @NotNull final CommandExecutor executor) {
-    getCommand(label).setExecutor(executor);
-  }
-
   public <T extends IModule> T getModule(Class<T> moduleClass) {
     return (T)this.moduleMap.get(moduleClass);
   }
