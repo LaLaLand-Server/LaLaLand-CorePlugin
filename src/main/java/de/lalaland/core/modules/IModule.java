@@ -15,7 +15,7 @@ public interface IModule {
 
   String getModuleName();
 
-  void enable(CorePlugin plugin) throws Exception;
+  void enable(CorePlugin plugin) throws Exception, java.lang.Exception;
 
   void disable(CorePlugin plugin) throws Exception;
 

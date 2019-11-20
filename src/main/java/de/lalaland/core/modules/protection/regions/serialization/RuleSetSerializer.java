@@ -21,16 +21,19 @@ import java.lang.reflect.Type;
 public class RuleSetSerializer implements JsonSerializer<RuleSet> {
 
   @Override
-  public JsonElement serialize(RuleSet src, Type typeOfSrc, JsonSerializationContext context) {
-    JsonObject json = new JsonObject();
+  public JsonElement serialize(
+      final RuleSet src, final Type typeOfSrc, final JsonSerializationContext context) {
+    final JsonObject json = new JsonObject();
     json.addProperty("IsDefaultSet", src.isDefaultSet());
-    for (Relation relation : Relation.values()) {
-      JsonObject relationObject = new JsonObject();
-      for (RegionRule rule : RegionRule.values()) {
+    final JsonObject relationSet = new JsonObject();
+    for (final Relation relation : Relation.values()) {
+      final JsonObject relationObject = new JsonObject();
+      for (final RegionRule rule : RegionRule.values()) {
         relationObject.addProperty(rule.toString(), src.getPermit(relation, rule).toString());
       }
-      json.add(relation.toString(), relationObject);
+      relationSet.add(relation.toString(), relationObject);
     }
+    json.add("RuleEntries", relationSet);
     return json;
   }
 }

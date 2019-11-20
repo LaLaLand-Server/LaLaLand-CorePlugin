@@ -6,12 +6,14 @@ import com.comphenix.protocol.ProtocolManager;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import de.lalaland.core.ui.Message;
 import de.lalaland.core.config.Config;
 import de.lalaland.core.config.ConfigFileHandler;
-import de.lalaland.core.modules.combat.CombatModule;
 import de.lalaland.core.modules.IModule;
+import de.lalaland.core.modules.combat.CombatModule;
+import de.lalaland.core.modules.economy.EconomyModule;
+import de.lalaland.core.modules.protection.ProtectionModule;
 import de.lalaland.core.tasks.TaskManager;
+import de.lalaland.core.ui.Message;
 import de.lalaland.core.ui.gui.manager.GuiManager;
 import de.lalaland.core.user.UserManager;
 import de.lalaland.core.utils.UtilModule;
@@ -19,12 +21,7 @@ import de.lalaland.core.utils.items.display.ItemDisplayCompiler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,11 +99,12 @@ public class CorePlugin extends JavaPlugin {
     modules.forEach((clazz, module) -> {
       try {
         module.enable(this);
-        this.moduleMap.put(clazz, module);
+        moduleMap.put(clazz, module);
         coreLogger.info("Successfully enabled module '" + module.getModuleName() + "'.");
       } catch (final Exception e) {
         coreLogger.error("Cannot enable module '" + module.getModuleName() + "'.");
         coreLogger.error(e.getMessage());
+        e.printStackTrace();
       }
     });
 
@@ -121,13 +119,14 @@ public class CorePlugin extends JavaPlugin {
       } catch (final Exception e) {
         coreLogger.error("Cannot disable module '" + module.getModuleName() + "'.");
         coreLogger.error(e.getMessage());
+        e.printStackTrace();
       }
     }
 
   }
 
-  public <T extends IModule> T getModule(Class<T> moduleClass) {
-    return (T) this.moduleMap.get(moduleClass);
+  public <T extends IModule> T getModule(final Class<T> moduleClass) {
+    return (T) moduleMap.get(moduleClass);
   }
 
 }

@@ -1,7 +1,6 @@
 package de.lalaland.core.utils.common;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import org.bukkit.util.Vector;
 
 /*******************************************************
@@ -15,8 +14,8 @@ import org.bukkit.util.Vector;
  */
 public class UtilVect {
 
-  public static String vecToString(Vector vector) {
-    ByteBuffer buffer = ByteBuffer.allocate(24);
+  public static String vecToString(final Vector vector) {
+    final ByteBuffer buffer = ByteBuffer.allocate(24);
     buffer.rewind();
     buffer.putDouble(vector.getX());
     buffer.putDouble(vector.getY());
@@ -24,12 +23,12 @@ public class UtilVect {
     return new String(buffer.array());
   }
 
-  public static Vector vecFromString(String vectorKey) {
-    ByteBuffer buffer = ByteBuffer.wrap(vectorKey.getBytes());
+  public static Vector vecFromString(final String vectorKey) {
+    final ByteBuffer buffer = ByteBuffer.wrap(vectorKey.getBytes());
     buffer.rewind();
-    double x = buffer.getDouble(0);
-    double y = buffer.getDouble(8);
-    double z = buffer.getDouble(16);
+    final double x = buffer.getDouble(0);
+    final double y = buffer.getDouble(8);
+    final double z = buffer.getDouble(16);
     return new Vector(x, y, z);
   }
 

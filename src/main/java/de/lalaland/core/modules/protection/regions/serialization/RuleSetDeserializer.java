@@ -24,20 +24,22 @@ import java.util.Map.Entry;
 public class RuleSetDeserializer implements JsonDeserializer<RuleSet> {
 
   @Override
-  public RuleSet deserialize(JsonElement jsonElement, Type typeOfT,
-      JsonDeserializationContext context)
+  public RuleSet deserialize(final JsonElement jsonElement, final Type typeOfT,
+      final JsonDeserializationContext context)
       throws JsonParseException {
-    JsonObject json = jsonElement.getAsJsonObject();
-    RuleSet ruleSet = new RuleSet();
-    boolean isDefault = json.get("IsDefaultSet").getAsBoolean();
+    final JsonObject json = jsonElement.getAsJsonObject();
+    final RuleSet ruleSet = new RuleSet();
+    final boolean isDefault = json.get("IsDefaultSet").getAsBoolean();
     if (isDefault) {
       return ruleSet;
     }
 
-    for (Entry<String, JsonElement> relationEntry : json.entrySet()) {
-      Relation relation = Relation.valueOf(relationEntry.getKey());
-      JsonObject relationObject = relationEntry.getValue().getAsJsonObject();
-      for (Entry<String, JsonElement> ruleEntry : json.entrySet()) {
+    final JsonObject ruleEntries = json.get("RuleEntries").getAsJsonObject();
+
+    for (final Entry<String, JsonElement> relationEntry : ruleEntries.entrySet()) {
+      final Relation relation = Relation.valueOf(relationEntry.getKey());
+      final JsonObject relationObject = relationEntry.getValue().getAsJsonObject();
+      for (final Entry<String, JsonElement> ruleEntry : relationObject.entrySet()) {
         ruleSet.applyRule(relation, RegionRule.valueOf(ruleEntry.getKey()),
             Permit.valueOf(ruleEntry.getValue().getAsString()));
       }

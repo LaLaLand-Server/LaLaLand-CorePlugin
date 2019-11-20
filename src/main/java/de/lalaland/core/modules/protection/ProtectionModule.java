@@ -13,11 +13,10 @@ import de.lalaland.core.modules.protection.regions.serialization.ProtectedRegion
 import de.lalaland.core.modules.protection.regions.serialization.ProtectedRegionSerializer;
 import de.lalaland.core.modules.protection.regions.serialization.RuleSetDeserializer;
 import de.lalaland.core.modules.protection.regions.serialization.RuleSetSerializer;
-import de.lalaland.core.utils.common.UtilChunk;
+import java.io.File;
+import java.io.IOException;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.entity.Player;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -35,27 +34,45 @@ public class ProtectionModule implements IModule {
   @Getter
   private Gson gson;
 
+  private File regionFolder;
+
   @Override
   public String getModuleName() {
     return "ProtectionModule";
   }
 
   @Override
-  public void enable(CorePlugin plugin) throws Exception {
-    this.regionManager = new RegionManager(this);
+  public void enable(final CorePlugin plugin) {
+    regionFolder = new File(plugin.getDataFolder() + File.separator + "Regions");
+    if (!regionFolder.exists()) {
+      regionFolder.mkdirs();
+    }
+    regionManager = new RegionManager(this);
     gson = new GsonBuilder()
         .registerTypeAdapter(RuleSet.class, new RuleSetSerializer())
         .registerTypeAdapter(RuleSet.class, new RuleSetDeserializer())
         .registerTypeAdapter(ProtectedRegion.class, new ProtectedRegionSerializer())
-        .registerTypeAdapter(ProtectedRegion.class, new ProtectedRegionDeserializer(regionManager))
+        .registerTypeAdapter(ProtectedRegion.class, new ProtectedRegionDeserializer(
+            regionManager))
         .setPrettyPrinting()
         .create();
-    Bukkit.getPluginManager().registerEvents(new RegionListener(this.regionManager), plugin);
-    plugin.getCommandManager().registerCommand(new RegionCommand(this.regionManager));
+
+    Bukkit.getPluginManager().registerEvents(new RegionListener(regionManager), plugin);
+    plugin.getCommandManager().registerCommand(new RegionCommand(regionManager));
+
+    try {
+      regionManager.loadRegions(regionFolder);
+    } catch (final IOException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
-  public void disable(final CorePlugin plugin) throws Exception {
-
+  public void disable(final CorePlugin plugin) {
+    try {
+      regionManager.saveRegions(regionFolder);
+    } catch (final IOException e) {
+      e.printStackTrace();
+    }
   }
 }
