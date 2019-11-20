@@ -1,6 +1,7 @@
 package de.lalaland.core.config;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /*******************************************************
@@ -12,6 +13,7 @@ import lombok.Getter;
  * permission of the owner.
  *
  *******************************************************/
+@AllArgsConstructor
 public class Config {
 
   @Getter
@@ -23,15 +25,13 @@ public class Config {
   @Getter
   @SerializedName("UserSaveInterval")
   private final int userSaveInterval;
-
-  public Config(final boolean saveDataInDatabase, final int unusedUserRemoverInterval, final int userSaveInterval) {
-    this.saveDataInDatabase = saveDataInDatabase;
-    this.unusedUserRemoverInterval = unusedUserRemoverInterval;
-    this.userSaveInterval = userSaveInterval;
-  }
+  @Getter
+  @SerializedName("FillGuis")
+  private final boolean fillGuis;
 
   static Config getDefaultConfig() {
-    return new Config(false, 5,10);
+    return new Config(false,
+        5, 10, true);
   }
 
 }

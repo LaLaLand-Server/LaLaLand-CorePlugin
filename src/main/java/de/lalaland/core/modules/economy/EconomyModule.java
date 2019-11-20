@@ -30,7 +30,7 @@ public class EconomyModule implements IModule {
 
   public void openMobileEconomyGui(final Player player) {
 
-    final MobileEconomyGui mobileEconomyGui = new MobileEconomyGui(player);
+    final MobileEconomyGui mobileEconomyGui = new MobileEconomyGui(corePlugin, player);
     mobileEconomyGui.getMobileGui().open(player);
   }
 
