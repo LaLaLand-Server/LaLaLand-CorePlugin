@@ -4,13 +4,17 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Subcommand;
+import de.lalaland.core.modules.protection.ProtectionModule;
 import de.lalaland.core.modules.protection.regions.Permit;
 import de.lalaland.core.modules.protection.regions.ProtectedRegion;
 import de.lalaland.core.modules.protection.regions.RegionManager;
 import de.lalaland.core.modules.protection.regions.RegionRule;
 import de.lalaland.core.modules.protection.regions.Relation;
 import de.lalaland.core.modules.protection.regions.RuleSet;
+import de.lalaland.core.ui.Message;
 import java.util.Set;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 /*******************************************************
@@ -46,7 +50,7 @@ public class RegionCommand extends BaseCommand {
       return;
     }
     sender.sendMessage("§eRegeln:");
-    sender.sendMessage("§eFreunde | Feinde | Neutral");
+    sender.sendMessage("§fFreunde §7| §fFeinde §7| §fNeutral");
 
     final RuleSet ruleSet = region.getRuleSet();
 
@@ -58,8 +62,19 @@ public class RegionCommand extends BaseCommand {
         final String color = permit == Permit.DENY ? "§c" : "§a";
 
       }
+      sender.sendMessage(builder.toString());
     }
 
+  }
+
+  @Subcommand("test")
+  public void onRegionCreate(Player sender, int size) {
+    Block loc1 = sender.getLocation().getBlock().getRelative(size, size, size);
+    Block loc2 = sender.getLocation().getBlock().getRelative(-size, -size, -size);
+    ProtectedRegion region = this.regionManager.createRegion(loc1, loc2);
+    region.getRuleSet().applyRule(Relation.NEUTRAL, RegionRule.BLOCK_BREAK, Permit.DENY);
+    region.getRuleSet().applyRule(Relation.NEUTRAL, RegionRule.BLOCK_PLACE, Permit.DENY);
+    Message.send(sender, ProtectionModule.class, "Region wurde erstellt.");
   }
 
 }

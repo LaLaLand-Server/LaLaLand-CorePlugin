@@ -33,7 +33,7 @@ public class UserManager implements Iterable<User> {
   public UserManager(final CorePlugin corePlugin) {
     this.corePlugin = corePlugin;
     cachedUsers = new Object2ObjectOpenHashMap<>();
-    corePlugin.registerListener(new PlayerJoinQuit(corePlugin));
+    Bukkit.getPluginManager().registerEvents(new PlayerJoinQuit(corePlugin), corePlugin);
     addAllOnlinePlayerToCache(); // in case of reload
     executeTasks();
   }

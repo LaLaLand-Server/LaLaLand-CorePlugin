@@ -3,6 +3,7 @@ package de.lalaland.core.utils;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Subcommand;
+import de.lalaland.core.utils.anvilgui.AnvilGUI;
 import de.lalaland.core.utils.holograms.AbstractHologram;
 import de.lalaland.core.utils.holograms.MovingHologram;
 import de.lalaland.core.utils.holograms.impl.HologramManager;

@@ -1,9 +1,14 @@
 package de.lalaland.core.modules.protection.regions;
 
+import com.google.common.collect.Maps;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Map;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.util.BoundingBox;
@@ -20,7 +25,8 @@ import org.bukkit.util.Vector;
  */
 public class ProtectedRegion {
 
-  protected ProtectedRegion(BoundingBox region, UUID regionID) {
+  protected ProtectedRegion(BoundingBox region, UUID regionID, UUID worldID) {
+    this.worldID = worldID;
     this.regionID = regionID;
     this.boundingBox = region;
     this.ruleSet = new RuleSet();
@@ -37,8 +43,21 @@ public class ProtectedRegion {
   @Setter
   private int priority;
   @Getter
+  @Setter
   private RuleSet ruleSet;
   private final Object2ObjectOpenHashMap<UUID, Relation> playerRelations;
+  @Getter
+  private final UUID worldID;
+
+  public BoundingBox getBoundingBoxClone() {
+    return BoundingBox.of(this.boundingBox.getMin(), this.boundingBox.getMax());
+  }
+
+  public Map<UUID, Relation> getRelationsCopy() {
+    Map<UUID, Relation> map = Maps.newHashMap();
+    map.putAll(this.playerRelations);
+    return map;
+  }
 
   public void setRealation(UUID playerID, Relation relation) {
     this.playerRelations.put(playerID, relation);
@@ -63,6 +82,23 @@ public class ProtectedRegion {
 
   public boolean contains(Block block) {
     return this.contains(block.getLocation());
+  }
+
+  public LongSet getInheritingChunks() {
+    LongSet chunkKeys = new LongOpenHashSet();
+
+    int minX = ((int) Math.floor(this.boundingBox.getMinX())) >> 4;
+    int maxX = ((int) Math.floor(this.boundingBox.getMaxX())) >> 4;
+    int minZ = ((int) Math.floor(this.boundingBox.getMinZ())) >> 4;
+    int maxZ = ((int) Math.floor(this.boundingBox.getMaxZ())) >> 4;
+
+    for (int x = minX; x <= maxX; x++) {
+      for (int z = minZ; z <= maxZ; z++) {
+        chunkKeys.add(Chunk.getChunkKey(x, z));
+      }
+    }
+
+    return chunkKeys;
   }
 
 }

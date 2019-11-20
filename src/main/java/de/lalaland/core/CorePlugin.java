@@ -6,7 +6,6 @@ import com.comphenix.protocol.ProtocolManager;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import de.lalaland.core.modules.economy.EconomyModule;
 import de.lalaland.core.ui.Message;
 import de.lalaland.core.config.Config;
 import de.lalaland.core.config.ConfigFileHandler;
@@ -96,6 +95,7 @@ public class CorePlugin extends JavaPlugin {
     final ImmutableMap<Class<? extends IModule>, IModule> modules = ImmutableMap.<Class<? extends IModule>, IModule>builder()
         .put(UtilModule.class, new UtilModule())
         .put(CombatModule.class, new CombatModule())
+        .put(ProtectionModule.class, new ProtectionModule())
         .put(EconomyModule.class, new EconomyModule(this))
         .build();
 
