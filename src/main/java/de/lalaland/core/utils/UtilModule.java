@@ -2,6 +2,7 @@ package de.lalaland.core.utils;
 
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
+import de.lalaland.core.utils.actionbar.ActionBarManager;
 import de.lalaland.core.utils.anvilgui.AnvilGUI;
 import de.lalaland.core.utils.common.UtilChunk;
 import de.lalaland.core.utils.common.UtilPlayer;
@@ -15,6 +16,8 @@ public class UtilModule implements IModule {
 
   @Getter
   private HologramManager hologramManager;
+  @Getter
+  private ActionBarManager actionBarManager;
 
   @Override
   public String getModuleName() {
@@ -22,7 +25,7 @@ public class UtilModule implements IModule {
   }
 
   @Override
-  public void enable(CorePlugin plugin) throws Exception {
+  public void enable(final CorePlugin plugin) throws Exception {
     AnvilGUI.initialize(plugin);
     ChunkTracker.init(plugin, plugin.getProtocolManager());
     EntityTracker.init(plugin, plugin.getProtocolManager());
@@ -30,12 +33,13 @@ public class UtilModule implements IModule {
     UtilPlayer.init(plugin);
     plugin.setDisplayCompiler(new ItemDisplayCompiler(plugin));
     plugin.getProtocolManager().addPacketListener(plugin.getDisplayCompiler());
-    this.hologramManager = new HologramManager(plugin);
-    plugin.getCommandManager().registerCommand(new TestCommand(this.hologramManager));
+    hologramManager = new HologramManager(plugin);
+    plugin.getCommandManager().registerCommand(new TestCommand(hologramManager));
+    actionBarManager = new ActionBarManager(plugin);
   }
 
   @Override
-  public void disable(CorePlugin plugin) throws Exception {
+  public void disable(final CorePlugin plugin) throws Exception {
 
   }
 }
