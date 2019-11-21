@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import de.lalaland.core.config.Config;
 import de.lalaland.core.config.ConfigFileHandler;
 import de.lalaland.core.modules.IModule;
+import de.lalaland.core.modules.chat.ChatModule;
 import de.lalaland.core.modules.combat.CombatModule;
 import de.lalaland.core.modules.economy.EconomyModule;
 import de.lalaland.core.modules.protection.ProtectionModule;
@@ -94,6 +95,7 @@ public class CorePlugin extends JavaPlugin {
         .put(CombatModule.class, new CombatModule())
         .put(ProtectionModule.class, new ProtectionModule())
         .put(EconomyModule.class, new EconomyModule(this))
+        .put(ChatModule.class, new ChatModule(this))
         .build();
 
     modules.forEach((clazz, module) -> {

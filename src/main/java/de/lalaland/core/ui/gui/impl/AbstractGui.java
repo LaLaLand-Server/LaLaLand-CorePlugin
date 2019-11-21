@@ -13,14 +13,13 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class AbstractGui implements IGui {
 
-  private GuiManager guiManager;
+  private final GuiManager guiManager;
   @Getter
   private final String title;
   @Getter
@@ -33,13 +32,13 @@ public abstract class AbstractGui implements IGui {
   private final boolean filled;
 
   @Override
-  public void handleClickEvent(InventoryClickEvent event) {
-    IIcon icon = this.icons.get(event.getSlot());
+  public void handleClickEvent(final InventoryClickEvent event) {
+    final IIcon icon = icons.get(event.getSlot());
     if (icon == null || !(icon instanceof Clickable)) {
       return;
     }
 
-    Clickable clickable = ((Clickable) icon);
+    final Clickable clickable = ((Clickable) icon);
 
     if (event.getClick() == ClickType.RIGHT) {
       clickable.handleRightClick(event);
@@ -50,6 +49,8 @@ public abstract class AbstractGui implements IGui {
     }
 
   }
+
+  //TODO: handle close with closeAndRemove method
 
   public AbstractGui(final GuiManager guiManager, final String title, final InventoryType type,
       final int raws, final boolean filled) {
@@ -85,7 +86,7 @@ public abstract class AbstractGui implements IGui {
     bukkitInventory = inventory;
   }
 
-  public void closeAndRemove(Player player) {
+  public void closeAndRemove(final Player player) {
 
     if(!(this instanceof PublicGui)) return;
 
@@ -143,5 +144,10 @@ public abstract class AbstractGui implements IGui {
       bukkitInventory.setItem(i, placeHolder);
     }
 
+  }
+
+  @Override
+  public void open(final Player player) {
+    player.openInventory(getBukkitInventory());
   }
 }
