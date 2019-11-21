@@ -10,6 +10,8 @@ import de.lalaland.core.io.mongodb.MongoDataWriter;
 import de.lalaland.core.user.data.UserData;
 import de.lalaland.core.utils.tuples.Unit;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,6 +29,8 @@ import org.bukkit.entity.Player;
  *
  *******************************************************/
 public class User {
+
+  public static int MAX_OFFLINE_MESSAGES = 10;
 
   private final CorePlugin corePlugin;
   @Getter
@@ -143,9 +147,21 @@ public class User {
 
   }
 
+  public boolean addOfflineMessage(final String message){
+
+    final List<String> offlineMessages = userData.getOfflineMessages();
+
+    if(offlineMessages.size() >= MAX_OFFLINE_MESSAGES){
+      return false;
+    }
+
+
+
+    return true;
+  }
 
   private UserData getDefaultUserData() {
-    return new UserData(1, 0, 0, 0); // everything set to 0 and new
+    return new UserData(1, 0, 0, 0, new ArrayList<>()); // everything set to 0 and new
   }
 
 }

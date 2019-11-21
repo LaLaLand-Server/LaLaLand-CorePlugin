@@ -1,5 +1,6 @@
 package de.lalaland.core.user.data;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -24,6 +25,7 @@ public class UserData {
   private long exp;
   private int moneyOnHand;
   private int moneyOnBank;
+  private List<String> offlineMessages;
 
   public boolean canLevelup() {
     return exp >= getNeedExp();
