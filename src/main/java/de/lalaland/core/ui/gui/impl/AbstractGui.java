@@ -50,8 +50,6 @@ public abstract class AbstractGui implements IGui {
 
   }
 
-  //TODO: handle close with closeAndRemove method
-
   public AbstractGui(final GuiManager guiManager, final String title, final InventoryType type,
       final int raws, final boolean filled) {
     this.title = title;

@@ -1,5 +1,6 @@
 package de.lalaland.core.ui.gui.listener;
 
+import de.lalaland.core.ui.gui.impl.AbstractGui;
 import de.lalaland.core.ui.gui.impl.IGui;
 import de.lalaland.core.ui.gui.manager.GuiManager;
 import org.bukkit.entity.Player;
@@ -37,6 +38,6 @@ public class InventoryCloseGuiListener implements Listener {
       return;
     }
 
-    gui.close(player);
+    ((AbstractGui)gui).closeAndRemove(player);
   }
 }

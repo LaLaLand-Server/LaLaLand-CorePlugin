@@ -13,7 +13,10 @@ public enum IconTemplate {
   SEND_MONEY(null, -1),
   MONEY_ON_HAND(null, -1),
   MONEY_ON_BANK(null, -1),
-  DROP_MONEY(null, -1);
+  DROP_MONEY(null, -1),
+  CHANNEL_SWITCH(null,-1),
+  CHANNEL_SWITCH_GLOBAL(null,-1),
+  CHANNEL_SWITCH_TRADE(null,-1);
 
   private final ItemStack item;
   @Getter
