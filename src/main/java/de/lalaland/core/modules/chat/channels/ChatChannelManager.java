@@ -17,43 +17,43 @@ public class ChatChannelManager {
   @Getter
   private final Object2ObjectOpenHashMap<ChatChannel, ObjectSet<Player>> playerChatChannels;
 
-  public ChatChannelManager(final CorePlugin corePlugin){
+  public ChatChannelManager(final CorePlugin corePlugin) {
     this.corePlugin = corePlugin;
     playerChatChannels = new Object2ObjectOpenHashMap<>();
-    for(final ChatChannel channel : ChatChannel.values()){
+    for (final ChatChannel channel : ChatChannel.values()) {
       playerChatChannels.put(channel, ObjectSets.emptySet());
     }
-    Bukkit.getPluginManager().registerEvents(new AsyncPlayerChatListener(this),corePlugin);
+    Bukkit.getPluginManager().registerEvents(new AsyncPlayerChatListener(this), corePlugin);
   }
 
-  public ChatChannel getPlayerChatChannel(final Player player){
+  public ChatChannel getPlayerChatChannel(final Player player) {
 
-    for(final ChatChannel channels : playerChatChannels.keySet()){
-      if(playerChatChannels.get(channels).contains(player)){
+    for (final ChatChannel channels : playerChatChannels.keySet()) {
+      if (playerChatChannels.get(channels).contains(player)) {
         return channels;
       }
     }
     return ChatChannel.GLOBAL;
   }
 
-  public void switchChatChannel(final Player player, final ChatChannel chatChannel){
+  public void switchChatChannel(final Player player, final ChatChannel chatChannel) {
 
     final ChatChannel current = getPlayerChatChannel(player);
 
-    if(current == chatChannel){
+    if (current == chatChannel) {
       return;
     }
 
     playerChatChannels.get(chatChannel).add(player);
   }
 
-  public ObjectSet<Player> getReceivers(final ChatChannel chatChannel){
+  public ObjectSet<Player> getReceivers(final ChatChannel chatChannel) {
     return playerChatChannels.get(chatChannel);
   }
 
-  public IGui getChannelChooseGui(final Player player){
+  public IGui getChannelChooseGui(final Player player) {
 
-    final PrivateGui gui = new PrivateGui(corePlugin.getGuiManager(),"Channel wählen",3,
+    final PrivateGui gui = new PrivateGui(corePlugin.getGuiManager(), "Channel wählen", 3,
         true) {
 
     };
