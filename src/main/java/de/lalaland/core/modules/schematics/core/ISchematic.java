@@ -15,7 +15,6 @@ import org.bukkit.util.Vector;
 public abstract interface ISchematic {
 
   public abstract void paste(Location location);
-  public abstract void pasteWithMiddle(Location location);
   public abstract Vector getDimension();
 
 }

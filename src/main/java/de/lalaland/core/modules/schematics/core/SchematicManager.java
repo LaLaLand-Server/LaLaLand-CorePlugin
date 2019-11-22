@@ -35,7 +35,7 @@ public class SchematicManager {
   }
 
   public SimpleSchematic createSimple(final BoundingBox region, final String schematicID) {
-    final SimpleSchematic schematic = new SimpleSchematic(region, schematicID);
+    final SimpleSchematic schematic = new SimpleSchematic(region, schematicID, pasteThread);
     schematicCashe.put(schematicID, schematic);
     return schematic;
   }
