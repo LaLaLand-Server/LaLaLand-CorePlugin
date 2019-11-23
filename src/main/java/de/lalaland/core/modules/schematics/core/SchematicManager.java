@@ -3,7 +3,6 @@ package de.lalaland.core.modules.schematics.core;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import de.lalaland.core.CorePlugin;
-import de.lalaland.core.modules.protection.regions.ProtectedRegion;
 import de.lalaland.core.modules.schematics.workload.PasteThread;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.io.BufferedReader;
@@ -12,9 +11,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.function.Consumer;
 import lombok.Getter;
 import org.bukkit.block.Block;
-import org.bukkit.util.BoundingBox;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /*******************************************************
@@ -26,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
  * permission of the owner.
  *
  */
-public class SchematicManager {
+public class SchematicManager implements Iterable<SimpleSchematic> {
 
   private static final int WRITER_BUFFER_SIZE = 20480;
 
@@ -35,6 +36,9 @@ public class SchematicManager {
     pasteThread = new PasteThread();
     plugin.getTaskManager().runRepeatedBukkit(pasteThread, 1L, 1L);
     schematicFolder = new File(plugin.getDataFolder() + File.separator + "schematics");
+    if (!schematicFolder.exists()) {
+      schematicFolder.mkdirs();
+    }
     gson = plugin.getGson();
   }
 
@@ -51,24 +55,17 @@ public class SchematicManager {
 
   public SimpleSchematic createSimple(final Block corner1, final Block corner2,
       final String schematicID) {
-    return createSimple(BoundingBox.of(corner1, corner2), schematicID);
-  }
-
-  public SimpleSchematic createSimple(final BoundingBox region, final String schematicID) {
-    final SimpleSchematic schematic = new SimpleSchematic(region, schematicID, pasteThread);
+    final SimpleSchematic schematic = new SimpleSchematic(corner1, corner2, schematicID,
+        pasteThread);
     schematicCashe.put(schematicID, schematic);
     return schematic;
-  }
-
-  public SimpleSchematic createSimple(final ProtectedRegion region, final String schematicID) {
-    return createSimple(region.getBoundingBoxClone(), schematicID);
   }
 
   public void saveSchematics() throws IOException {
     for (final SimpleSchematic schematic : schematicCashe.values()) {
       final BufferedWriter writer;
-      writer = new BufferedWriter(new FileWriter(schematicFolder), WRITER_BUFFER_SIZE);
       final File schematicFile = new File(schematicFolder, schematic.getSchmaticID() + ".json");
+      writer = new BufferedWriter(new FileWriter(schematicFile), WRITER_BUFFER_SIZE);
       writer.write(gson.toJson(schematic.getAsJson()));
       writer.close();
     }
@@ -88,4 +85,14 @@ public class SchematicManager {
     }
   }
 
+  @NotNull
+  @Override
+  public Iterator<SimpleSchematic> iterator() {
+    return schematicCashe.values().iterator();
+  }
+
+  @Override
+  public void forEach(final Consumer<? super SimpleSchematic> action) {
+    schematicCashe.values().forEach(action);
+  }
 }

@@ -6,6 +6,7 @@ import de.lalaland.core.modules.schematics.workload.PasteThread;
 import de.lalaland.core.utils.common.UtilVect;
 import lombok.Getter;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -20,10 +21,11 @@ import org.bukkit.util.Vector;
  */
 public abstract class AbstractSchematic implements ISchematic {
 
-  public AbstractSchematic(final BoundingBox region, final String schematicID,
+  public AbstractSchematic(final Block lowCorner, final Block highCorner, final String schematicID,
       final PasteThread pasteThread) {
     schmaticID = schematicID;
     this.pasteThread = pasteThread;
+    final BoundingBox region = BoundingBox.of(lowCorner, highCorner);
     dimension = region.getMax().clone().subtract(region.getMin());
   }
 

@@ -37,7 +37,7 @@ public class BukkitTime implements Listener {
   }
 
   public static boolean isNsElapsed(final long nanos) {
-    return getLastTickNanoStart() >= nanos;
+    return getTickNanos() >= nanos;
   }
 
   public static void start(final CorePlugin plugin) {

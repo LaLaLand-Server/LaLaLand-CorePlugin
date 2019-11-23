@@ -9,7 +9,8 @@ import de.lalaland.core.utils.common.UtilVect;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.bukkit.Location;
-import org.bukkit.util.BoundingBox;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.util.Vector;
 
 /*******************************************************
@@ -25,9 +26,29 @@ public class SimpleSchematic extends AbstractSchematic {
 
   private static final Vector BASE_SCALAR_XZ = new Vector(1, 0, 1);
 
-  public SimpleSchematic(final BoundingBox region, final String schematicID, final PasteThread pt) {
-    super(region, schematicID, pt);
+  public SimpleSchematic(final Block lowCorner, final Block highCorner, final String schematicID,
+      final PasteThread pt) {
+    super(lowCorner, highCorner, schematicID, pt);
     schematicData = new ObjectOpenHashSet<>();
+    iterateAndLoad(lowCorner, highCorner);
+  }
+
+  private void iterateAndLoad(final Block lowCorner, final Block highCorner) {
+    final int baseX = lowCorner.getX();
+    final int baseY = lowCorner.getY();
+    final int baseZ = lowCorner.getZ();
+    for (int x = baseX; x <= highCorner.getX(); x++) {
+      for (int y = baseY; y <= highCorner.getY(); y++) {
+        for (int z = baseZ; z <= highCorner.getZ(); z++) {
+          final int relX = x - baseX;
+          final int relY = y - baseY;
+          final int relZ = z - baseZ;
+          final BlockData relData = lowCorner.getRelative(relX, relY, relZ).getBlockData();
+          final RelativeBlockData data = new RelativeBlockData(relX, relY, relZ, relData);
+          schematicData.add(data);
+        }
+      }
+    }
   }
 
   public SimpleSchematic(final JsonElement jsonElement, final PasteThread pasteThread) {
@@ -43,12 +64,12 @@ public class SimpleSchematic extends AbstractSchematic {
 
   @Override
   public void pasteCenteredAround(final Location location) {
-    paste(location.add(dimension));
+    paste(location.subtract(dimension.multiply(0.5D)));
   }
 
   @Override
   public void pasteToGround(final Location location) {
-    paste(location.add(dimension.multiply(BASE_SCALAR_XZ)));
+    paste(location.subtract(dimension.multiply(BASE_SCALAR_XZ).multiply(0.5D)));
   }
 
   @Override

@@ -14,11 +14,13 @@ import de.lalaland.core.modules.combat.CombatModule;
 import de.lalaland.core.modules.economy.EconomyModule;
 import de.lalaland.core.modules.protection.ProtectionModule;
 import de.lalaland.core.modules.recipe.RecipeModule;
+import de.lalaland.core.modules.schematics.SchematicModule;
 import de.lalaland.core.tasks.TaskManager;
 import de.lalaland.core.ui.Message;
 import de.lalaland.core.ui.gui.manager.GuiManager;
 import de.lalaland.core.user.UserManager;
 import de.lalaland.core.utils.UtilModule;
+import de.lalaland.core.utils.common.BukkitTime;
 import de.lalaland.core.utils.items.display.ItemDisplayCompiler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
@@ -77,6 +79,7 @@ public class CorePlugin extends JavaPlugin {
   }
 
   private void init() {
+    BukkitTime.start(this);
     Message.init(this);
     coreLogger = LoggerFactory.getLogger(getClass().getName());
     gson = new GsonBuilder().setPrettyPrinting().create();
@@ -95,6 +98,7 @@ public class CorePlugin extends JavaPlugin {
         .put(UtilModule.class, new UtilModule())
         .put(CombatModule.class, new CombatModule())
         .put(ProtectionModule.class, new ProtectionModule())
+        .put(SchematicModule.class, new SchematicModule())
         .put(EconomyModule.class, new EconomyModule(this))
         .put(ChatModule.class, new ChatModule(this))
         .put(RecipeModule.class, new RecipeModule())

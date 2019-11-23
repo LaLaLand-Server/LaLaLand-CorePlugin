@@ -20,6 +20,9 @@ public class PasteJob {
   private final BlockData blockData;
 
   public void paste() {
+    final int x = location.getBlockX();
+    final int y = location.getBlockX();
+    final int z = location.getBlockX();
     location.getBlock().setBlockData(blockData);
   }
 
