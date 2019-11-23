@@ -66,10 +66,10 @@ public class CombatDamageListener implements Listener {
       .put(DamageCause.WITHER, 8.5D)
       .build();
 
-  public CombatDamageListener(CombatStatManager combatStatManager,
-      HologramManager hologramManager) {
+  public CombatDamageListener(final CombatStatManager combatStatManager,
+      final HologramManager hologramManager) {
     this.combatStatManager = combatStatManager;
-    this.critChanceRandom = ThreadLocalRandom.current();
+    critChanceRandom = ThreadLocalRandom.current();
     this.hologramManager = hologramManager;
   }
 
@@ -78,30 +78,35 @@ public class CombatDamageListener implements Listener {
   private final HologramManager hologramManager;
 
   @EventHandler
-  public void onDamage(EntityDamageEvent event) {
+  public void onDamage(final EntityDamageEvent event) {
     if (event instanceof EntityDamageByEntityEvent) {
       return;
     }
-    Entity defender = event.getEntity();
+    final Entity defender = event.getEntity();
     if (!(defender instanceof LivingEntity)) {
       return;
     }
-    LivingEntity defenderLiving = (LivingEntity) defender;
+    final LivingEntity defenderLiving = (LivingEntity) defender;
     double damage = event.getDamage() * ENVIRONMENTAL_BASE_PERCENTAGE.get(event.getCause());
     damage *= (100D / defenderLiving.getHealth());
-    CombatStatHolder holderDefender = this.combatStatManager
+    final CombatStatHolder holderDefender = combatStatManager
         .getCombatStatHolder(defender.getUniqueId());
     damage = DamageEvaluator
         .calculateDamage(holderDefender, damage, CombatDamageType.ofBukkit(event.getCause()));
 
     event.setDamage(0);
 
-    defenderLiving.setHealth(defenderLiving.getHealth() - damage);
+    double healthLeft = defenderLiving.getHealth() - damage;
+    if (healthLeft < 0) {
+      healthLeft = 0;
+    }
+
+    defenderLiving.setHealth(healthLeft);
 
   }
 
   @EventHandler
-  public void onHeal(EntityRegainHealthEvent event) {
+  public void onHeal(final EntityRegainHealthEvent event) {
     if (!(event.getEntity() instanceof LivingEntity)) {
       return;
     }
@@ -109,15 +114,15 @@ public class CombatDamageListener implements Listener {
   }
 
   @EventHandler
-  public void onCombat(EntityDamageByEntityEvent event) {
+  public void onCombat(final EntityDamageByEntityEvent event) {
     Entity attacker = event.getDamager();
-    Entity defender = event.getEntity();
+    final Entity defender = event.getEntity();
 
     boolean isRanged = false;
 
     if (attacker instanceof Projectile) {
       isRanged = true;
-      ProjectileSource source = ((Projectile) attacker).getShooter();
+      final ProjectileSource source = ((Projectile) attacker).getShooter();
       if (source instanceof Entity) {
         attacker = (Entity) source;
       } else {
@@ -129,21 +134,21 @@ public class CombatDamageListener implements Listener {
       return;
     }
 
-    LivingEntity defenderLiving = (LivingEntity) defender;
-    LivingEntity attackerLiving = (LivingEntity) attacker;
-    CombatStatHolder attackHolder = combatStatManager.getCombatStatHolder(attackerLiving);
-    CombatStatHolder defenceHolder = combatStatManager.getCombatStatHolder(defenderLiving);
-    boolean isPlayerAttacker = attacker instanceof Player;
+    final LivingEntity defenderLiving = (LivingEntity) defender;
+    final LivingEntity attackerLiving = (LivingEntity) attacker;
+    final CombatStatHolder attackHolder = combatStatManager.getCombatStatHolder(attackerLiving);
+    final CombatStatHolder defenceHolder = combatStatManager.getCombatStatHolder(defenderLiving);
+    final boolean isPlayerAttacker = attacker instanceof Player;
 
     event.setDamage(0);
     double damage = attackHolder
         .getStatValue(isRanged ? CombatStat.RANGE_DAMAGE : CombatStat.MEELE_DAMAGE);
 
-    boolean crit = attackHolder.getStatValue(CombatStat.CRIT_CHANCE) >= this.critChanceRandom
+    final boolean crit = attackHolder.getStatValue(CombatStat.CRIT_CHANCE) >= critChanceRandom
         .nextDouble(0, 100);
 
     if (crit) {
-      double dmgMulti = (1D / 100D) * attackHolder.getStatValue(CombatStat.CRIT_DAMAGE);
+      final double dmgMulti = (1D / 100D) * attackHolder.getStatValue(CombatStat.CRIT_DAMAGE);
       damage *= dmgMulti;
     }
 
@@ -152,7 +157,7 @@ public class CombatDamageListener implements Listener {
 
     ItemStack attackItem = attackerLiving.getActiveItem();
     if (isPlayerAttacker) {
-      float multi = UtilPlayer.getAttackCooldown((Player) attacker);
+      final float multi = UtilPlayer.getAttackCooldown((Player) attacker);
       if (multi < 0.9F) {
         damage *= 0.05;
       } else {
@@ -161,15 +166,15 @@ public class CombatDamageListener implements Listener {
       attackItem = ((Player) attacker).getInventory().getItemInMainHand();
     }
     if (attackItem != null && attackItem.getType() != Material.AIR) {
-      StatItem statItem = StatItem.of(attackItem);
+      final StatItem statItem = StatItem.of(attackItem);
       if (statItem.isItemStatComponent()) {
-        Integer durability = statItem.getDurability();
+        final Integer durability = statItem.getDurability();
         if (durability != null) {
           Preconditions.checkState(durability >= 0, "Item durability is below 0");
           if (durability == 0) {
             damage *= 0.025;
           } else if (durability > 0) {
-            int leftDurability = durability - 1;
+            final int leftDurability = durability - 1;
             if (leftDurability == 0) {
               // TODO effect for breaking tool
             }
@@ -187,8 +192,8 @@ public class CombatDamageListener implements Listener {
     damage = UtilMath.cut(damage, 1);
 
     if (isPlayerAttacker) {
-      Player attackerPlayer = (Player) attacker;
-      this.createDamageHologram(attackerPlayer, defender, crit, damage);
+      final Player attackerPlayer = (Player) attacker;
+      createDamageHologram(attackerPlayer, defender, crit, damage);
     }
 
     double healthLeft = defenderLiving.getHealth() - damage;
@@ -199,22 +204,23 @@ public class CombatDamageListener implements Listener {
 
   }
 
-  private void createDamageHologram(Player attackerPlayer, Entity def, boolean crit, double dmg) {
-    String holoMsg = (crit ? "§c" : "§e") + dmg;
-    Location defLoc = def.getLocation().clone().add(0, 0.5, 0);
-    Vector directionAdjustVec = attackerPlayer.getLocation().getDirection().clone()
+  private void createDamageHologram(final Player attackerPlayer, final Entity def,
+      final boolean crit, final double dmg) {
+    final String holoMsg = (crit ? "§c" : "§e") + dmg;
+    final Location defLoc = def.getLocation().clone().add(0, 0.5, 0);
+    final Vector directionAdjustVec = attackerPlayer.getLocation().getDirection().clone()
         .multiply(BASE_SCALAR_XZ).normalize().multiply(0.05);
-    Vector holoVel = BASE_HOLOGRAM_VELOCITY.clone().add(directionAdjustVec);
-    MovingHologram moving = this.hologramManager
+    final Vector holoVel = BASE_HOLOGRAM_VELOCITY.clone().add(directionAdjustVec);
+    final MovingHologram moving = hologramManager
         .createMovingHologram(defLoc, holoVel, HOLOGRAM_LIFE_TICKS);
     moving.getHologram().appendTextLine(holoMsg);
   }
 
-  private void createHealingHologram(LivingEntity livingDefender, double heal) {
-    String holoMsg = "§a+" + heal;
-    Location defLoc = livingDefender.getLocation().clone().add(0, 0.5, 0);
-    Vector holoVel = BASE_HOLOGRAM_VELOCITY.clone().multiply(1.2);
-    MovingHologram moving = this.hologramManager
+  private void createHealingHologram(final LivingEntity livingDefender, final double heal) {
+    final String holoMsg = "§a+" + heal;
+    final Location defLoc = livingDefender.getLocation().clone().add(0, 0.5, 0);
+    final Vector holoVel = BASE_HOLOGRAM_VELOCITY.clone().multiply(1.2);
+    final MovingHologram moving = hologramManager
         .createMovingHologram(defLoc, holoVel, HOLOGRAM_LIFE_TICKS);
     moving.getHologram().appendTextLine(holoMsg);
   }
