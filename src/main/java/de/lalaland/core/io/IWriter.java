@@ -2,6 +2,6 @@ package de.lalaland.core.io;
 
 public interface IWriter {
 	
-	public abstract void write(final Object dataClass);
+	public abstract <T> void write(final T dataObject);
 	
 }

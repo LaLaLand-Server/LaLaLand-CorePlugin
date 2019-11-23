@@ -28,10 +28,10 @@ public class GsonFileWriter implements IWriter {
   /**
    * Write a class into a json file.
    *
-   * @param dataClass the class to serialize
+   * @param dataObject the object to serialize
    */
   @Override
-  public void write(final Object dataClass) {
+  public <T> void write(final T dataObject) {
 
     final File file = new File(path, fileName + ".json");
 
@@ -54,7 +54,7 @@ public class GsonFileWriter implements IWriter {
       plugin.getLogger().info("'" + fileName + ".json' created.");
     }
 
-    final String jsonString = plugin.getGson().toJson(dataClass, dataClass.getClass());
+    final String jsonString = plugin.getGson().toJson(dataObject, dataObject.getClass());
     final FileWriter writer;
     try {
       writer = new FileWriter(file);

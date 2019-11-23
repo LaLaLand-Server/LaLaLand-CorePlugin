@@ -37,7 +37,7 @@ public class GsonFileReader implements IReader {
    */
 
   @Override
-  public Object read(final Class<?> classToDeserialize, final Object defaultValue) {
+  public <T> T read(final Class<T> classToDeserialize, final T defaultValue) {
 
     final File file = new File(directory, fileName + ".json");
 
