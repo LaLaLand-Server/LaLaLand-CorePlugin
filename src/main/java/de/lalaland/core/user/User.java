@@ -7,6 +7,7 @@ import de.lalaland.core.io.gson.GsonFileReader;
 import de.lalaland.core.io.gson.GsonFileWriter;
 import de.lalaland.core.io.mongodb.MongoDataReader;
 import de.lalaland.core.io.mongodb.MongoDataWriter;
+import de.lalaland.core.modules.chat.messages.OfflineMessage;
 import de.lalaland.core.user.data.UserData;
 import de.lalaland.core.utils.tuples.Unit;
 import java.io.File;
@@ -147,17 +148,37 @@ public class User {
 
   }
 
-  public boolean addOfflineMessage(final String message){
+  //TODO implement and use format method
+  public String addOfflineMessage(final OfflineMessage offlineMessage){
 
-    final List<String> offlineMessages = userData.getOfflineMessages();
+    final List<OfflineMessage> offlineMessages = userData.getOfflineMessages();
 
     if(offlineMessages.size() >= MAX_OFFLINE_MESSAGES){
-      return false;
+      return "Der Spieler hat zu viele Nachrichten im Postfach.";
     }
 
+    if(getOfflineMessagesFrom(offlineMessage.getAuthor()).size() >= 2){
+      return "Du hast diesem Spieler bereits 2 Nachrichten hinterlassen.";
+    }
 
+    userData.getOfflineMessages().add(offlineMessage);
+    setUpdateCandidate(true);
+    return "Du hast dem Spieler deine Nachricht hinterlassen.";
+  }
 
-    return true;
+  public void clearOfflineMessages(){
+    userData.getOfflineMessages().clear();
+    setUpdateCandidate(true);
+  }
+
+  private List<OfflineMessage> getOfflineMessagesFrom(final UUID target){
+    final List<OfflineMessage> offlineMessages =new  ArrayList<>();
+    for(final OfflineMessage offlineMessage : userData.getOfflineMessages()){
+      if(offlineMessage.getAuthor().equals(target)){
+        offlineMessages.add(offlineMessage);
+      }
+    }
+    return offlineMessages;
   }
 
   private UserData getDefaultUserData() {

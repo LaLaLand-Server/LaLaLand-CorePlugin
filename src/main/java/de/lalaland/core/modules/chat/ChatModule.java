@@ -4,6 +4,7 @@ import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
 import de.lalaland.core.modules.chat.channels.ChannelChooseCommand;
 import de.lalaland.core.modules.chat.channels.ChatChannelManager;
+import de.lalaland.core.modules.chat.messages.OfflineMessageCommand;
 import lombok.Getter;
 
 public class ChatModule implements IModule {
@@ -16,6 +17,7 @@ public class ChatModule implements IModule {
     this.corePlugin = corePlugin;
     chatChannelManager = new ChatChannelManager(corePlugin);
     corePlugin.getCommandManager().registerCommand(new ChannelChooseCommand(chatChannelManager));
+    corePlugin.getCommandManager().registerCommand(new OfflineMessageCommand(corePlugin));
   }
 
   @Override

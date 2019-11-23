@@ -13,6 +13,7 @@ import de.lalaland.core.modules.chat.ChatModule;
 import de.lalaland.core.modules.combat.CombatModule;
 import de.lalaland.core.modules.economy.EconomyModule;
 import de.lalaland.core.modules.protection.ProtectionModule;
+import de.lalaland.core.modules.recipe.RecipeModule;
 import de.lalaland.core.tasks.TaskManager;
 import de.lalaland.core.ui.Message;
 import de.lalaland.core.ui.gui.manager.GuiManager;
@@ -96,6 +97,7 @@ public class CorePlugin extends JavaPlugin {
         .put(ProtectionModule.class, new ProtectionModule())
         .put(EconomyModule.class, new EconomyModule(this))
         .put(ChatModule.class, new ChatModule(this))
+        .put(RecipeModule.class, new RecipeModule())
         .build();
 
     modules.forEach((clazz, module) -> {
