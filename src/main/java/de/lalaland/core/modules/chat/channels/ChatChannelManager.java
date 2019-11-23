@@ -20,10 +20,13 @@ public class ChatChannelManager {
   private final CorePlugin corePlugin;
   @Getter
   private final Object2ObjectOpenHashMap<ChatChannel, ObjectSet<Player>> playerChatChannels;
+@Getter
+  private final Object2ObjectOpenHashMap<Player, ChatChannel> singlePlayerChannels;
 
   public ChatChannelManager(final CorePlugin corePlugin){
     this.corePlugin = corePlugin;
     playerChatChannels = new Object2ObjectOpenHashMap<>();
+    singlePlayerChannels = new Object2ObjectOpenHashMap<>();
     for(final ChatChannel channel : ChatChannel.values()){
       playerChatChannels.put(channel, ObjectSets.emptySet());
     }
@@ -32,12 +35,11 @@ public class ChatChannelManager {
 
   public ChatChannel getPlayerChatChannel(final Player player){
 
-    for(final ChatChannel channels : playerChatChannels.keySet()){
-      if(playerChatChannels.get(channels).contains(player)){
-        return channels;
-      }
+    if(!singlePlayerChannels.containsKey(player)){
+      return ChatChannel.GLOBAL;
     }
-    return ChatChannel.GLOBAL;
+
+    return singlePlayerChannels.get(player);
   }
 
   private void switchChatChannel(final Player player, final ChatChannel chatChannel){
@@ -48,7 +50,9 @@ public class ChatChannelManager {
       return;
     }
 
+    playerChatChannels.get(current).remove(player);
     playerChatChannels.get(chatChannel).add(player);
+    singlePlayerChannels.put(player,chatChannel);
   }
 
   public ObjectSet<Player> getReceivers(final ChatChannel chatChannel){
