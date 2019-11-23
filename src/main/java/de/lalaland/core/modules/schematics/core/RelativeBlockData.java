@@ -14,7 +14,7 @@ import org.bukkit.block.data.BlockData;
  */
 public class RelativeBlockData {
 
-  private static final String SPACING = "##";
+  private static final String SPACING = "#";
 
   public RelativeBlockData(final int x, final int y, final int z, final BlockData blockData) {
     this.x = x;
@@ -37,7 +37,7 @@ public class RelativeBlockData {
   protected final BlockData blockData;
 
   public String getAsString() {
-    return x + SPACING + y + SPACING + z + SPACING + blockData.getAsString();
+    return (x + SPACING + y + SPACING + z + SPACING + blockData.getAsString());
   }
 
 }

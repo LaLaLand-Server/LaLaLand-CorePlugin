@@ -2,6 +2,8 @@ package de.lalaland.core.modules.schematics;
 
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
+import de.lalaland.core.modules.schematics.core.SchematicManager;
+import lombok.Getter;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -14,6 +16,9 @@ import de.lalaland.core.modules.IModule;
  */
 public class SchematicModule implements IModule {
 
+  @Getter
+  private SchematicManager schematicManager;
+
   @Override
   public String getModuleName() {
     return "SchematicModule";
@@ -21,11 +26,13 @@ public class SchematicModule implements IModule {
 
   @Override
   public void enable(final CorePlugin plugin) throws Exception, Exception {
-
+    schematicManager = new SchematicManager(plugin);
+    schematicManager.loadSchematics();
   }
 
   @Override
   public void disable(final CorePlugin plugin) throws Exception {
-
+    schematicManager.saveSchematics();
   }
+
 }

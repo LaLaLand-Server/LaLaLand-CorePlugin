@@ -1,9 +1,13 @@
 package de.lalaland.core.modules.schematics.core;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import de.lalaland.core.modules.schematics.workload.PasteThread;
+import de.lalaland.core.utils.common.UtilVect;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -20,14 +24,26 @@ public abstract class AbstractSchematic implements ISchematic {
       final PasteThread pasteThread) {
     schmaticID = schematicID;
     this.pasteThread = pasteThread;
+    dimension = region.getMax().clone().subtract(region.getMin());
+  }
+
+  public AbstractSchematic(final JsonElement jsonElement, final PasteThread pasteThread) {
+    final JsonObject json = jsonElement.getAsJsonObject();
+    schmaticID = json.get("StringID").getAsString();
+    this.pasteThread = pasteThread;
+    dimension = UtilVect.vecFromString(json.get("Dimension").getAsString());
   }
 
   @Getter
-  private final String schmaticID;
+  protected final String schmaticID;
   protected final PasteThread pasteThread;
+  @Getter
+  protected final Vector dimension;
 
   public abstract void pasteCenteredAround(Location location);
-  public abstract void pastToGround(Location location);
-  protected abstract void setBlocks(BoundingBox box);
+
+  public abstract void pasteToGround(Location location);
+
+  public abstract JsonElement getAsJson();
 
 }
