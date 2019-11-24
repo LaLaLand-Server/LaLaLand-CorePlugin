@@ -16,7 +16,7 @@ public class StructureModule implements IModule {
 
   @Override
   public String getModuleName() {
-    return null;
+    return "StructureModule";
   }
 
   @Override

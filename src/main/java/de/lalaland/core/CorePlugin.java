@@ -14,6 +14,7 @@ import de.lalaland.core.modules.combat.CombatModule;
 import de.lalaland.core.modules.economy.EconomyModule;
 import de.lalaland.core.modules.protection.ProtectionModule;
 import de.lalaland.core.modules.recipe.RecipeModule;
+import de.lalaland.core.modules.resourcepack.ResourcepackModule;
 import de.lalaland.core.modules.schematics.SchematicModule;
 import de.lalaland.core.tasks.TaskManager;
 import de.lalaland.core.ui.Message;
@@ -96,6 +97,7 @@ public class CorePlugin extends JavaPlugin {
 
     final ImmutableMap<Class<? extends IModule>, IModule> modules = ImmutableMap.<Class<? extends IModule>, IModule>builder()
         .put(UtilModule.class, new UtilModule())
+        .put(ResourcepackModule.class, new ResourcepackModule())
         .put(CombatModule.class, new CombatModule())
         .put(ProtectionModule.class, new ProtectionModule())
         .put(SchematicModule.class, new SchematicModule())
@@ -130,7 +132,6 @@ public class CorePlugin extends JavaPlugin {
         e.printStackTrace();
       }
     }
-
   }
 
   public <T extends IModule> T getModule(final Class<T> moduleClass) {
