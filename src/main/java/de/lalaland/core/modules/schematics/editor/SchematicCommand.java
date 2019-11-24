@@ -5,8 +5,8 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import de.lalaland.core.modules.schematics.SchematicModule;
+import de.lalaland.core.modules.schematics.core.Schematic;
 import de.lalaland.core.modules.schematics.core.SchematicManager;
-import de.lalaland.core.modules.schematics.core.SimpleSchematic;
 import de.lalaland.core.ui.Message;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -32,7 +32,7 @@ public class SchematicCommand extends BaseCommand {
   @Default
   public void onDefault(final Player sender) {
     Message.send(sender, SchematicModule.class, "Alle geladenen Schematics:");
-    for (final SimpleSchematic schematic : schematicManager) {
+    for (final Schematic schematic : schematicManager) {
       sender.sendMessage("§f - §7" + schematic.getSchmaticID());
     }
   }
@@ -48,7 +48,7 @@ public class SchematicCommand extends BaseCommand {
 
   @Subcommand("paste corner")
   public void onPaste(final Player sender, final String schematicName) {
-    final SimpleSchematic schematic = schematicManager.getSchematic(schematicName);
+    final Schematic schematic = schematicManager.getSchematic(schematicName);
     if (schematic == null) {
       Message.error(sender, SchematicModule.class, "Schematic existiert nicht.");
       return;
@@ -59,7 +59,7 @@ public class SchematicCommand extends BaseCommand {
 
   @Subcommand("paste middle")
   public void onPasteMiddle(final Player sender, final String schematicName) {
-    final SimpleSchematic schematic = schematicManager.getSchematic(schematicName);
+    final Schematic schematic = schematicManager.getSchematic(schematicName);
     if (schematic == null) {
       Message.error(sender, SchematicModule.class, "Schematic existiert nicht.");
       return;
@@ -70,7 +70,7 @@ public class SchematicCommand extends BaseCommand {
 
   @Subcommand("paste ground")
   public void onOnGround(final Player sender, final String schematicName) {
-    final SimpleSchematic schematic = schematicManager.getSchematic(schematicName);
+    final Schematic schematic = schematicManager.getSchematic(schematicName);
     if (schematic == null) {
       Message.error(sender, SchematicModule.class, "Schematic existiert nicht.");
       return;

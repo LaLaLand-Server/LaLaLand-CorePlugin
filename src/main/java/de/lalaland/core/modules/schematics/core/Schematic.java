@@ -22,11 +22,11 @@ import org.bukkit.util.Vector;
  * permission of the owner.
  *
  */
-public class SimpleSchematic extends AbstractSchematic {
+public class Schematic extends AbstractSchematic {
 
   private static final Vector BASE_SCALAR_XZ = new Vector(1, 0, 1);
 
-  public SimpleSchematic(final Block lowCorner, final Block highCorner, final String schematicID,
+  public Schematic(final Block lowCorner, final Block highCorner, final String schematicID,
       final PasteThread pt) {
     super(lowCorner, highCorner, schematicID, pt);
     schematicData = new ObjectOpenHashSet<>();
@@ -51,7 +51,7 @@ public class SimpleSchematic extends AbstractSchematic {
     }
   }
 
-  public SimpleSchematic(final JsonElement jsonElement, final PasteThread pasteThread) {
+  public Schematic(final JsonElement jsonElement, final PasteThread pasteThread) {
     super(jsonElement, pasteThread);
     schematicData = new ObjectOpenHashSet<>();
     final JsonArray array = jsonElement.getAsJsonObject().get("RelativeBlockData").getAsJsonArray();
@@ -64,12 +64,12 @@ public class SimpleSchematic extends AbstractSchematic {
 
   @Override
   public void pasteCenteredAround(final Location location) {
-    paste(location.subtract(dimension.multiply(0.5D)));
+    paste(location.subtract(dimension.clone().multiply(0.5D)));
   }
 
   @Override
   public void pasteToGround(final Location location) {
-    paste(location.subtract(dimension.multiply(BASE_SCALAR_XZ).multiply(0.5D)));
+    paste(location.subtract(dimension.clone().multiply(BASE_SCALAR_XZ).multiply(0.5D)));
   }
 
   @Override

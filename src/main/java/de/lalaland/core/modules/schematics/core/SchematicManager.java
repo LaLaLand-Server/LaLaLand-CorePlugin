@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
  * permission of the owner.
  *
  */
-public class SchematicManager implements Iterable<SimpleSchematic> {
+public class SchematicManager implements Iterable<Schematic> {
 
   private static final int WRITER_BUFFER_SIZE = 20480;
 
@@ -44,25 +44,25 @@ public class SchematicManager implements Iterable<SimpleSchematic> {
 
   @Getter
   private final PasteThread pasteThread;
-  private final Object2ObjectOpenHashMap<String, SimpleSchematic> schematicCashe;
+  private final Object2ObjectOpenHashMap<String, Schematic> schematicCashe;
   private final File schematicFolder;
   private final Gson gson;
 
   @Nullable
-  public SimpleSchematic getSchematic(final String schematicID) {
+  public Schematic getSchematic(final String schematicID) {
     return schematicCashe.get(schematicID);
   }
 
-  public SimpleSchematic createSimple(final Block corner1, final Block corner2,
+  public Schematic create(final Block corner1, final Block corner2,
       final String schematicID) {
-    final SimpleSchematic schematic = new SimpleSchematic(corner1, corner2, schematicID,
+    final Schematic schematic = new Schematic(corner1, corner2, schematicID,
         pasteThread);
     schematicCashe.put(schematicID, schematic);
     return schematic;
   }
 
   public void saveSchematics() throws IOException {
-    for (final SimpleSchematic schematic : schematicCashe.values()) {
+    for (final Schematic schematic : schematicCashe.values()) {
       final BufferedWriter writer;
       final File schematicFile = new File(schematicFolder, schematic.getSchmaticID() + ".json");
       writer = new BufferedWriter(new FileWriter(schematicFile), WRITER_BUFFER_SIZE);
@@ -80,19 +80,19 @@ public class SchematicManager implements Iterable<SimpleSchematic> {
         builder.append((char) read);
       }
       final JsonElement element = gson.fromJson(builder.toString(), JsonElement.class);
-      final SimpleSchematic schematic = new SimpleSchematic(element, pasteThread);
+      final Schematic schematic = new Schematic(element, pasteThread);
       schematicCashe.put(schematic.getSchmaticID(), schematic);
     }
   }
 
   @NotNull
   @Override
-  public Iterator<SimpleSchematic> iterator() {
+  public Iterator<Schematic> iterator() {
     return schematicCashe.values().iterator();
   }
 
   @Override
-  public void forEach(final Consumer<? super SimpleSchematic> action) {
+  public void forEach(final Consumer<? super Schematic> action) {
     schematicCashe.values().forEach(action);
   }
 }
