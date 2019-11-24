@@ -27,9 +27,15 @@ public class AssetLibrary {
     this.plugin = plugin;
     itemModelDefaultAssets = Maps.newHashMap();
     assetLibFolder = new File(plugin.getDataFolder() + File.separator + "assetlib");
-    downloadAssets();
-    unzipAssets();
-    iterateAssets();
+    //  downloadAssets();
+    //  unzipAssets()
+    //  iterateAssets();
+    itemModelDefaultAssets.put("stick", plugin.getGson().fromJson("{\n"
+        + "\t\"parent\": \"item/handheld\",\n"
+        + "\t\"textures\": {\n"
+        + "\t\t\"layer0\": \"item/stick\"\n"
+        + "\t}\n"
+        + "}", JsonObject.class));
   }
 
   private final File assetLibFolder;

@@ -145,20 +145,18 @@ public class ResourcepackZipper {
       }
     }
 
+    // TODO print model json for bas item right (is printing null atm)
     final Map<Material, JsonObject> cachedJsons = Maps.newHashMap();
-
 
     for (final ModelItem model : ModelItem.values()) {
       final String nmsName = model.getBaseMaterial().getKey().getKey();
       final boolean isBlock = model.getBaseMaterial().isBlock();
-      final JsonObject modelObject;
       final JsonArray overrideArray;
       if (!cachedJsons.containsKey(model.getBaseMaterial())) {
-        modelObject = new JsonObject();
+        final JsonObject modelObject = new JsonObject();
         if (isBlock) {
           modelObject.addProperty("parent", assetLibrary.getAssetModelParent(nmsName));
         } else {
-          //TODO get parent from local asset library
           modelObject.addProperty("parent", assetLibrary.getAssetModelParent(nmsName));
           final JsonObject textureObject = new JsonObject();
           textureObject.addProperty("layer0", assetLibrary.getAssetModelLayer0(nmsName));
@@ -170,11 +168,25 @@ public class ResourcepackZipper {
 
       } else {
         overrideArray = cachedJsons.get(model.getBaseMaterial()).get("overrides").getAsJsonArray();
-        final JsonObject overrideObject = new JsonObject();
-        final String customModelName =
-            assetLibrary.getAssetModelLayer0(nmsName).split("/")[0] + "/" + nmsName + "/" + model.getModelID() + ".json";
-        overrideObject.addProperty("model", customModelName);
       }
+
+      final JsonObject overrideObject = new JsonObject();
+      final String customModelName =
+          assetLibrary.getAssetModelLayer0(nmsName).split("/")[0] + "/" + nmsName + "/" + model.getModelID();
+      overrideObject.addProperty("model", customModelName);
+      final JsonObject predicateObject = new JsonObject();
+      predicateObject.addProperty("custom_mode_data", model.getModelID());
+      overrideObject.add("predicate", predicateObject);
+    }
+
+    final Gson gson = plugin.getGson();
+
+    for (final ModelItem model : ModelItem.values()) {
+      final File modelFolder = model.getBaseMaterial().isBlock() ? blockModelFolder : itemModelFolder;
+      final File modelFile = new File(modelFolder, model.getBaseMaterial().getKey().getKey() + ".json");
+      final OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(modelFile));
+      osw.write(gson.toJson(cachedJsons.get(model.getBaseMaterial())));
+      osw.close();
     }
 
     FileUtils.deleteDirectory(tempFolder);

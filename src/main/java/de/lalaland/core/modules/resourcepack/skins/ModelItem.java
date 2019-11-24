@@ -1,9 +1,11 @@
 package de.lalaland.core.modules.resourcepack.skins;
 
 import com.google.gson.JsonObject;
+import de.lalaland.core.utils.items.ItemBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 /*******************************************************
@@ -35,5 +37,9 @@ public enum ModelItem {
   @Nullable
   @Getter
   private final JsonObject elementsJson;
+
+  public ItemStack create() {
+    return new ItemBuilder(baseMaterial).modelData(modelID).build();
+  }
 
 }
