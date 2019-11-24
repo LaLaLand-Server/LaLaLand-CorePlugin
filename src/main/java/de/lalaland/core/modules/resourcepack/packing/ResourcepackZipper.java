@@ -50,8 +50,8 @@ public class ResourcepackZipper {
     packFolderSet.add(fontFolder = new File(minecraftFolder + File.separator + "font"));
     packFolderSet.add(langFolder = new File(minecraftFolder + File.separator + "lang"));
     packFolderSet.add(modelsFolder = new File(minecraftFolder + File.separator + "models"));
-    packFolderSet.add(itemModelFolder = new File(modelsFolder + File.separator + "items"));
-    packFolderSet.add(blockModelFolder = new File(modelsFolder + File.separator + "blocks"));
+    packFolderSet.add(itemModelFolder = new File(modelsFolder + File.separator + "item"));
+    packFolderSet.add(blockModelFolder = new File(modelsFolder + File.separator + "block"));
     packFolderSet.add(particlesFolder = new File(minecraftFolder + File.separator + "particles"));
     packFolderSet.add(soundsFolder = new File(minecraftFolder + File.separator + "sounds"));
     packFolderSet.add(texturesFolder = new File(minecraftFolder + File.separator + "textures"));
@@ -152,8 +152,10 @@ public class ResourcepackZipper {
       final String nmsName = model.getBaseMaterial().getKey().getKey();
       final boolean isBlock = model.getBaseMaterial().isBlock();
       final JsonArray overrideArray;
+      final JsonObject modelObject;
+
       if (!cachedJsons.containsKey(model.getBaseMaterial())) {
-        final JsonObject modelObject = new JsonObject();
+        modelObject = new JsonObject();
         if (isBlock) {
           modelObject.addProperty("parent", assetLibrary.getAssetModelParent(nmsName));
         } else {
@@ -167,7 +169,8 @@ public class ResourcepackZipper {
         modelObject.add("overrides", overrideArray);
 
       } else {
-        overrideArray = cachedJsons.get(model.getBaseMaterial()).get("overrides").getAsJsonArray();
+        modelObject = cachedJsons.get(model.getBaseMaterial());
+        overrideArray = modelObject.get("overrides").getAsJsonArray();
       }
 
       final JsonObject overrideObject = new JsonObject();
@@ -175,8 +178,12 @@ public class ResourcepackZipper {
           assetLibrary.getAssetModelLayer0(nmsName).split("/")[0] + "/" + nmsName + "/" + model.getModelID();
       overrideObject.addProperty("model", customModelName);
       final JsonObject predicateObject = new JsonObject();
-      predicateObject.addProperty("custom_mode_data", model.getModelID());
+      predicateObject.addProperty("custom_model_data", model.getModelID());
       overrideObject.add("predicate", predicateObject);
+      overrideArray.add(overrideObject);
+
+      modelObject.add("overrides", overrideArray);
+      cachedJsons.put(model.getBaseMaterial(), modelObject);
     }
 
     final Gson gson = plugin.getGson();
