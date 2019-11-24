@@ -42,7 +42,7 @@ public class SchematicCommand extends BaseCommand {
     final Block middle = sender.getLocation().getBlock();
     final Block bot = middle.getRelative(-size, -size, -size);
     final Block top = middle.getRelative(size, size, size);
-    schematicManager.createSimple(bot, top, name);
+    schematicManager.create(bot, top, name);
     Message.send(sender, SchematicModule.class, "Schematic wurde erstellt.");
   }
 

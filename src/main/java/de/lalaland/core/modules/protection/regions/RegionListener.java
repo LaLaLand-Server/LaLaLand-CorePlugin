@@ -6,6 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -31,53 +32,53 @@ import org.bukkit.inventory.InventoryHolder;
  */
 public class RegionListener implements Listener {
 
-  public RegionListener(RegionManager regionManager) {
+  public RegionListener(final RegionManager regionManager) {
     this.regionManager = regionManager;
   }
 
   private final RegionManager regionManager;
 
-  @EventHandler
-  public void onBlockBreak(BlockBreakEvent event) {
-    ProtectedRegion region = this.regionManager
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void onBlockBreak(final BlockBreakEvent event) {
+    final ProtectedRegion region = regionManager
         .getMostRelevantRegion(event.getBlock().getLocation());
     if (region == null) {
       return;
     }
-    Permit permit = region.getPermit(event.getPlayer().getUniqueId(), RegionRule.BLOCK_BREAK);
+    final Permit permit = region.getPermit(event.getPlayer().getUniqueId(), RegionRule.BLOCK_BREAK);
     if (permit == Permit.DENY) {
       event.setCancelled(true);
       // TODO play deny effect
     }
   }
 
-  @EventHandler
-  public void onBlockPlace(BlockPlaceEvent event) {
-    ProtectedRegion region = this.regionManager
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void onBlockPlace(final BlockPlaceEvent event) {
+    final ProtectedRegion region = regionManager
         .getMostRelevantRegion(event.getBlock().getLocation());
     if (region == null) {
       return;
     }
-    Permit permit = region.getPermit(event.getPlayer().getUniqueId(), RegionRule.BLOCK_PLACE);
+    final Permit permit = region.getPermit(event.getPlayer().getUniqueId(), RegionRule.BLOCK_PLACE);
     if (permit == Permit.DENY) {
       event.setCancelled(true);
       // TODO play deny effect
     }
   }
 
-  @EventHandler
-  public void onBlockInteract(PlayerInteractEvent event) {
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void onBlockInteract(final PlayerInteractEvent event) {
     if (event.getAction() != Action.RIGHT_CLICK_BLOCK
         && event.getAction() != Action.LEFT_CLICK_BLOCK) {
       return;
     }
-    ProtectedRegion region = this.regionManager
+    final ProtectedRegion region = regionManager
         .getMostRelevantRegion(event.getClickedBlock().getLocation());
     if (region == null) {
       return;
     }
 
-    Permit permit;
+    final Permit permit;
 
     if (event.getClickedBlock().getState() instanceof InventoryHolder) {
       permit = region.getPermit(event.getPlayer().getUniqueId(), RegionRule.OPEN_INVENTORY_BLOCK);
@@ -91,15 +92,15 @@ public class RegionListener implements Listener {
 
   }
 
-  @EventHandler
-  public void onEntityInteract(PlayerInteractAtEntityEvent event) {
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void onEntityInteract(final PlayerInteractAtEntityEvent event) {
 
-    ProtectedRegion region = this.regionManager
+    final ProtectedRegion region = regionManager
         .getMostRelevantRegion(event.getRightClicked().getLocation());
     if (region == null) {
       return;
     }
-    Permit permit = region
+    final Permit permit = region
         .getPermit(event.getPlayer().getUniqueId(), RegionRule.INTERACT_AT_ENTITY);
     if (permit == Permit.DENY) {
       event.setCancelled(true);
@@ -108,19 +109,19 @@ public class RegionListener implements Listener {
 
   }
 
-  @EventHandler
-  public void onDamageEntity(EntityDamageByEntityEvent event) {
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void onDamageEntity(final EntityDamageByEntityEvent event) {
     if (!(event.getDamager() instanceof Player)) {
       return;
     }
 
-    ProtectedRegion region = this.regionManager
+    final ProtectedRegion region = regionManager
         .getMostRelevantRegion(event.getEntity().getLocation());
     if (region == null) {
       return;
     }
 
-    Permit permit;
+    final Permit permit;
 
     if (!(event.getEntity() instanceof Player)) {
       permit = region
@@ -140,14 +141,14 @@ public class RegionListener implements Listener {
 
   }
 
-  @EventHandler
-  public void onPistonEvent(BlockPistonExtendEvent event) {
-    for (Block block : event.getBlocks()) {
-      ProtectedRegion region = this.regionManager.getMostRelevantRegion(block.getLocation());
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void onPistonEvent(final BlockPistonExtendEvent event) {
+    for (final Block block : event.getBlocks()) {
+      final ProtectedRegion region = regionManager.getMostRelevantRegion(block.getLocation());
       if (region == null) {
         continue;
       }
-      Permit permit = region.getRuleSet().getPermit(Relation.NEUTRAL, RegionRule.PISTON_EXTEND);
+      final Permit permit = region.getRuleSet().getPermit(Relation.NEUTRAL, RegionRule.PISTON_EXTEND);
       if (permit == Permit.DENY) {
         event.setCancelled(true);
         return;
@@ -155,14 +156,14 @@ public class RegionListener implements Listener {
     }
   }
 
-  @EventHandler
-  public void onPistonEvent(BlockPistonRetractEvent event) {
-    for (Block block : event.getBlocks()) {
-      ProtectedRegion region = this.regionManager.getMostRelevantRegion(block.getLocation());
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void onPistonEvent(final BlockPistonRetractEvent event) {
+    for (final Block block : event.getBlocks()) {
+      final ProtectedRegion region = regionManager.getMostRelevantRegion(block.getLocation());
       if (region == null) {
         continue;
       }
-      Permit permit = region.getRuleSet().getPermit(Relation.NEUTRAL, RegionRule.PISTON_EXTEND);
+      final Permit permit = region.getRuleSet().getPermit(Relation.NEUTRAL, RegionRule.PISTON_EXTEND);
       if (permit == Permit.DENY) {
         event.setCancelled(true);
         return;
@@ -170,14 +171,14 @@ public class RegionListener implements Listener {
     }
   }
 
-  @EventHandler
-  public void onExplode(EntityExplodeEvent event) {
-    ListIterator<Block> blockIter = event.blockList().listIterator();
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void onExplode(final EntityExplodeEvent event) {
+    final ListIterator<Block> blockIter = event.blockList().listIterator();
     while (blockIter.hasNext()) {
-      Block next = blockIter.next();
-      ProtectedRegion region = this.regionManager.getMostRelevantRegion(next.getLocation());
+      final Block next = blockIter.next();
+      final ProtectedRegion region = regionManager.getMostRelevantRegion(next.getLocation());
       if (region != null) {
-        Permit permit = region.getRuleSet().getPermit(Relation.NEUTRAL, RegionRule.BLOCK_EXPLODE);
+        final Permit permit = region.getRuleSet().getPermit(Relation.NEUTRAL, RegionRule.BLOCK_EXPLODE);
         if (permit == Permit.DENY) {
           blockIter.remove();
         }
@@ -185,14 +186,14 @@ public class RegionListener implements Listener {
     }
   }
 
-  @EventHandler
-  public void onExplode(BlockExplodeEvent event) {
-    ListIterator<Block> blockIter = event.blockList().listIterator();
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void onExplode(final BlockExplodeEvent event) {
+    final ListIterator<Block> blockIter = event.blockList().listIterator();
     while (blockIter.hasNext()) {
-      Block next = blockIter.next();
-      ProtectedRegion region = this.regionManager.getMostRelevantRegion(next.getLocation());
+      final Block next = blockIter.next();
+      final ProtectedRegion region = regionManager.getMostRelevantRegion(next.getLocation());
       if (region != null) {
-        Permit permit = region.getRuleSet().getPermit(Relation.NEUTRAL, RegionRule.BLOCK_EXPLODE);
+        final Permit permit = region.getRuleSet().getPermit(Relation.NEUTRAL, RegionRule.BLOCK_EXPLODE);
         if (permit == Permit.DENY) {
           blockIter.remove();
         }
@@ -200,14 +201,14 @@ public class RegionListener implements Listener {
     }
   }
 
-  @EventHandler
-  public void onItemPickup(PlayerAttemptPickupItemEvent event) {
-    ProtectedRegion region = this.regionManager
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void onItemPickup(final PlayerAttemptPickupItemEvent event) {
+    final ProtectedRegion region = regionManager
         .getMostRelevantRegion(event.getPlayer().getLocation());
     if (region == null) {
       return;
     }
-    Permit permit = region.getPermit(event.getPlayer().getUniqueId(), RegionRule.ITEM_PICKUP);
+    final Permit permit = region.getPermit(event.getPlayer().getUniqueId(), RegionRule.ITEM_PICKUP);
     if (permit == Permit.DENY) {
       event.setCancelled(true);
     }

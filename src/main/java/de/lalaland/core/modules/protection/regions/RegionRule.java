@@ -70,10 +70,11 @@ public enum RegionRule {
       .put(Relation.HOSTILE, Permit.DENY)
       .put(Relation.NEUTRAL, Permit.ALLOW)
       .build());
+  //TODO fire spread
 
   private final ImmutableMap<Relation, Permit> defaultPermits;
 
-  public Permit getDefaultPermit(Relation relation) {
+  public Permit getDefaultPermit(final Relation relation) {
     return defaultPermits.getOrDefault(relation, Permit.DENY);
   }
 
