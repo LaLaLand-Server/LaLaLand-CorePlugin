@@ -1,5 +1,6 @@
 package de.lalaland.core.modules.resourcepack.distribution;
 
+import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.resourcepack.distribution.ResourcepackServer.ResourceServerConnection;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,15 +14,20 @@ import org.bukkit.entity.Player;
 
 public class ResourcepackManager {
 
-  private final int port = 9555;
-  private final String host = "127.0.0.1/pack.zip"; //CHANGEME?! D:
+  public static final int port = 9555;
+  public static final String host = "127.0.0.1"; //CHANGEME?! D:
+  public static String hash;
 
   private ResourcepackServer server;
-  private File pack;
+  private final File pack;
 
-  public ResourcepackManager() {
+  public ResourcepackManager(final CorePlugin plugin) {
+    pack = new File(plugin.getDataFolder(), "serverpack.zip");
     //Start the HTTP Server.
     startServer();
+
+    hash = getFileHashChecksum(pack);
+
   }
 
 

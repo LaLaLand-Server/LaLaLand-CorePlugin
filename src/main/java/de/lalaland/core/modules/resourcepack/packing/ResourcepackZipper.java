@@ -138,7 +138,7 @@ public class ResourcepackZipper {
         final JsonObject modelJson = new JsonObject();
         modelJson.addProperty("parent", model.getModelData().getModelParent());
         final JsonObject textureJson = new JsonObject();
-        textureJson.addProperty("layer0", nmsName + "/" + resourceModelFile.getName());
+        textureJson.addProperty("layer0", nmsName + "/" + model.getModelID());
         modelJson.add("textures", textureJson);
 
         final JsonObject elementsJson = model.getModelData().getElementsJson();

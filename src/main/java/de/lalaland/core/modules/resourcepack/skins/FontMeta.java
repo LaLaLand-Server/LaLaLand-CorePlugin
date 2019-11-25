@@ -15,7 +15,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class FontMeta {
-
+  
   private final int height;
   private final int ascent;
   private final String type;
