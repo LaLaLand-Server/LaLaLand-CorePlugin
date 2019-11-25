@@ -6,13 +6,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.io.ResourceCopy;
+import de.lalaland.core.modules.resourcepack.skins.FontMeta;
 import de.lalaland.core.modules.resourcepack.skins.ModelItem;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -66,7 +66,6 @@ public class ResourcepackZipper {
 
   private final File resourceZipFile;
 
-
   private final File packFolder;
   private final File assetFolder;
   private final File minecraftFolder;
@@ -84,17 +83,18 @@ public class ResourcepackZipper {
   private final File soundsFile;
 
   private void createMetaFile() throws IOException {
-    OutputStream out;
     final OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(mcmetaFile));
     osw.write(new PackMeta(META_FORMAT, META_DESC).getAsJsonString());
     osw.close();
   }
 
   private void modelItemSetup() throws URISyntaxException, IOException {
-
     final AssetLibrary assetLibrary = new AssetLibrary(plugin);
     final Path temp = Files.createTempDirectory(plugin.getDataFolder().toPath(), "temp_rp");
     final File tempFolder = temp.toFile();
+    final JsonObject fontJson = new JsonObject();
+    final JsonArray providerArray = new JsonArray();
+    char fontIndex = (char)0x3360;
 
     try {
       final ResourceCopy copy = new ResourceCopy();
@@ -121,18 +121,32 @@ public class ResourcepackZipper {
         resourceModelFolder.mkdirs();
         final File resourceModelFile = new File(resourceModelFolder, "" + model.getModelID() + ".json");
 
+        final String iconPath = "minecraft:" + nmsName + "/" + model.getModelID() + ".png";
+        model.getBoxedFontChar().value = fontIndex;
+        final FontMeta fontMeta = model.getFontMeta();
+        final JsonObject fontProvider = new JsonObject();
+        fontProvider.addProperty("file", iconPath);
+        final JsonArray charArray = new JsonArray();
+        charArray.add(fontIndex);
+        fontProvider.add("chars", charArray);
+        fontProvider.addProperty("height", fontMeta.getHeight());
+        fontProvider.addProperty("ascent", fontMeta.getAscent());
+        fontProvider.addProperty("type", fontMeta.getType());
+        providerArray.add(fontProvider);
+        fontIndex++;
+
         final JsonObject modelJson = new JsonObject();
-        modelJson.addProperty("parent", model.getModelParent());
+        modelJson.addProperty("parent", model.getModelData().getModelParent());
         final JsonObject textureJson = new JsonObject();
         textureJson.addProperty("layer0", nmsName + "/" + resourceModelFile.getName());
         modelJson.add("textures", textureJson);
 
-        final JsonObject elementsJson = model.getElementsJson();
+        final JsonObject elementsJson = model.getModelData().getElementsJson();
         if (elementsJson != null) {
           modelJson.add("elements", elementsJson);
         }
 
-        final JsonObject displayJson = model.getDisplayJson();
+        final JsonObject displayJson = model.getModelData().getDisplayJson();
         if (displayJson != null) {
           modelJson.add("display", displayJson);
         }
@@ -145,7 +159,26 @@ public class ResourcepackZipper {
       }
     }
 
-    // TODO print model json for bas item right (is printing null atm)
+    final JsonObject ttfProvider = new JsonObject();
+    ttfProvider.addProperty("type", "ttf");
+    ttfProvider.addProperty("size", 9.5);
+    ttfProvider.addProperty("oversample", 6.0);
+    final JsonArray shiftArray = new JsonArray();
+    shiftArray.add(0);
+    shiftArray.add(0.75);
+    ttfProvider.add("shift", shiftArray);
+    ttfProvider.addProperty("file", "minecraft:uniformcenter.ttf");
+    providerArray.add(ttfProvider);
+
+    final File ttfFile = new File(tempFolder, "uniformcenter.ttf");
+    FileUtils.copyFile(ttfFile, new File(fontFolder, "uniformcenter.ttf"));
+
+    fontJson.add("providers", providerArray);
+    final File fontFile = new File(fontFolder, "default.json");
+    final OutputStreamWriter oswFont = new OutputStreamWriter(new FileOutputStream(fontFile),"UTF-8");
+    oswFont.write(plugin.getGson().toJson(fontJson));
+    oswFont.close();
+
     final Map<Material, JsonObject> cachedJsons = Maps.newHashMap();
 
     for (final ModelItem model : ModelItem.values()) {

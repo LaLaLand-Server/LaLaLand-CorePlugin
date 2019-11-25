@@ -36,4 +36,10 @@ public class ModelItemCommand extends BaseCommand {
     Message.send(sender, ResourcepackModule.class, "Du hast ein ModelItem erhalten: " + modelName);
   }
 
+  @Subcommand("tell")
+  @CommandCompletion("@ModelItem")
+  public void onTellCommand(final Player sender, final ModelItem model) {
+    Message.send(sender, ResourcepackModule.class, "Model: " + model.getChar());
+  }
+
 }

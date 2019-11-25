@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.util.Map;
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -40,6 +42,8 @@ public class AssetLibrary {
 
   private final File assetLibFolder;
   private final CorePlugin plugin;
+  @Getter(AccessLevel.PROTECTED)
+  private JsonObject defaultFont;
 
   private void downloadAssets() {
     try {
@@ -56,7 +60,6 @@ public class AssetLibrary {
   private void iterateAssets() {
 
   }
-
 
   private final Map<String, JsonObject> itemModelDefaultAssets;
 

@@ -1,12 +1,11 @@
 package de.lalaland.core.modules.resourcepack.skins;
 
-import com.google.gson.JsonObject;
+import de.lalaland.core.modules.resourcepack.packing.BoxedFontChar;
 import de.lalaland.core.utils.items.ItemBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -20,23 +19,27 @@ import org.jetbrains.annotations.Nullable;
 @AllArgsConstructor
 public enum ModelItem {
 
-  BLACK_ARROW_UP(Material.STICK, 1000, "item/generated", null, null),
-  BLACK_ARROW_DOWN(Material.STICK, 1001, "item/generated", null, null),
-  BLACK_ARROW_LEFT(Material.STICK, 1002, "item/generated", null, null),
-  BLACK_ARROW_RIGHT(Material.STICK, 1003, "item/generated", null, null);
+  BLACK_ARROW_UP(Material.STICK, 1000, ModelData.common(), FontMeta.common(), new BoxedFontChar()),
+  BLACK_ARROW_DOWN(Material.STICK, 1001, ModelData.common(), FontMeta.common(), new BoxedFontChar()),
+  BLACK_ARROW_LEFT(Material.STICK, 1002, ModelData.common(), FontMeta.common(), new BoxedFontChar()),
+  BLACK_ARROW_RIGHT(Material.STICK, 1003, ModelData.common(), FontMeta.common(), new BoxedFontChar()),
+  GREEN_CHECK(Material.STICK, 1004, ModelData.common(), FontMeta.common(), new BoxedFontChar()),
+  RED_X(Material.STICK, 1005, ModelData.common(), FontMeta.common(), new BoxedFontChar());
 
   @Getter
   private final Material baseMaterial;
   @Getter
   private final int modelID;
   @Getter
-  private final String modelParent;
-  @Nullable
+  private final ModelData modelData;
   @Getter
-  private final JsonObject displayJson;
-  @Nullable
+  private final FontMeta fontMeta;
   @Getter
-  private final JsonObject elementsJson;
+  private final BoxedFontChar boxedFontChar;
+
+  public char getChar() {
+    return boxedFontChar.getAsCharacter();
+  }
 
   public ItemStack create() {
     return new ItemBuilder(baseMaterial).modelData(modelID).build();
