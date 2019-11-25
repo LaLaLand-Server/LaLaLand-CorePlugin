@@ -2,10 +2,10 @@ package de.lalaland.core.modules.chat.channels;
 
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.chat.listeners.AsyncPlayerChatListener;
+import de.lalaland.core.modules.resourcepack.skins.ModelItem;
 import de.lalaland.core.ui.gui.PrivateGui;
 import de.lalaland.core.ui.gui.icon.ClickableIcon;
 import de.lalaland.core.ui.gui.impl.IGui;
-import de.lalaland.core.utils.icons.IconTemplate;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import it.unimi.dsi.fastutil.objects.ObjectSets;
@@ -66,16 +66,16 @@ public class ChatChannelManager {
         true) {};
 
     gui.setIcon(1,
-        getIconForChannelSwitchGui(ChatChannel.GLOBAL,IconTemplate.CHANNEL_SWITCH_GLOBAL),false);
+        getIconForChannelSwitchGui(ChatChannel.GLOBAL, ModelItem.RED_X),false);
     gui.setIcon(3,
-        getIconForChannelSwitchGui(ChatChannel.TRADING,IconTemplate.CHANNEL_SWITCH_TRADE),true);
+        getIconForChannelSwitchGui(ChatChannel.TRADING, ModelItem.RED_X),true);
 
     return gui;
   }
 
-  private ClickableIcon getIconForChannelSwitchGui(final ChatChannel chatChannel, final IconTemplate iconTemplate){
+  private ClickableIcon getIconForChannelSwitchGui(final ChatChannel chatChannel, final ModelItem model){
 
-    return new ClickableIcon(iconTemplate.getDisplayItem()) {
+    return new ClickableIcon(model.create()) {
       @Override
       public void handleRightClick(final InventoryClickEvent event) {
         final Player player = (Player) event.getWhoClicked();

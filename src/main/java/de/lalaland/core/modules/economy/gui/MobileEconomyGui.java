@@ -1,11 +1,11 @@
 package de.lalaland.core.modules.economy.gui;
 
 import de.lalaland.core.CorePlugin;
+import de.lalaland.core.modules.resourcepack.skins.ModelItem;
 import de.lalaland.core.ui.gui.PrivateGui;
 import de.lalaland.core.ui.gui.icon.ClickableIcon;
 import de.lalaland.core.ui.gui.icon.SimpleIcon;
 import de.lalaland.core.utils.anvilgui.AnvilGUI;
-import de.lalaland.core.utils.icons.IconTemplate;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -31,9 +31,9 @@ public class MobileEconomyGui {
       }
     };
 
-    final SimpleIcon moneyOnHand = new SimpleIcon(IconTemplate.MONEY_ON_HAND.getDisplayItem());
+    final SimpleIcon moneyOnHand = new SimpleIcon(ModelItem.RED_X.create());
 
-    final ClickableIcon dropMoney = new ClickableIcon(IconTemplate.DROP_MONEY.getDisplayItem()) {
+    final ClickableIcon dropMoney = new ClickableIcon(ModelItem.RED_X.create()) {
       @Override
       public void handleRightClick(final InventoryClickEvent event) {
 

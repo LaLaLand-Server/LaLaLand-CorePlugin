@@ -1,11 +1,11 @@
 package de.lalaland.core.modules.combat.items;
 
 import de.lalaland.core.modules.combat.stats.CombatStat;
+import de.lalaland.core.modules.resourcepack.skins.ModelItem;
 import de.lalaland.core.utils.items.ItemBuilder;
 import de.lalaland.core.utils.nbtapi.NBTItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 /*******************************************************
@@ -20,17 +20,15 @@ import org.bukkit.inventory.ItemStack;
 @AllArgsConstructor
 public enum BaseWeapon {
 
-  WOODEN_SWORD("Holzschwert", Material.STICK, 100, 5.0, 200D, 200),
-  WOODEN_DAGGER("Holzdolch", Material.STICK, 101, 3.0, 300D, 200),
-  WOODEN_AXE("Holzaxt", Material.STICK, 102, 6.0, 150D, 200),
-  WOODEN_MACE("Holzstreitkolben", Material.STICK, 103, 7.0, 100D, 200);
+  WOODEN_SWORD("Holzschwert", ModelItem.RED_X, 5.0, 200D, 200),
+  WOODEN_DAGGER("Holzdolch", ModelItem.RED_X, 3.0, 300D, 200),
+  WOODEN_AXE("Holzaxt", ModelItem.RED_X, 6.0, 150D, 200),
+  WOODEN_MACE("Holzstreitkolben", ModelItem.RED_X, 7.0, 100D, 200);
 
   @Getter
   private final String displayName;
   @Getter
-  private final Material baseMaterial;
-  @Getter
-  private final int modelID;
+  private final ModelItem model;
   @Getter
   private final double baseDamage;
   @Getter
@@ -39,17 +37,16 @@ public enum BaseWeapon {
   private final int baseMaxDurability;
 
   public ItemStack createBaseItem() {
-    NBTItem nbt = new NBTItem(new ItemBuilder(this.baseMaterial)
-        .name(this.displayName)
-        .modelData(this.modelID)
+    final NBTItem nbt = new NBTItem(new ItemBuilder(model.create())
+        .name(displayName)
         .build());
 
-    StatItem statItem = StatItem.of(nbt);
+    final StatItem statItem = StatItem.of(nbt);
 
-    statItem.setDurability(this.baseMaxDurability);
-    statItem.setMaxDurability(this.baseMaxDurability);
-    statItem.setCombatStat(CombatStat.ATTACK_SPEED, this.baseAttackSpeed);
-    statItem.setCombatStat(CombatStat.MEELE_DAMAGE, this.baseDamage);
+    statItem.setDurability(baseMaxDurability);
+    statItem.setMaxDurability(baseMaxDurability);
+    statItem.setCombatStat(CombatStat.ATTACK_SPEED, baseAttackSpeed);
+    statItem.setCombatStat(CombatStat.MEELE_DAMAGE, baseDamage);
     statItem.addItemInfoCompiler();
 
     return statItem.getItemStack();

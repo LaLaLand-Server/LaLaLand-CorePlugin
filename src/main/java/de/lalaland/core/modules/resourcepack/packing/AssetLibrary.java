@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.resourcepack.skins.ModelItem;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,12 +29,9 @@ public class AssetLibrary {
   protected AssetLibrary(final CorePlugin plugin) {
     this.plugin = plugin;
     itemModelDefaultAssets = Maps.newHashMap();
-    assetLibFolder = new File(plugin.getDataFolder() + File.separator + "assetlib");
-    assetLibFolder.mkdirs();
     iterateAssets();
   }
 
-  private final File assetLibFolder;
   private final CorePlugin plugin;
   @Getter(AccessLevel.PROTECTED)
   private JsonObject defaultFont;
