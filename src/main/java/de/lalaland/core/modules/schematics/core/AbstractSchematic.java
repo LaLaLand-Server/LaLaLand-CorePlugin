@@ -39,13 +39,18 @@ public abstract class AbstractSchematic implements ISchematic {
   @Getter
   protected final String schmaticID;
   protected final PasteThread pasteThread;
-  @Getter
+
   protected final Vector dimension;
 
-  public abstract void pasteCenteredAround(Location location);
+  public abstract void pasteCenteredAround(Location location, boolean withAir);
 
-  public abstract void pasteToGround(Location location);
+  public abstract void pasteToGround(Location location, boolean withAir);
 
   public abstract JsonElement getAsJson();
+
+  @Override
+  public Vector getDimension() {
+    return dimension.clone();
+  }
 
 }

@@ -30,11 +30,11 @@ public class ResourcepackModule implements IModule {
         .registerStaticCompletion("ModelItem",
             ImmutableList.copyOf(Arrays.stream(ModelItem.values()).map(Enum::toString).collect(Collectors.toList())));
     resourcepackManager = new ResourcepackManager(plugin);
-    Bukkit.getPluginManager().registerEvents(new ResourcepackListener(plugin), plugin);
+    Bukkit.getPluginManager().registerEvents(new ResourcepackListener(plugin, resourcepackManager), plugin);
   }
 
   @Override
   public void disable(final CorePlugin plugin) throws Exception {
-
+    resourcepackManager.shutdown();
   }
 }

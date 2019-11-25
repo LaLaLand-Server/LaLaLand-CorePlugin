@@ -14,9 +14,9 @@ import org.bukkit.entity.Player;
 
 public class ResourcepackManager {
 
-  public static final int port = 9555;
-  public static final String host = "127.0.0.1"; //CHANGEME?! D:
-  public static String hash;
+  private final int port = 9555;
+  private final String host = "127.0.0.1"; //CHANGEME?! D:
+  private final String hash;
 
   private ResourcepackServer server;
   private final File pack;
@@ -27,7 +27,18 @@ public class ResourcepackManager {
     startServer();
 
     hash = getFileHashChecksum(pack);
+  }
 
+  public String getResourceHash() {
+    return hash;
+  }
+
+  public String getDownloadURL(final String packname) {
+    return "http://" + host + ":" + port + "/" + packname;
+  }
+
+  public void shutdown() {
+    server.terminate();
   }
 
 

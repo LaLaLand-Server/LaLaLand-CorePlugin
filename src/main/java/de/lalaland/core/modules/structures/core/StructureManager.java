@@ -2,7 +2,9 @@ package de.lalaland.core.modules.structures.core;
 
 import de.lalaland.core.modules.protection.regions.ProtectedRegion;
 import de.lalaland.core.modules.protection.regions.RegionManager;
+import de.lalaland.core.modules.schematics.core.Schematic;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.bukkit.Location;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -26,6 +28,25 @@ public class StructureManager {
 
   public Structure getStructure(final ProtectedRegion region) {
     return structureRegionMap.get(region);
+  }
+
+
+  public void deleteStructure(final Structure structure) {
+    structure.destroyBlocks();
+    unlinkStructure(structure);
+  }
+
+  protected void unlinkStructure(final Structure struct) {
+    final ProtectedRegion region = struct.getProtectedRegion();
+    structureRegionMap.remove(region);
+    regionManager.removeRegion(region);
+  }
+
+  public BaseStructure createBaseStructure(final Schematic baseSchematic, final Location groundCenter) {
+    final ProtectedRegion schematicRegion = regionManager.createFor(baseSchematic, groundCenter);
+    final BaseStructure structure = new BaseStructure(schematicRegion, baseSchematic, this);
+    structureRegionMap.put(schematicRegion, structure);
+    return structure;
   }
 
 }

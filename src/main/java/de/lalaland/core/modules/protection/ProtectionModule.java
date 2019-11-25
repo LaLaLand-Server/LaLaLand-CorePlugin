@@ -43,7 +43,7 @@ public class ProtectionModule implements IModule {
 
   @Override
   public void enable(final CorePlugin plugin) {
-    regionFolder = new File(plugin.getDataFolder() + File.separator + "Regions");
+    regionFolder = new File(plugin.getDataFolder() + File.separator + "regions");
     if (!regionFolder.exists()) {
       regionFolder.mkdirs();
     }

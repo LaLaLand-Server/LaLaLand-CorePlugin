@@ -3,6 +3,7 @@ package de.lalaland.core.modules.structures.core;
 import de.lalaland.core.modules.protection.regions.ProtectedRegion;
 import de.lalaland.core.modules.protection.regions.RegionManager;
 import java.util.Set;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -32,11 +33,14 @@ public class StructureListener implements Listener {
   // TODO maybe fire RegionBreakEvent and use instead of calling region here and in RegionListener
   @EventHandler
   public void onBlockBreak(final BlockBreakEvent event) {
-    final Set<ProtectedRegion> regions = regionManager.getRegionsAt(event.getBlock().getLocation());
+    final Location breakLoc = event.getBlock().getLocation();
+    final Set<ProtectedRegion> regions = regionManager.getRegionsAt(breakLoc);
     for (final ProtectedRegion region : regions) {
-      final Structure struct = structureManager.getStructure(region);
-      if (struct != null) {
-        struct.onBlockBreak(event);
+      if (region.contains(breakLoc)) {
+        final Structure struct = structureManager.getStructure(region);
+        if (struct != null) {
+          struct.onBlockBreak(event);
+        }
       }
     }
   }
@@ -47,12 +51,14 @@ public class StructureListener implements Listener {
     if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
       return;
     }
-    final Set<ProtectedRegion> regions = regionManager
-        .getRegionsAt(event.getClickedBlock().getLocation());
+    final Location clickLoc = event.getClickedBlock().getLocation();
+    final Set<ProtectedRegion> regions = regionManager.getRegionsAt(clickLoc);
     for (final ProtectedRegion region : regions) {
-      final Structure struct = structureManager.getStructure(region);
-      if (struct != null) {
-        struct.onInteract(event);
+      if (region.contains(clickLoc)) {
+        final Structure struct = structureManager.getStructure(region);
+        if (struct != null) {
+          struct.onInteract(event);
+        }
       }
     }
   }

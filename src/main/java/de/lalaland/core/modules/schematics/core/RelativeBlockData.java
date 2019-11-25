@@ -1,5 +1,6 @@
 package de.lalaland.core.modules.schematics.core;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.block.data.BlockData;
 
@@ -34,6 +35,7 @@ public class RelativeBlockData {
   protected final int x;
   protected final int y;
   protected final int z;
+  @Getter
   protected final BlockData blockData;
 
   public String getAsString() {

@@ -53,10 +53,8 @@ public class SchematicManager implements Iterable<Schematic> {
     return schematicCashe.get(schematicID);
   }
 
-  public Schematic create(final Block corner1, final Block corner2,
-      final String schematicID) {
-    final Schematic schematic = new Schematic(corner1, corner2, schematicID,
-        pasteThread);
+  public Schematic create(final Block corner1, final Block corner2, final String schematicID) {
+    final Schematic schematic = new Schematic(corner1, corner2, schematicID, pasteThread);
     schematicCashe.put(schematicID, schematic);
     return schematic;
   }

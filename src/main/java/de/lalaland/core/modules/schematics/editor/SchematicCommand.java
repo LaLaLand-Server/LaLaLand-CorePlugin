@@ -2,13 +2,15 @@ package de.lalaland.core.modules.schematics.editor;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import de.lalaland.core.modules.schematics.SchematicModule;
 import de.lalaland.core.modules.schematics.core.Schematic;
 import de.lalaland.core.modules.schematics.core.SchematicManager;
 import de.lalaland.core.ui.Message;
-import org.bukkit.block.Block;
+import de.lalaland.core.utils.tuples.Pair;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /*******************************************************
@@ -23,8 +25,11 @@ import org.bukkit.entity.Player;
 @CommandAlias("schematic")
 public class SchematicCommand extends BaseCommand {
 
-  public SchematicCommand(final SchematicManager schematicManager) {
+  private final EditorSessions sessions;
+
+  public SchematicCommand(final SchematicManager schematicManager, final EditorSessions sessions) {
     this.schematicManager = schematicManager;
+    this.sessions = sessions;
   }
 
   private final SchematicManager schematicManager;
@@ -37,46 +42,69 @@ public class SchematicCommand extends BaseCommand {
     }
   }
 
-  @Subcommand("test1")
-  public void onTest(final Player sender, final int size, final String name) {
-    final Block middle = sender.getLocation().getBlock();
-    final Block bot = middle.getRelative(-size, -size, -size);
-    final Block top = middle.getRelative(size, size, size);
-    schematicManager.create(bot, top, name);
-    Message.send(sender, SchematicModule.class, "Schematic wurde erstellt.");
-  }
-
   @Subcommand("paste corner")
+  @CommandCompletion("@Structure")
   public void onPaste(final Player sender, final String schematicName) {
     final Schematic schematic = schematicManager.getSchematic(schematicName);
     if (schematic == null) {
       Message.error(sender, SchematicModule.class, "Schematic existiert nicht.");
       return;
     }
-    schematic.paste(sender.getLocation());
+    schematic.paste(sender.getLocation(), false);
     Message.send(sender, SchematicModule.class, "Schematic wird geladen.");
   }
 
   @Subcommand("paste middle")
+  @CommandCompletion("@Structure")
   public void onPasteMiddle(final Player sender, final String schematicName) {
     final Schematic schematic = schematicManager.getSchematic(schematicName);
     if (schematic == null) {
       Message.error(sender, SchematicModule.class, "Schematic existiert nicht.");
       return;
     }
-    schematic.pasteCenteredAround(sender.getLocation());
+    schematic.pasteCenteredAround(sender.getLocation(), false);
     Message.send(sender, SchematicModule.class, "Schematic wird geladen.");
   }
 
   @Subcommand("paste ground")
+  @CommandCompletion("@Structure")
   public void onOnGround(final Player sender, final String schematicName) {
     final Schematic schematic = schematicManager.getSchematic(schematicName);
     if (schematic == null) {
       Message.error(sender, SchematicModule.class, "Schematic existiert nicht.");
       return;
     }
-    schematic.pasteToGround(sender.getLocation());
+    schematic.pasteToGround(sender.getLocation(), false);
     Message.send(sender, SchematicModule.class, "Schematic wird geladen.");
+  }
+
+  @Subcommand("editor")
+  public void addToEditor(final Player sender) {
+    if (sessions.hasSession(sender)) {
+      sessions.removeSession(sender);
+      sender.sendMessage("Editor wurde beendet");
+      return;
+    }
+    sessions.addSession(sender);
+    sender.sendMessage("Wähle Position 1 & 2 -> /schematic create");
+  }
+
+  @Subcommand("create")
+  public void createSchematic(final Player sender, final String schematicName) {
+
+    final Pair<Location, Location> locs = sessions.getSelectedSession(sender);
+
+    if (locs.getLeft() == null || locs.getRight() == null) {
+      sender.sendMessage("Du musst erst einen Bereich auswählen.");
+      return;
+    }
+
+    final Schematic schematic = schematicManager.create(locs.getLeft().getBlock(), locs.getRight().getBlock(), schematicName);
+
+    sender.sendMessage("Schematic wurde erstellt.");
+
+    sessions.removeSession(sender);
+
   }
 
 }

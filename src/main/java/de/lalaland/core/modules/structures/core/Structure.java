@@ -1,6 +1,7 @@
 package de.lalaland.core.modules.structures.core;
 
 import de.lalaland.core.modules.protection.regions.ProtectedRegion;
+import de.lalaland.core.modules.schematics.core.Schematic;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import lombok.Getter;
@@ -21,15 +22,19 @@ import org.bukkit.util.Vector;
  */
 public abstract class Structure {
 
-  public Structure(final ProtectedRegion protectedRegion) {
+  public Structure(final ProtectedRegion protectedRegion, final Schematic baseSchematic, final StructureManager structureManager) {
     this.protectedRegion = protectedRegion;
+    this.structureManager = structureManager;
     validMaterials = new ObjectOpenHashSet<>();
+    this.baseSchematic = baseSchematic;
+    //Preconditions.checkArgument(protectedRegion.isSchematicViable(baseSchematic), "Schematic is too big.");
   }
 
   @Getter
   private final ProtectedRegion protectedRegion;
-
   private final ObjectSet<Material> validMaterials;
+  protected final Schematic baseSchematic;
+  protected final StructureManager structureManager;
 
   public boolean isValidMaterial(final Material mat) {
     return validMaterials.contains(mat);
@@ -38,6 +43,14 @@ public abstract class Structure {
   public Vector getDimension() {
     final BoundingBox box = protectedRegion.getBoundingBoxClone();
     return box.getMax().subtract(box.getMin());
+  }
+
+  protected void buildBlocks() {
+    baseSchematic.pasteToGround(protectedRegion.getGroundCenter(), false);
+  }
+
+  protected void destroyBlocks() {
+    baseSchematic.pasteInvertedToGround(protectedRegion.getGroundCenter(), false);
   }
 
   protected void addValidMaterial(final Material material) {

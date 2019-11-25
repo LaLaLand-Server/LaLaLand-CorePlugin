@@ -3,6 +3,7 @@ package de.lalaland.core.modules.schematics;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
 import de.lalaland.core.modules.schematics.core.SchematicManager;
+import de.lalaland.core.modules.schematics.editor.EditorSessions;
 import de.lalaland.core.modules.schematics.editor.SchematicCommand;
 import lombok.Getter;
 
@@ -29,7 +30,8 @@ public class SchematicModule implements IModule {
   public void enable(final CorePlugin plugin) throws Exception, Exception {
     schematicManager = new SchematicManager(plugin);
     schematicManager.loadSchematics();
-    plugin.getCommandManager().registerCommand(new SchematicCommand(schematicManager));
+    final EditorSessions sessions = new EditorSessions(plugin);
+    plugin.getCommandManager().registerCommand(new SchematicCommand(schematicManager, sessions));
     // TODO register autocompletion
   }
 
