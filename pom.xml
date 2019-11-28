@@ -90,8 +90,7 @@
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.3.1</version>
         <configuration>
-          <outputDirectory>${project.basedir}\export</outputDirectory>
-          <!--<outputDirectory>C:\Users\neura\Desktop\TestServer\plugins</outputDirectory>-->
+          <outputDirectory>export</outputDirectory>
         </configuration>
       </plugin>
 

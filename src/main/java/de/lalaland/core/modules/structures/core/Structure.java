@@ -31,7 +31,7 @@ public abstract class Structure {
   }
 
   @Getter
-  private final ProtectedRegion protectedRegion;
+  protected final ProtectedRegion protectedRegion;
   private final ObjectSet<Material> validMaterials;
   protected final Schematic baseSchematic;
   protected final StructureManager structureManager;

@@ -6,7 +6,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import de.lalaland.core.utils.nbtapi.NBTItem;
-import de.lalaland.core.utils.nbtapi.NBTList;
+import de.lalaland.core.utils.nbtapi.NBTStringList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.function.Function;
 import org.bukkit.entity.Player;
@@ -26,34 +26,40 @@ public class ItemDisplayCompiler extends PacketAdapter implements Function<ItemS
 
   public static final String NBT_KEY = "CompileDisplay";
 
-  public static void addDisplayCompileKey(String key, ItemStack item) {
+  public static void addDisplayCompileKey(final String key, final ItemStack item) {
     addDisplayCompileKey(key, new NBTItem(item));
   }
 
-  public static void addDisplayCompileKey(String key, NBTItem nbt) {
-    NBTList<String> compilerList = nbt.getStringList(NBT_KEY);
+  public static void addDisplayCompileKey(final String key, final NBTItem nbt) {
+    final NBTStringList compilerList;
+    if (nbt.hasKey(NBT_KEY)) {
+      compilerList = nbt.getStringList(NBT_KEY);
+    } else {
+      compilerList = nbt.createStringList(NBT_KEY);
+    }
+
     compilerList.add(key);
   }
 
-  public ItemDisplayCompiler(Plugin plugin) {
+  public ItemDisplayCompiler(final Plugin plugin) {
     super(plugin, Server.WINDOW_ITEMS, Server.SET_SLOT);
-    this.compilerMap = new Object2ObjectOpenHashMap<String, DisplayConverter>();
+    compilerMap = new Object2ObjectOpenHashMap<>();
   }
 
   @Override
-  public void onPacketSending(PacketEvent event) {
-    PacketContainer packet = event.getPacket();
-    this.playerToModify = event.getPlayer();
+  public void onPacketSending(final PacketEvent event) {
+    final PacketContainer packet = event.getPacket();
+    playerToModify = event.getPlayer();
     if (event.getPacketType() == Server.WINDOW_ITEMS) {
-      StructureModifier<ItemStack[]> structMod = packet.getItemArrayModifier();
+      final StructureModifier<ItemStack[]> structMod = packet.getItemArrayModifier();
       for (int index = 0; index < structMod.size(); index++) {
-        ItemStack[] itemArray = structMod.read(index);
+        final ItemStack[] itemArray = structMod.read(index);
         for (int i = 0; i < itemArray.length; i++) {
-          itemArray[i] = this.apply(itemArray[i]);
+          itemArray[i] = apply(itemArray[i]);
         }
       }
     } else {
-      StructureModifier<ItemStack> structMod = packet.getItemModifier();
+      final StructureModifier<ItemStack> structMod = packet.getItemModifier();
       for (int index = 0; index < structMod.size(); index++) {
         structMod.modify(index, this::apply);
       }
@@ -64,24 +70,26 @@ public class ItemDisplayCompiler extends PacketAdapter implements Function<ItemS
   private final Object2ObjectOpenHashMap<String, DisplayConverter> compilerMap;
   private Player playerToModify;
 
-  public void registerConverter(DisplayConverter converter) {
-    this.compilerMap.put(converter.getDisplayKey(), converter);
+  public void registerConverter(final DisplayConverter converter) {
+    compilerMap.put(converter.getDisplayKey(), converter);
   }
 
   @Override
   public ItemStack apply(final ItemStack itemStack) {
-    if(itemStack == null) return itemStack;
+    if (itemStack == null) {
+      return null;
+    }
     ItemStack clone = itemStack.clone();
-    NBTItem nbt = new NBTItem(clone);
+    final NBTItem nbt = new NBTItem(clone);
     if (!nbt.hasKey(NBT_KEY)) {
       return itemStack;
     }
-    NBTList<String> displayKeys = nbt.getStringList(NBT_KEY);
-    for(int index = 0; index < displayKeys.size(); index++){
-      String key = displayKeys.get(index);
-      DisplayConverter converter = this.compilerMap.get(key);
+    final NBTStringList displayKeys = nbt.getStringList(NBT_KEY);
+    for (int index = 0; index < displayKeys.size(); index++) {
+      final String key = displayKeys.get(index);
+      final DisplayConverter converter = compilerMap.get(key);
       if (converter != null) {
-        clone = converter.compileInfo(this.playerToModify, clone).getResult();
+        clone = converter.compileInfo(playerToModify, clone).getResult();
       }
     }
     return clone;

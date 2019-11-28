@@ -3,6 +3,7 @@ package de.lalaland.core.modules.combat.items;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import de.lalaland.core.modules.combat.stats.CombatStat;
+import de.lalaland.core.modules.jobs.jobdata.JobType;
 import de.lalaland.core.utils.items.display.ItemDisplayCompiler;
 import de.lalaland.core.utils.nbtapi.NBTCompound;
 import de.lalaland.core.utils.nbtapi.NBTItem;
@@ -23,12 +24,12 @@ import org.bukkit.inventory.ItemStack;
  */
 public class StatItem {
 
-  public static StatItem of(ItemStack item) {
+  public static StatItem of(final ItemStack item) {
     Preconditions.checkNotNull(item, "ItemStack can not be null.");
     return of(new NBTItem(item));
   }
 
-  public static StatItem of(NBTItem nbtItem) {
+  public static StatItem of(final NBTItem nbtItem) {
     return new StatItem(nbtItem);
   }
 
@@ -37,10 +38,10 @@ public class StatItem {
    *
    * @param nbt the item as NBTItem
    */
-  private StatItem(NBTItem nbt) {
+  private StatItem(final NBTItem nbt) {
     this.nbt = nbt;
-    this.combatStatComponent = nbt.hasKey(CombatStat.COMPOUND_KEY);
-    this.itemStatComponent = nbt.hasKey(ItemStat.COMPOUND_KEY);
+    combatStatComponent = nbt.hasKey(CombatStat.COMPOUND_KEY);
+    itemStatComponent = nbt.hasKey(ItemStat.COMPOUND_KEY);
   }
 
   private final NBTItem nbt;
@@ -54,7 +55,7 @@ public class StatItem {
   }
 
   public NBTItem getNbtItem() {
-    return this.nbt;
+    return nbt;
   }
 
   /**
@@ -66,10 +67,10 @@ public class StatItem {
   public Map<CombatStat, Double> getCombatStatMap() {
     Map<CombatStat, Double> map = null;
 
-    if (this.combatStatComponent) {
+    if (combatStatComponent) {
       map = Maps.newHashMap();
-      NBTCompound statComp = nbt.getCompound(CombatStat.COMPOUND_KEY);
-      for (String key : statComp.getKeys()) {
+      final NBTCompound statComp = nbt.getCompound(CombatStat.COMPOUND_KEY);
+      for (final String key : statComp.getKeys()) {
         map.put(CombatStat.valueOf(key), statComp.getDouble(key));
       }
     }
@@ -78,7 +79,7 @@ public class StatItem {
   }
 
   public void addItemInfoCompiler() {
-    ItemDisplayCompiler.addDisplayCompileKey(ItemInfoCompiler.NBT_VALUE, this.nbt);
+    ItemDisplayCompiler.addDisplayCompileKey(ItemInfoCompiler.NBT_VALUE, nbt);
   }
 
   /**
@@ -87,9 +88,9 @@ public class StatItem {
    * @param stat
    * @return the value or 0
    */
-  public double getCombatStatValue(CombatStat stat) {
-    if (this.combatStatComponent) {
-      NBTCompound statComp = nbt.getCompound(CombatStat.COMPOUND_KEY);
+  public double getCombatStatValue(final CombatStat stat) {
+    if (combatStatComponent) {
+      final NBTCompound statComp = nbt.getCompound(CombatStat.COMPOUND_KEY);
       if (statComp.hasKey(stat.toString())) {
         return statComp.getDouble(stat.toString());
       }
@@ -105,8 +106,8 @@ public class StatItem {
    */
   @Nullable
   public WeaponType getWeaponType() {
-    if (this.itemStatComponent) {
-      NBTCompound itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+    if (itemStatComponent) {
+      final NBTCompound itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
       if (itemStatCompound.hasKey(ItemStat.WEAPON_TYPE.getNbtKey())) {
         return WeaponType
             .valueOf(itemStatCompound.getString(ItemStat.WEAPON_TYPE.getNbtKey()));
@@ -122,10 +123,10 @@ public class StatItem {
    */
   @Nullable
   public Integer getMaxDurability() {
-    if (this.itemStatComponent) {
-      NBTCompound itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+    if (itemStatComponent) {
+      final NBTCompound itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
       if (itemStatCompound.hasKey(ItemStat.MAX_DURABILITY.getNbtKey())) {
-        return itemStatCompound.getInteger(ItemStat.MAX_DURABILITY.getNbtKey());
+        return itemStatCompound.getInt(ItemStat.MAX_DURABILITY.getNbtKey());
       }
     }
     return null;
@@ -138,10 +139,10 @@ public class StatItem {
    */
   @Nullable
   public Integer getDurability() {
-    if (this.itemStatComponent) {
-      NBTCompound itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+    if (itemStatComponent) {
+      final NBTCompound itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
       if (itemStatCompound.hasKey(ItemStat.DURABILITY.getNbtKey())) {
-        return itemStatCompound.getInteger(ItemStat.DURABILITY.getNbtKey());
+        return itemStatCompound.getInt(ItemStat.DURABILITY.getNbtKey());
       }
     }
     return null;
@@ -154,8 +155,8 @@ public class StatItem {
    */
   @Nullable
   public String getVersion() {
-    if (this.itemStatComponent) {
-      NBTCompound itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+    if (itemStatComponent) {
+      final NBTCompound itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
       if (itemStatCompound.hasKey(ItemStat.VERSION.getNbtKey())) {
         return itemStatCompound.getString(ItemStat.VERSION.getNbtKey());
       }
@@ -170,8 +171,8 @@ public class StatItem {
    */
   @Nullable
   public Long getCreationDate() {
-    if (this.itemStatComponent) {
-      NBTCompound itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+    if (itemStatComponent) {
+      final NBTCompound itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
       if (itemStatCompound.hasKey(ItemStat.CREATION_DATE.getNbtKey())) {
         return itemStatCompound.getLong(ItemStat.CREATION_DATE.getNbtKey());
       }
@@ -186,8 +187,8 @@ public class StatItem {
    */
   @Nullable
   public Boolean getUnbreakable() {
-    if (this.itemStatComponent) {
-      NBTCompound itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+    if (itemStatComponent) {
+      final NBTCompound itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
       if (itemStatCompound.hasKey(ItemStat.UNBREAKABLE.getNbtKey())) {
         return itemStatCompound.getBoolean(ItemStat.UNBREAKABLE.getNbtKey());
       }
@@ -202,8 +203,8 @@ public class StatItem {
    */
   @Nullable
   public String getItemCreator() {
-    if (this.itemStatComponent) {
-      NBTCompound itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+    if (itemStatComponent) {
+      final NBTCompound itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
       if (itemStatCompound.hasKey(ItemStat.CREATOR.getNbtKey())) {
         return itemStatCompound.getString(ItemStat.CREATOR.getNbtKey());
       }
@@ -217,12 +218,12 @@ public class StatItem {
    * @param stat  the CombatStat
    * @param value the value
    */
-  public void setCombatStat(CombatStat stat, double value) {
-    NBTCompound statCompound;
+  public void setCombatStat(final CombatStat stat, final double value) {
+    final NBTCompound statCompound;
 
-    if (!this.combatStatComponent) {
-      statCompound = this.nbt.addCompound(CombatStat.COMPOUND_KEY);
-      this.combatStatComponent = true;
+    if (!combatStatComponent) {
+      statCompound = nbt.createCompound(CombatStat.COMPOUND_KEY);
+      combatStatComponent = true;
     } else {
       statCompound = nbt.getCompound(CombatStat.COMPOUND_KEY);
     }
@@ -236,36 +237,35 @@ public class StatItem {
    *
    * @param type
    */
-  public void setWeaponType(WeaponType type) {
-    NBTCompound itemStatCompound;
+  public void setWeaponType(final WeaponType type) {
+    final NBTCompound itemStatCompound;
 
-    if (!this.itemStatComponent) {
-      itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
-      this.itemStatComponent = true;
+    if (!itemStatComponent) {
+      itemStatCompound = nbt.createCompound(ItemStat.COMPOUND_KEY);
+      itemStatComponent = true;
     } else {
-      itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+      itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
     }
 
     itemStatCompound.setString(ItemStat.WEAPON_TYPE.getNbtKey(), type.toString());
   }
 
   /**
-   * Sets the MaxDurability of this item. If the ItemStat NBTCompound is not set it will create
-   * one.
+   * Sets the MaxDurability of this item. If the ItemStat NBTCompound is not set it will create one.
    *
    * @param durability
    */
-  public void setMaxDurability(int durability) {
-    NBTCompound itemStatCompound;
+  public void setMaxDurability(final int durability) {
+    final NBTCompound itemStatCompound;
 
-    if (!this.itemStatComponent) {
-      itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
-      this.itemStatComponent = true;
+    if (!itemStatComponent) {
+      itemStatCompound = nbt.createCompound(ItemStat.COMPOUND_KEY);
+      itemStatComponent = true;
     } else {
-      itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+      itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
     }
 
-    itemStatCompound.setInteger(ItemStat.MAX_DURABILITY.getNbtKey(), durability);
+    itemStatCompound.setInt(ItemStat.MAX_DURABILITY.getNbtKey(), durability);
   }
 
   /**
@@ -273,17 +273,17 @@ public class StatItem {
    *
    * @param durability
    */
-  public void setDurability(int durability) {
-    NBTCompound itemStatCompound;
+  public void setDurability(final int durability) {
+    final NBTCompound itemStatCompound;
 
-    if (!this.itemStatComponent) {
-      itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
-      this.itemStatComponent = true;
+    if (!itemStatComponent) {
+      itemStatCompound = nbt.createCompound(ItemStat.COMPOUND_KEY);
+      itemStatComponent = true;
     } else {
-      itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+      itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
     }
 
-    itemStatCompound.setInteger(ItemStat.DURABILITY.getNbtKey(), durability);
+    itemStatCompound.setInt(ItemStat.DURABILITY.getNbtKey(), durability);
   }
 
   /**
@@ -291,14 +291,14 @@ public class StatItem {
    *
    * @param version
    */
-  public void setVersion(String version) {
-    NBTCompound itemStatCompound;
+  public void setVersion(final String version) {
+    final NBTCompound itemStatCompound;
 
-    if (!this.itemStatComponent) {
-      itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
-      this.itemStatComponent = true;
+    if (!itemStatComponent) {
+      itemStatCompound = nbt.createCompound(ItemStat.COMPOUND_KEY);
+      itemStatComponent = true;
     } else {
-      itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+      itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
     }
 
     itemStatCompound.setString(ItemStat.VERSION.getNbtKey(), version);
@@ -309,33 +309,32 @@ public class StatItem {
    *
    * @param creationDate
    */
-  public void setCreationDate(long creationDate) {
-    NBTCompound itemStatCompound;
+  public void setCreationDate(final long creationDate) {
+    final NBTCompound itemStatCompound;
 
-    if (!this.itemStatComponent) {
-      itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
-      this.itemStatComponent = true;
+    if (!itemStatComponent) {
+      itemStatCompound = nbt.createCompound(ItemStat.COMPOUND_KEY);
+      itemStatComponent = true;
     } else {
-      itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+      itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
     }
 
     itemStatCompound.setLong(ItemStat.CREATION_DATE.getNbtKey(), creationDate);
   }
 
   /**
-   * Sets the Unbreakable state of this item. If the ItemStat NBTCompound is not set it will create
-   * one.
+   * Sets the Unbreakable state of this item. If the ItemStat NBTCompound is not set it will create one.
    *
    * @param state
    */
-  public void setUnbreakable(boolean state) {
-    NBTCompound itemStatCompound;
+  public void setUnbreakable(final boolean state) {
+    final NBTCompound itemStatCompound;
 
-    if (!this.itemStatComponent) {
-      itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
-      this.itemStatComponent = true;
+    if (!itemStatComponent) {
+      itemStatCompound = nbt.createCompound(ItemStat.COMPOUND_KEY);
+      itemStatComponent = true;
     } else {
-      itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+      itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
     }
 
     itemStatCompound.setBoolean(ItemStat.UNBREAKABLE.getNbtKey(), state);
@@ -346,14 +345,14 @@ public class StatItem {
    *
    * @param creator
    */
-  public void setCreator(String creator) {
-    NBTCompound itemStatCompound;
+  public void setCreator(final String creator) {
+    final NBTCompound itemStatCompound;
 
-    if (!this.itemStatComponent) {
-      itemStatCompound = this.nbt.addCompound(ItemStat.COMPOUND_KEY);
-      this.itemStatComponent = true;
+    if (!itemStatComponent) {
+      itemStatCompound = nbt.createCompound(ItemStat.COMPOUND_KEY);
+      itemStatComponent = true;
     } else {
-      itemStatCompound = this.nbt.getCompound(ItemStat.COMPOUND_KEY);
+      itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
     }
 
     itemStatCompound.setString(ItemStat.VERSION.getNbtKey(), creator);
@@ -364,8 +363,28 @@ public class StatItem {
    *
    * @param creator
    */
-  public void setCreator(UUID creator) {
-    this.setCreator(creator.toString());
+  public void setCreator(final UUID creator) {
+    setCreator(creator.toString());
+  }
+
+  public String getCreator() {
+    final NBTCompound itemStatCompound;
+    if (!itemStatComponent) {
+      return null;
+    } else {
+      itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
+    }
+
+    if (!itemStatCompound.hasKey(ItemStat.CREATOR.getNbtKey())) {
+      return null;
+    }
+
+    return itemStatCompound.getString(ItemStat.CREATOR.getNbtKey());
+  }
+
+  public void addJobLevelRequirement(final JobType type, final int level) {
+    final NBTCompound itemStatCompound;
+
   }
 
 }

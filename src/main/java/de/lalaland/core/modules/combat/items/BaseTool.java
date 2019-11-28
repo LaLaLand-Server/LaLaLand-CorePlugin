@@ -1,5 +1,6 @@
 package de.lalaland.core.modules.combat.items;
 
+import de.lalaland.core.modules.jobs.jobdata.JobType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,11 +16,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum BaseTool {
 
-  WOODEN_PICKAXE("Holz Spitzhacke"),
-  WOODEN_WOODCUTTING_AXE("Holz Axt"),
-  WOODEN_SPADE("Holz Spaten");
+  WOODEN_PICKAXE("Holz Spitzhacke", JobType.MINER),
+  WOODEN_WOODCUTTING_AXE("Holz Axt", JobType.WOODCUTTER),
+  WOODEN_SPADE("Holz Spaten", JobType.GATHERER);
 
   @Getter
   private final String displayName;
+  @Getter
+  private final JobType linkedJobType;
 
 }

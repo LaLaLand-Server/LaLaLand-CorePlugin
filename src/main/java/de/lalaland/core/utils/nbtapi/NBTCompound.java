@@ -1,425 +1,164 @@
 package de.lalaland.core.utils.nbtapi;
 
-import de.lalaland.core.utils.MinecraftVersion;
-import de.lalaland.core.utils.nbtapi.nmsitemutils.nmsmappings.ReflectionMethod;
-import java.io.Serializable;
 import java.util.Set;
+import java.util.UUID;
+import net.minecraft.server.v1_14_R1.NBTTagCompound;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * Base class representing NMS Compounds. For a standalone implementation check {@link
- * NBTContainer}
+/*******************************************************
+ * Copyright (C) Gestankbratwurst suotokka@gmail.com
  *
- * @author tr7zw
+ * This file is part of CorePlugin and was created at the 28.11.2019
+ *
+ * CorePlugin can not be copied and/or distributed without the express
+ * permission of the owner.
+ *
  */
-public class NBTCompound {
+public class NBTCompound implements Cloneable {
 
-  private String compundName;
-  private NBTCompound parent;
-
-  protected NBTCompound(NBTCompound owner, String name) {
-    this.compundName = name;
-    this.parent = owner;
+  public NBTCompound() {
+    this(new NBTTagCompound());
   }
 
-  /**
-   * @return The Compound name
-   */
-  public String getName() {
-    return compundName;
+  public NBTCompound(final NBTTagCompound nmsCompound) {
+    this.nmsCompound = nmsCompound;
   }
 
-  /**
-   * @return The NMS Compound behind this Object
-   */
-  public Object getCompound() {
-    return parent.getCompound();
+  protected final NBTTagCompound nmsCompound;
+
+  public void setString(@NotNull final String key, @NotNull final String value) {
+    nmsCompound.setString(key, value);
   }
 
-  protected void setCompound(Object compound) {
-    parent.setCompound(compound);
+  public void setByte(@NotNull final String key, final byte value) {
+    nmsCompound.setByte(key, value);
   }
 
-  /**
-   * @return The parent Compound
-   */
-  public NBTCompound getParent() {
-    return parent;
+  public void setShort(@NotNull final String key, final short value) {
+    nmsCompound.setShort(key, value);
   }
 
-  /**
-   * Merges all data from comp into this compound. This is done in one action, so it also works with
-   * Tiles/Entities
-   *
-   * @param comp
-   */
-  public void mergeCompound(NBTCompound comp) {
-    NBTReflectionUtil.mergeOtherNBTCompound(this, comp);
+  public void setInt(@NotNull final String key, final int value) {
+    nmsCompound.setInt(key, value);
   }
 
-  /**
-   * Setter
-   *
-   * @param key
-   * @param value
-   */
-  public void setString(String key, String value) {
-    NBTReflectionUtil.setData(this, ReflectionMethod.COMPOUND_SET_STRING, key, value);
+  public void setLong(@NotNull final String key, final long value) {
+    nmsCompound.setLong(key, value);
   }
 
-  /**
-   * Getter
-   *
-   * @param key
-   * @return The stored value or NMS fallback
-   */
-  public String getString(String key) {
-    return (String) NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_GET_STRING, key);
+  public void setFloat(@NotNull final String key, final float value) {
+    nmsCompound.setFloat(key, value);
   }
 
-  protected String getContent(String key) {
-    return NBTReflectionUtil.getContent(this, key);
+  public void setDouble(@NotNull final String key, final double value) {
+    nmsCompound.setDouble(key, value);
   }
 
-  /**
-   * Setter
-   *
-   * @param key
-   * @param value
-   */
-  public void setInteger(String key, Integer value) {
-    NBTReflectionUtil.setData(this, ReflectionMethod.COMPOUND_SET_INT, key, value);
+  public void setBoolean(@NotNull final String key, final boolean value) {
+    nmsCompound.setBoolean(key, value);
   }
 
-  /**
-   * Getter
-   *
-   * @param key
-   * @return The stored value or NMS fallback
-   */
-  public Integer getInteger(String key) {
-    return (Integer) NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_GET_INT, key);
+  public void setByteArray(@NotNull final String key, final byte[] value) {
+    nmsCompound.setByteArray(key, value);
   }
 
-  /**
-   * Setter
-   *
-   * @param key
-   * @param value
-   */
-  public void setDouble(String key, Double value) {
-    NBTReflectionUtil.setData(this, ReflectionMethod.COMPOUND_SET_DOUBLE, key, value);
+  public void setIntArray(@NotNull final String key, final int[] value) {
+    nmsCompound.setIntArray(key, value);
   }
 
-  /**
-   * Getter
-   *
-   * @param key
-   * @return The stored value or NMS fallback
-   */
-  public Double getDouble(String key) {
-    return (Double) NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_GET_DOUBLE, key);
+  public void setUUID(@NotNull final String key, @NotNull final UUID value) {
+    nmsCompound.setUUID(key, value);
   }
 
-  /**
-   * Setter
-   *
-   * @param key
-   * @param value
-   */
-  public void setByte(String key, Byte value) {
-    NBTReflectionUtil.setData(this, ReflectionMethod.COMPOUND_SET_BYTE, key, value);
+  public void remove(final String key) {
+    nmsCompound.remove(key);
   }
 
-  /**
-   * Getter
-   *
-   * @param key
-   * @return The stored value or NMS fallback
-   */
-  public Byte getByte(String key) {
-    return (Byte) NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_GET_BYTE, key);
+  public void addCompound(final String key, final NBTCompound compound) {
+    nmsCompound.set(key, compound.nmsCompound);
   }
 
-  /**
-   * Setter
-   *
-   * @param key
-   * @param value
-   */
-  public void setShort(String key, Short value) {
-    NBTReflectionUtil.setData(this, ReflectionMethod.COMPOUND_SET_SHORT, key, value);
+  public NBTCompound createCompound(final String key) {
+    final NBTCompound compound = new NBTCompound();
+    nmsCompound.set(key, compound.nmsCompound);
+    return compound;
   }
 
-  /**
-   * Getter
-   *
-   * @param key
-   * @return The stored value or NMS fallback
-   */
-  public Short getShort(String key) {
-    return (Short) NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_GET_SHORT, key);
-  }
-
-  /**
-   * Setter
-   *
-   * @param key
-   * @param value
-   */
-  public void setLong(String key, Long value) {
-    NBTReflectionUtil.setData(this, ReflectionMethod.COMPOUND_SET_LONG, key, value);
-  }
-
-  /**
-   * Getter
-   *
-   * @param key
-   * @return The stored value or NMS fallback
-   */
-  public Long getLong(String key) {
-    return (Long) NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_GET_LONG, key);
-  }
-
-  /**
-   * Setter
-   *
-   * @param key
-   * @param value
-   */
-  public void setFloat(String key, Float value) {
-    NBTReflectionUtil.setData(this, ReflectionMethod.COMPOUND_SET_FLOAT, key, value);
-  }
-
-  /**
-   * Getter
-   *
-   * @param key
-   * @return The stored value or NMS fallback
-   */
-  public Float getFloat(String key) {
-    return (Float) NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_GET_FLOAT, key);
-  }
-
-  /**
-   * Setter
-   *
-   * @param key
-   * @param value
-   */
-  public void setByteArray(String key, byte[] value) {
-    NBTReflectionUtil.setData(this, ReflectionMethod.COMPOUND_SET_BYTEARRAY, key, value);
-  }
-
-  /**
-   * Getter
-   *
-   * @param key
-   * @return The stored value or NMS fallback
-   */
-  public byte[] getByteArray(String key) {
-    return (byte[]) NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_GET_BYTEARRAY, key);
-  }
-
-  /**
-   * Setter
-   *
-   * @param key
-   * @param value
-   */
-  public void setIntArray(String key, int[] value) {
-    NBTReflectionUtil.setData(this, ReflectionMethod.COMPOUND_SET_INTARRAY, key, value);
-  }
-
-  /**
-   * Getter
-   *
-   * @param key
-   * @return The stored value or NMS fallback
-   */
-  public int[] getIntArray(String key) {
-    return (int[]) NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_GET_INTARRAY, key);
-  }
-
-  /**
-   * Setter
-   *
-   * @param key
-   * @param value
-   */
-  public void setBoolean(String key, Boolean value) {
-    NBTReflectionUtil.setData(this, ReflectionMethod.COMPOUND_SET_BOOLEAN, key, value);
-  }
-
-  protected void set(String key, Object val) {
-    NBTReflectionUtil.set(this, key, val);
-  }
-
-  /**
-   * Getter
-   *
-   * @param key
-   * @return The stored value or NMS fallback
-   */
-  public Boolean getBoolean(String key) {
-    return (Boolean) NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_GET_BOOLEAN, key);
-  }
-
-  /**
-   * Uses Gson to store an {@link Serializable} Object
-   *
-   * @param key
-   * @param value
-   */
-  public void setObject(String key, Object value) {
-    NBTReflectionUtil.setObject(this, key, value);
-  }
-
-  /**
-   * Uses Gson to retrieve a stored Object
-   *
-   * @param key
-   * @param type Class of the Object
-   * @return The created Object or null if empty
-   */
-  public <T> T getObject(String key, Class<T> type) {
-    return NBTReflectionUtil.getObject(this, key, type);
-  }
-
-  /**
-   * @param key
-   * @return True if the key is set
-   */
-  public Boolean hasKey(String key) {
-    Boolean b = (Boolean) NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_HAS_KEY, key);
-    if (b == null) {
-      return false;
+  @Nullable
+  public NBTCompound getCompound(final String key) {
+    if (!hasKey(key)) {
+      return null;
     }
-    return b;
+    final NBTCompound compound = new NBTCompound(nmsCompound.getCompound(key));
+    return compound;
   }
 
-  /**
-   * @param key Deletes the given Key
-   */
-  public void removeKey(String key) {
-    NBTReflectionUtil.remove(this, key);
-  }
-
-  /**
-   * @return Set of all stored Keys
-   */
   public Set<String> getKeys() {
-    return NBTReflectionUtil.getKeys(this);
+    return nmsCompound.getKeys();
   }
 
-  /**
-   * Creates a subCompound
-   *
-   * @param name Key to use
-   * @return The subCompound Object
-   */
-  public NBTCompound addCompound(String name) {
-    if (getType(name) == NBTType.NBTTagCompound) {
-      return getCompound(name);
-    }
-    NBTReflectionUtil.addNBTTagCompound(this, name);
-    NBTCompound comp = getCompound(name);
-    if (comp == null) {
-      throw new NbtApiException("Error while adding Compound, got null!");
-    }
-    return comp;
+  public boolean hasKey(final String key) {
+    return nmsCompound.hasKey(key);
   }
 
-  /**
-   * @param name
-   * @return The Compound instance or null
-   */
-  public NBTCompound getCompound(String name) {
-    if (getType(name) != NBTType.NBTTagCompound) {
-      return null;
-    }
-    NBTCompound next = new NBTCompound(this, name);
-    if (NBTReflectionUtil.valideCompound(next)) {
-      return next;
-    }
-    return null;
+  public String getString(final String key) {
+    return nmsCompound.getString(key);
   }
 
-  /**
-   * @param name
-   * @return The retrieved String List
-   */
-  public NBTList<String> getStringList(String name) {
-    return NBTReflectionUtil.getList(this, name, NBTType.NBTTagString, String.class);
+  public int getInt(final String key) {
+    return nmsCompound.getInt(key);
   }
 
-  /**
-   * @param name
-   * @return The retrieved Integer List
-   */
-  public NBTList<Integer> getIntegerList(String name) {
-    return NBTReflectionUtil.getList(this, name, NBTType.NBTTagInt, Integer.class);
+  public short getShort(final String key) {
+    return nmsCompound.getShort(key);
   }
 
-  /**
-   * @param name
-   * @return The retrieved Compound List
-   */
-  public NBTCompoundList getCompoundList(String name) {
-    return (NBTCompoundList) NBTReflectionUtil
-        .getList(this, name, NBTType.NBTTagCompound, NBTListCompound.class);
+  public byte getByte(final String key) {
+    return nmsCompound.getByte(key);
   }
 
-  /**
-   * @param name
-   * @return The type of the given stored key or null
-   */
-  public NBTType getType(String name) {
-    if (MinecraftVersion.getVersion() == MinecraftVersion.MC1_7_R4) {
-      return null;
-    }
-    Object o = NBTReflectionUtil.getData(this, ReflectionMethod.COMPOUND_GET_TYPE, name);
-    if (o == null) {
-      return null;
-    }
-    return NBTType.valueOf((byte) o);
+  public long getLong(final String key) {
+    return nmsCompound.getLong(key);
+  }
+
+  public float getFloat(final String key) {
+    return nmsCompound.getFloat(key);
+  }
+
+  public double getDouble(final String key) {
+    return nmsCompound.getDouble(key);
+  }
+
+  public boolean getBoolean(final String key) {
+    return nmsCompound.getBoolean(key);
+  }
+
+  public byte[] getByteArray(final String key) {
+    return nmsCompound.getByteArray(key);
+  }
+
+  public int[] getIntArray(final String key) {
+    return nmsCompound.getIntArray(key);
+  }
+
+  public void addStringList(final String key, final NBTStringList list) {
+    nmsCompound.set(key, list.nmsList);
+  }
+
+  public NBTStringList createStringList(final String key) {
+    final NBTStringList list = new NBTStringList();
+    addStringList(key, list);
+    return list;
+  }
+
+  public NBTStringList getStringList(final String key) {
+    return new NBTStringList(nmsCompound.getList(key, 8));
   }
 
   @Override
-  public String toString() {
-    StringBuilder result = new StringBuilder();
-    for (String key : getKeys()) {
-      result.append(toString(key));
-    }
-    return result.toString();
-  }
-
-  /**
-   * @param key
-   * @return A string representation of the given key
-   */
-  public String toString(String key) {
-    StringBuilder result = new StringBuilder();
-    NBTCompound compound = this;
-    while (compound.getParent() != null) {
-      result.append("   ");
-      compound = compound.getParent();
-    }
-    if (this.getType(key) == NBTType.NBTTagCompound) {
-      return this.getCompound(key).toString();
-    } else {
-      return result + "-" + key + ": " + getContent(key) + System.lineSeparator();
-    }
-  }
-
-  /**
-   * @return A json valid nbt string for this Compound
-   */
-  public String asNBTString() {
-    Object comp = NBTReflectionUtil.gettoCompount(getCompound(), this);
-    if (comp == null) {
-      return "{}";
-    }
-    return comp.toString();
+  public NBTCompound clone() {
+    return new NBTCompound(nmsCompound.clone());
   }
 
 }
