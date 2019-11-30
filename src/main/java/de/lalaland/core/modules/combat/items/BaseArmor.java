@@ -1,6 +1,7 @@
 package de.lalaland.core.modules.combat.items;
 
 import lombok.AllArgsConstructor;
+import org.bukkit.inventory.ItemStack;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -12,7 +13,7 @@ import lombok.AllArgsConstructor;
  *
  */
 @AllArgsConstructor
-public enum BaseArmor {
+public enum BaseArmor implements BaseItemProvider{
 
   CLOTH_HELMET("Stoff Helm"),
   CLOTH_CHESTPLATE("Stoff Brustharnisch"),
@@ -20,5 +21,10 @@ public enum BaseArmor {
   CLOTH_BOOTS("Stoff Stiefel");
 
   private final String displayName;
+
+  @Override
+  public ItemStack createBaseItem() {
+    return null;
+  }
 
 }

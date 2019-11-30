@@ -18,32 +18,41 @@ import org.bukkit.inventory.EquipmentSlot;
 public class EditorSessions implements Listener {
 
   private final HashMap<UUID, Pair<Location, Location>> session;
+  private final HashMap<UUID, Boolean> sessionDone;
 
+  // TODO remove in live version
   public EditorSessions(final CorePlugin plugin) {
     Bukkit.getPluginManager().registerEvents(this, plugin);
     session = Maps.newHashMap();
+    sessionDone = Maps.newHashMap();
   }
 
-  public boolean hasSession(final Player player){
+  public boolean hasSession(final Player player) {
     return session.containsKey(player.getUniqueId());
   }
 
   public void addSession(final Player player) {
     session.put(player.getUniqueId(), Pair.of(null, null));
+    sessionDone.put(player.getUniqueId(), false);
   }
 
   public void removeSession(final Player player) {
     session.remove(player.getUniqueId());
+    sessionDone.remove(player.getUniqueId());
   }
 
   public Pair<Location, Location> getSelectedSession(final Player player) {
-    return session.get(player.getUniqueId());
+    final Pair<Location, Location> pair = session.get(player.getUniqueId());
+    return pair;
   }
 
   @EventHandler
   public void onSessionInteract(final PlayerInteractEvent event) {
     final Player player = event.getPlayer();
     if (!session.containsKey(player.getUniqueId())) {
+      return;
+    }
+    if (sessionDone.get(player.getUniqueId())) {
       return;
     }
     event.setCancelled(true);
@@ -69,13 +78,16 @@ public class EditorSessions implements Listener {
       }
       session.get(player.getUniqueId()).setRight(event.getClickedBlock().getLocation());
       player.sendMessage("Position 2 wurde festgelegt");
-      return;
     }
 
     if (action == Action.LEFT_CLICK_BLOCK) {
       session.put(player.getUniqueId(), Pair.of(event.getClickedBlock().getLocation(), null));
       player.sendMessage("Position 1 wurde festgelegt");
-      return;
+    }
+
+    final Pair<Location, Location> locs = session.get(player.getUniqueId());
+    if (locs.getRight() != null && locs.getLeft() != null) {
+      sessionDone.put(player.getUniqueId(), true);
     }
   }
 

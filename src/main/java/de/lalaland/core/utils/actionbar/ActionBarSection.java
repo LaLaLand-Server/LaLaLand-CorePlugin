@@ -1,6 +1,8 @@
 package de.lalaland.core.utils.actionbar;
 
 import com.google.common.collect.Queues;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.PriorityQueue;
 import java.util.function.Supplier;
 import lombok.Getter;
@@ -20,11 +22,13 @@ public class ActionBarSection {
     sectionLines = Queues.newPriorityQueue();
     sectionLines.add(ActionLine.empty());
     this.actionBarManager = actionBarManager;
+    tokenLines = new Object2ObjectOpenHashMap<>();
   }
 
   @Getter
   private final PriorityQueue<ActionLine> sectionLines;
   private final ActionBarManager actionBarManager;
+  private final Object2ObjectMap<String, ActionLine> tokenLines;
 
   public ActionLine addLayer(final int priority, final Supplier<String> lineSupplier) {
     final ActionLine line = new ActionLine(priority, lineSupplier);
@@ -36,6 +40,13 @@ public class ActionBarSection {
     sectionLines.remove(line);
   }
 
+  private void removeToken(final String key, final ActionLine line) {
+    if (tokenLines.get(key) == line) {
+      removeLayer(line);
+      tokenLines.remove(key);
+    }
+  }
+
   public void addTempLayer(final long lifeTicks, final ActionLine line) {
     sectionLines.add(line);
     actionBarManager.getTaskManager().runBukkitSyncDelayed(() -> {
@@ -43,8 +54,24 @@ public class ActionBarSection {
     }, lifeTicks);
   }
 
-  public ActionLine addTempLayer(final long lifeTicks, final int priority,
-      final Supplier<String> lineSupplier) {
+  public void addTokenLayer(final long lifeTicks, final String key, final ActionLine line) {
+    if (tokenLines.containsKey(key)) {
+      sectionLines.remove(tokenLines.get(key));
+      tokenLines.put(key, line);
+    }
+    sectionLines.add(line);
+    actionBarManager.getTaskManager().runBukkitSyncDelayed(() -> {
+      removeToken(key, line);
+    }, lifeTicks);
+  }
+
+  public ActionLine addTokenLayer(final long lifeTicks, final String key, final int priority, final Supplier<String> lineSupplier) {
+    final ActionLine line = new ActionLine(priority, lineSupplier);
+    addTempLayer(lifeTicks, line);
+    return line;
+  }
+
+  public ActionLine addTempLayer(final long lifeTicks, final int priority, final Supplier<String> lineSupplier) {
     final ActionLine line = new ActionLine(priority, lineSupplier);
     addTempLayer(lifeTicks, line);
     return line;

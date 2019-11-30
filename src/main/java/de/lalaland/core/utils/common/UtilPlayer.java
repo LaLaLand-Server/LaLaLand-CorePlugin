@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,20 +31,20 @@ import org.bukkit.util.Vector;
 public class UtilPlayer implements Listener, Runnable {
 
   private static UtilPlayer instance;
-  private static boolean initialized = false;
+  private static final boolean initialized = false;
   private static final Vector UP_VEC = new Vector(0, 1, 0);
   private static final Vector DOWN_VEC = new Vector(0, -1, 0);
   private final Object2ObjectOpenHashMap<Player, IntSet> playerViews;
   private final Object2FloatOpenHashMap<Player> attackCooldowns;
 
   private UtilPlayer() {
-    this.playerViews = new Object2ObjectOpenHashMap<Player, IntSet>();
+    playerViews = new Object2ObjectOpenHashMap<>();
     Bukkit.getOnlinePlayers()
         .forEach(player -> playerViews.put(player, new IntOpenHashSet())); //  fix for reloads
-    attackCooldowns = new Object2FloatOpenHashMap<Player>();
+    attackCooldowns = new Object2FloatOpenHashMap<>();
   }
 
-  public static void init(CorePlugin host) {
+  public static void init(final CorePlugin host) {
     Preconditions.checkArgument(!initialized, "UtilPlayer is already initialized!");
     instance = new UtilPlayer();
     Bukkit.getPluginManager().registerEvents(instance, host);
@@ -51,39 +52,39 @@ public class UtilPlayer implements Listener, Runnable {
   }
 
   @EventHandler
-  public void onJoin(PlayerJoinEvent event) {
-    this.playerViews.put(event.getPlayer(), new IntOpenHashSet());
+  public void onJoin(final PlayerJoinEvent event) {
+    playerViews.put(event.getPlayer(), new IntOpenHashSet());
   }
 
   @EventHandler
-  public void onQuit(PlayerQuitEvent event) {
-    this.attackCooldowns.remove(event.getPlayer());
-    this.playerViews.remove(event.getPlayer());
+  public void onQuit(final PlayerQuitEvent event) {
+    attackCooldowns.remove(event.getPlayer());
+    playerViews.remove(event.getPlayer());
   }
 
   @EventHandler
-  public void onEntityShowing(PlayerReceiveEntityEvent event) {
-    this.playerViews.get(event.getPlayer()).add(event.getEntityID());
+  public void onEntityShowing(final PlayerReceiveEntityEvent event) {
+    playerViews.get(event.getPlayer()).add(event.getEntityID());
   }
 
   @EventHandler(priority = EventPriority.HIGH)
-  public void onEntityHiding(PlayerUnloadsEntityEvent event) {
-    IntSet ints = this.playerViews.get(event.getPlayer());
-    for (int id : event.getEntityIDs()) {
+  public void onEntityHiding(final PlayerUnloadsEntityEvent event) {
+    final IntSet ints = playerViews.get(event.getPlayer());
+    for (final int id : event.getEntityIDs()) {
       ints.remove(id);
     }
   }
 
-  public static float getAttackCooldown(Player player) {
+  public static float getAttackCooldown(final Player player) {
     return instance.attackCooldowns.getFloat(player);
   }
 
-  public static IntSet getEntityViewOf(Player player) {
+  public static IntSet getEntityViewOf(final Player player) {
     return instance.playerViews.get(player);
   }
 
-  public static BlockFace getExactFacing(Player player) {
-    Vector direction = player.getEyeLocation().getDirection();
+  public static BlockFace getExactFacing(final Player player) {
+    final Vector direction = player.getEyeLocation().getDirection();
     if (direction.angle(UP_VEC) <= (Math.PI / 4)) {
       return BlockFace.UP;
     } else if (direction.angle(DOWN_VEC) <= (Math.PI / 4)) {
@@ -92,10 +93,18 @@ public class UtilPlayer implements Listener, Runnable {
     return player.getFacing();
   }
 
+  public static void playSound(final Player player, final Sound sound, final float volume, final float pitch) {
+    player.playSound(player.getEyeLocation(), sound, pitch, volume);
+  }
+
+  public static void playSound(final Player player, final Sound sound) {
+    playSound(player, sound, 1F, 1F);
+  }
+
   @Override
   public void run() {
-    for (Player player : Bukkit.getOnlinePlayers()) {
-      this.attackCooldowns.put(player, player.getCooledAttackStrength(0F));
+    for (final Player player : Bukkit.getOnlinePlayers()) {
+      attackCooldowns.put(player, player.getCooledAttackStrength(0F));
     }
   }
 }

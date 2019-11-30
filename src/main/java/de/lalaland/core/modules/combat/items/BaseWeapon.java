@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
  *
  */
 @AllArgsConstructor
-public enum BaseWeapon {
+public enum BaseWeapon implements BaseItemProvider {
 
   WOODEN_SWORD("Holzschwert", ModelItem.RED_X, 5.0, 200D, 200),
   WOODEN_DAGGER("Holzdolch", ModelItem.RED_X, 3.0, 300D, 200),
@@ -36,6 +36,7 @@ public enum BaseWeapon {
   @Getter
   private final int baseMaxDurability;
 
+  @Override
   public ItemStack createBaseItem() {
     final NBTItem nbt = new NBTItem(new ItemBuilder(model.create())
         .name(displayName)

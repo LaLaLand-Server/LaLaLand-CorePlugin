@@ -24,7 +24,8 @@ public enum ModelItem {
   BLACK_ARROW_LEFT(Material.STICK, 1002, ModelData.common(), FontMeta.common(), new BoxedFontChar()),
   BLACK_ARROW_RIGHT(Material.STICK, 1003, ModelData.common(), FontMeta.common(), new BoxedFontChar()),
   GREEN_CHECK(Material.STICK, 1004, ModelData.common(), FontMeta.common(), new BoxedFontChar()),
-  RED_X(Material.STICK, 1005, ModelData.common(), FontMeta.common(), new BoxedFontChar());
+  RED_X(Material.STICK, 1005, ModelData.common(), FontMeta.common(), new BoxedFontChar()),
+  HP_100(Material.STICK, 2000, ModelData.common(), FontMeta.of(32, 0, "bitmap"), new BoxedFontChar());
 
   @Getter
   private final Material baseMaterial;

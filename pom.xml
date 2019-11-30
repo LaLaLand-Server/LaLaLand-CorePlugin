@@ -38,12 +38,12 @@
       <scope>compile</scope>
     </dependency>
     <!-- Fast utils-->
-    <dependency>
-      <groupId>it.unimi.dsi</groupId>
-      <artifactId>fastutil</artifactId>
-      <version>8.3.0</version>
-      <scope>compile</scope>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>it.unimi.dsi</groupId>-->
+<!--      <artifactId>fastutil</artifactId>-->
+<!--      <version>8.3.0</version>-->
+<!--      <scope>provided</scope>-->
+<!--    </dependency>-->
     <!-- Patched NMS-->
     <dependency>
       <groupId>com.destroystokyo.paper</groupId>
@@ -90,7 +90,7 @@
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.3.1</version>
         <configuration>
-          <outputDirectory>export</outputDirectory>
+          <outputDirectory>${LOCAL_SPIGOT_14}/plugins</outputDirectory>
         </configuration>
       </plugin>
 

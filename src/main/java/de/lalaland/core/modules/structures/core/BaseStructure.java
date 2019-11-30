@@ -1,5 +1,6 @@
 package de.lalaland.core.modules.structures.core;
 
+import com.google.gson.JsonObject;
 import de.lalaland.core.modules.protection.regions.ProtectedRegion;
 import de.lalaland.core.modules.schematics.core.RelativeBlockData;
 import de.lalaland.core.modules.schematics.core.Schematic;
@@ -37,6 +38,11 @@ public class BaseStructure extends Structure {
   @Override
   public void onInteract(final PlayerInteractEvent event) {
 
+  }
+
+  @Override
+  public JsonObject asJsonObject() {
+    return null;
   }
 
 }

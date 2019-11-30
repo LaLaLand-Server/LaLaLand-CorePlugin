@@ -34,19 +34,20 @@ public class StructureModule implements IModule {
   @Override
   public void enable(final CorePlugin plugin) throws Exception, Exception {
     final RegionManager regionManager = plugin.getModule(ProtectionModule.class).getRegionManager();
-    structureManager = new StructureManager(regionManager);
+    structureManager = new StructureManager(plugin);
     final SchematicManager schematicManager = plugin.getModule(SchematicModule.class).getSchematicManager();
     Bukkit.getPluginManager().registerEvents(new StructureListener(regionManager, structureManager), plugin);
     plugin.getCommandManager().registerCommand(new StructureCommand(schematicManager, structureManager));
-    plugin.getCommandManager().getCommandCompletions().registerStaticCompletion("Schematics", () ->{
+    plugin.getCommandManager().getCommandCompletions().registerStaticCompletion("Schematics", () -> {
       final ArrayList<String> schematicNames = Lists.newArrayList();
       schematicManager.forEach(s -> schematicNames.add(s.getSchmaticID()));
       return schematicNames;
     });
+    structureManager.loadStructureStages(plugin);
   }
 
   @Override
   public void disable(final CorePlugin plugin) throws Exception {
-
+    structureManager.saveStructureStages(plugin);
   }
 }

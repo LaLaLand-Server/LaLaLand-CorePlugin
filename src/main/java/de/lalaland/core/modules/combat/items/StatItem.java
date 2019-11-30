@@ -3,14 +3,25 @@ package de.lalaland.core.modules.combat.items;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import de.lalaland.core.modules.combat.stats.CombatStat;
+import de.lalaland.core.modules.jobs.jobdata.JobDataManager;
+import de.lalaland.core.modules.jobs.jobdata.JobHolder;
 import de.lalaland.core.modules.jobs.jobdata.JobType;
+import de.lalaland.core.user.User;
+import de.lalaland.core.user.data.UserData;
 import de.lalaland.core.utils.items.display.ItemDisplayCompiler;
 import de.lalaland.core.utils.nbtapi.NBTCompound;
 import de.lalaland.core.utils.nbtapi.NBTItem;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /*******************************************************
@@ -23,6 +34,11 @@ import org.bukkit.inventory.ItemStack;
  *
  */
 public class StatItem {
+
+  private static final String REQUIREMENT_KEY = "ItemRequirements";
+  private static final String JOB_REQUIREMENT_KEY = "JobRequirements";
+  private static final String PLAYER_LEVEL_REQUIREMENT_KEY = "PlayerLevel";
+  private static final String JOB_STATS_KEY = "JobStats";
 
   public static StatItem of(final ItemStack item) {
     Preconditions.checkNotNull(item, "ItemStack can not be null.");
@@ -42,6 +58,8 @@ public class StatItem {
     this.nbt = nbt;
     combatStatComponent = nbt.hasKey(CombatStat.COMPOUND_KEY);
     itemStatComponent = nbt.hasKey(ItemStat.COMPOUND_KEY);
+    itemRequirementComponent = nbt.hasKey(REQUIREMENT_KEY);
+    jobStatsComponent = nbt.hasKey(JOB_STATS_KEY);
   }
 
   private final NBTItem nbt;
@@ -49,6 +67,10 @@ public class StatItem {
   private boolean combatStatComponent;
   @Getter
   private boolean itemStatComponent;
+  @Getter
+  private boolean itemRequirementComponent;
+  @Getter
+  private boolean jobStatsComponent;
 
   public ItemStack getItemStack() {
     return nbt.getItem();
@@ -382,9 +404,124 @@ public class StatItem {
     return itemStatCompound.getString(ItemStat.CREATOR.getNbtKey());
   }
 
-  public void addJobLevelRequirement(final JobType type, final int level) {
-    final NBTCompound itemStatCompound;
+  public void setLevelRequirement(final int level) {
+    final NBTCompound compound;
+    if (itemRequirementComponent) {
+      compound = nbt.getCompound(REQUIREMENT_KEY);
+    } else {
+      compound = nbt.createCompound(REQUIREMENT_KEY);
+      itemRequirementComponent = true;
+    }
+    compound.setInt(PLAYER_LEVEL_REQUIREMENT_KEY, level);
+  }
 
+  public int getLevelRequirement() {
+    final NBTCompound compound;
+    if (itemRequirementComponent) {
+      compound = nbt.getCompound(REQUIREMENT_KEY);
+    } else {
+      return 0;
+    }
+    if (!compound.hasKey(PLAYER_LEVEL_REQUIREMENT_KEY)) {
+      return 0;
+    }
+    return compound.getInt(PLAYER_LEVEL_REQUIREMENT_KEY);
+  }
+
+  public void setJobRequirement(final JobType job, final int level) {
+    final NBTCompound reqCompound;
+    if (itemRequirementComponent) {
+      reqCompound = nbt.getCompound(REQUIREMENT_KEY);
+    } else {
+      reqCompound = nbt.createCompound(REQUIREMENT_KEY);
+      itemRequirementComponent = true;
+    }
+    if (reqCompound.hasKey(JOB_REQUIREMENT_KEY)) {
+      reqCompound.getCompound(JOB_REQUIREMENT_KEY).setInt(job.toString(), level);
+    } else {
+      reqCompound.createCompound(JOB_REQUIREMENT_KEY).setInt(job.toString(), level);
+    }
+  }
+
+  public Object2IntMap<JobType> getJobRequirements() {
+    final Object2IntMap<JobType> map = new Object2IntOpenHashMap<>();
+    if (itemRequirementComponent) {
+      final NBTCompound reqComp = nbt.getCompound(REQUIREMENT_KEY);
+      if (reqComp.hasKey(JOB_REQUIREMENT_KEY)) {
+        final NBTCompound jobComp = reqComp.getCompound(JOB_REQUIREMENT_KEY);
+        final Set<String> keys = jobComp.getKeys();
+        for (final String jobName : keys) {
+          map.put(JobType.valueOf(jobName), jobComp.getInt(jobName));
+        }
+      }
+    }
+    return map;
+  }
+
+  public int getJobRequirement(final JobType job) {
+    if (itemRequirementComponent) {
+      final NBTCompound reqComp = nbt.getCompound(REQUIREMENT_KEY);
+      if (reqComp.hasKey(JOB_REQUIREMENT_KEY)) {
+        final NBTCompound jobComp = reqComp.getCompound(JOB_REQUIREMENT_KEY);
+        if (jobComp.hasKey(job.toString())) {
+          return jobComp.getInt(job.toString());
+        }
+      }
+    }
+    return 0;
+  }
+
+  public void setJobValue(final JobType job, final double value) {
+    final NBTCompound jobValCompound;
+    if (jobStatsComponent) {
+      jobValCompound = nbt.getCompound(JOB_STATS_KEY);
+    } else {
+      jobValCompound = nbt.createCompound(JOB_STATS_KEY);
+      jobStatsComponent = true;
+    }
+    jobValCompound.setDouble(job.toString(), value);
+  }
+
+  public Object2DoubleMap<JobType> getJobValues() {
+    final Object2DoubleMap<JobType> map = new Object2DoubleOpenHashMap<>();
+    if (jobStatsComponent) {
+      final NBTCompound jobComp = nbt.getCompound(JOB_STATS_KEY);
+      for (final String jobName : jobComp.getKeys()) {
+        map.put(JobType.valueOf(jobName), jobComp.getDouble(jobName));
+      }
+    }
+    return map;
+  }
+
+  public double getJobValue(final JobType jobType) {
+    if (jobStatsComponent) {
+      final NBTCompound jobComp = nbt.getCompound(JOB_STATS_KEY);
+      if (jobComp.hasKey(jobType.toString())) {
+        return jobComp.getDouble(jobType.toString());
+      }
+    }
+    return 0D;
+  }
+
+  public boolean canUseForJob(final JobDataManager jobManager, final User user) {
+    if (!canUse(user.getUserData())) {
+      return false;
+    }
+    final Player player = user.getOnlinePlayer().getValue();
+    if (player == null) {
+      return false;
+    }
+    final JobHolder holder = jobManager.getHolder(player.getUniqueId());
+    for (final Entry<JobType> entry : getJobRequirements().object2IntEntrySet()) {
+      if (!holder.getJobData(entry.getKey()).hasLevel(entry.getIntValue())) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public boolean canUse(final UserData data) {
+    return data.getLevel() >= getLevelRequirement();
   }
 
 }

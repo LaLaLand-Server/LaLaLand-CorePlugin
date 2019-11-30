@@ -1,5 +1,6 @@
 package de.lalaland.core.modules.structures.core;
 
+import com.google.gson.JsonObject;
 import de.lalaland.core.modules.protection.regions.ProtectedRegion;
 import de.lalaland.core.modules.schematics.core.Schematic;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -60,5 +61,7 @@ public abstract class Structure {
   public abstract void onBlockBreak(BlockBreakEvent event);
 
   public abstract void onInteract(PlayerInteractEvent event);
+
+  public abstract JsonObject asJsonObject();
 
 }

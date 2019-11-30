@@ -17,11 +17,18 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ActionLine implements Comparable<ActionLine> {
 
+  public static int MIN_PRIORITY = 1000000;
+  public static int LOW_PRIORITY = 100000;
+  public static int MID_PRIORITY = 10000;
+  public static int HIGH_PRIORITY = 1000;
+  public static int VERY_HIGH_PRIORITY = 100;
+  public static int MAX_PRIORITY = 10;
+
   public static ActionLine empty() {
-    return new ActionLine(0, () -> Strings.repeat(" ", ActionBarBoard.MIN_SECTION_LENGTH));
+    return new ActionLine(MIN_PRIORITY, () -> Strings.repeat(" ", ActionBarBoard.MIN_SECTION_LENGTH));
   }
 
-  protected ActionLine(final int priority, final Supplier<String> lineSupplier) {
+  public ActionLine(final int priority, final Supplier<String> lineSupplier) {
     this.priority = priority;
     this.lineSupplier = lineSupplier;
   }
@@ -35,6 +42,6 @@ public class ActionLine implements Comparable<ActionLine> {
 
   @Override
   public int compareTo(@NotNull final ActionLine other) {
-    return other.priority - priority;
+    return priority - other.priority;
   }
 }

@@ -22,13 +22,16 @@ import org.bukkit.entity.Player;
  */
 public class CombatStatHolder {
 
-  protected CombatStatHolder(LivingEntity bukkitEntity) {
+  protected CombatStatHolder(final LivingEntity bukkitEntity) {
     this.bukkitEntity = bukkitEntity;
-    this.entityID = bukkitEntity.getUniqueId();
-    this.human = bukkitEntity instanceof Player;
-    this.combatStatMappings = Maps.newEnumMap(CombatStat.getEmptyMap());
-    this.baseValues = Maps.newEnumMap(CombatStat.getBaseMap(human));
-    this.recalculatingSheduled = false;
+    entityID = bukkitEntity.getUniqueId();
+    human = bukkitEntity instanceof Player;
+    if (human) {
+      ((Player) bukkitEntity).setHealthScale(20D);
+    }
+    combatStatMappings = Maps.newEnumMap(CombatStat.getEmptyMap());
+    baseValues = Maps.newEnumMap(CombatStat.getBaseMap(human));
+    recalculatingSheduled = false;
   }
 
   @Setter(AccessLevel.PROTECTED)
@@ -48,7 +51,7 @@ public class CombatStatHolder {
    * @param stat the stat type
    * @return
    */
-  public double getStatValue(CombatStat stat) {
+  public double getStatValue(final CombatStat stat) {
     return combatStatMappings.get(stat);
   }
 
@@ -58,8 +61,8 @@ public class CombatStatHolder {
    * @param stat
    * @return
    */
-  public double getStatBaseValue(CombatStat stat) {
-    return this.baseValues.getOrDefault(stat, 0D);
+  public double getStatBaseValue(final CombatStat stat) {
+    return baseValues.getOrDefault(stat, 0D);
   }
 
   /**
@@ -68,22 +71,21 @@ public class CombatStatHolder {
    * @param stat
    * @param value
    */
-  public void setStatBaseValue(CombatStat stat, double value) {
-    this.baseValues.put(stat, value + stat.getBaseValue(this.human));
+  public void setStatBaseValue(final CombatStat stat, final double value) {
+    baseValues.put(stat, value + stat.getBaseValue(human));
   }
 
   /**
-   * This will return a Pair of two Maps.
-   * The first map includes a copy of the base values of this holder.
-   * The second map includes a copy of the complete calculated combat map.
-   *
-   *  Those Maps do not have any reflective impact on the base maps.
+   * This will return a Pair of two Maps. The first map includes a copy of the base values of this holder. The second map includes a copy of
+   * the complete calculated combat map.
+   * <p>
+   * Those Maps do not have any reflective impact on the base maps.
    *
    * @return a pair of two ImmutableMaps
    */
   public Pair<ImmutableMap<CombatStat, Double>, ImmutableMap<CombatStat, Double>> getValueMappings() {
     return Pair
-        .of(ImmutableMap.copyOf(this.baseValues), ImmutableMap.copyOf(this.combatStatMappings));
+        .of(ImmutableMap.copyOf(baseValues), ImmutableMap.copyOf(combatStatMappings));
   }
 
   /**
@@ -93,8 +95,8 @@ public class CombatStatHolder {
    * @param value the value
    * @return the old value.
    */
-  protected double setValue(CombatStat stat, double value) {
-    return this.combatStatMappings
+  protected double setValue(final CombatStat stat, final double value) {
+    return combatStatMappings
         .put(stat, getStatBaseValue(stat) + value);
   }
 
@@ -102,8 +104,8 @@ public class CombatStatHolder {
    * Resets the stat map with base value imports.
    */
   protected void resetStatMap() {
-    for (CombatStat stat : CombatStat.values()) {
-      this.combatStatMappings.put(stat, getStatBaseValue(stat));
+    for (final CombatStat stat : CombatStat.values()) {
+      combatStatMappings.put(stat, getStatBaseValue(stat));
     }
   }
 

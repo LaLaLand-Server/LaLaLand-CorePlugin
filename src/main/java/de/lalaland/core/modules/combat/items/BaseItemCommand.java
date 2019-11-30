@@ -22,19 +22,21 @@ import org.bukkit.entity.Player;
 public class BaseItemCommand extends BaseCommand {
 
   @Subcommand("create weapon")
-  public void onCreateWeapon(Player sender, BaseWeapon weapon) {
+  public void onCreateWeapon(final Player sender, final BaseWeapon weapon) {
     sender.getInventory().addItem(weapon.createBaseItem());
     Message.send(sender, CombatModule.class,
         "Du erhälst ein Item vom Typ " + Message.elem(weapon.toString()));
   }
 
   @Subcommand("create tool")
-  public void onCreateArmor(Player sender, BaseTool tool) {
-    Message.error(sender, CombatModule.class, "Noch nicht implementiert.");
+  public void onCreateArmor(final Player sender, final BaseTool tool) {
+    sender.getInventory().addItem(tool.createBaseItem());
+    Message.send(sender, CombatModule.class,
+        "Du erhälst ein Item vom Typ " + Message.elem(tool.toString()));
   }
 
   @Subcommand("create armor")
-  public void onCreateTool(Player sender, BaseArmor armor) {
+  public void onCreateTool(final Player sender, final BaseArmor armor) {
     Message.error(sender, CombatModule.class, "Noch nicht implementiert.");
   }
 

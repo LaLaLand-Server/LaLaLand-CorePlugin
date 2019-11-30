@@ -1,7 +1,14 @@
 package de.lalaland.core.modules.jobs.jobdata;
 
 import com.google.gson.JsonObject;
+import de.lalaland.core.modules.jobs.JobModule;
+import de.lalaland.core.ui.Message;
+import de.lalaland.core.utils.common.UtilPlayer;
+import java.util.UUID;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -14,24 +21,26 @@ import lombok.Getter;
  */
 public class JobData {
 
-  public JobData(final JobType jobType, final JobDataManager manager) {
+  public JobData(final JobType jobType, final JobDataManager manager, final UUID userID) {
+    this.userID = userID;
     this.jobType = jobType;
     jobDataManager = manager;
     exp = 0L;
     level = 1;
-    lastLevelExp = manager.getExpForLevel(level - 1);
-    nextLevelExp = manager.getExpForLevel(level + 1);
-    maxExp = manager.getExpForLevel(JobDataManager.LEVEL_HARD_CAP);
+    lastLevelExp = manager.getMinExpOfLevel(level - 1);
+    nextLevelExp = manager.getMinExpOfLevel(level + 1);
+    maxExp = manager.getMinExpOfLevel(JobDataManager.LEVEL_HARD_CAP);
   }
 
-  public JobData(final JsonObject json, final JobDataManager manager) {
+  public JobData(final JsonObject json, final JobDataManager manager, final UUID userID) {
+    this.userID = userID;
     jobDataManager = manager;
     exp = json.get("Exp").getAsLong();
     jobType = JobType.valueOf(json.get("JobType").getAsString());
-    level = manager.getLevelOfExp(exp);
-    lastLevelExp = manager.getExpForLevel(level - 1);
-    nextLevelExp = manager.getExpForLevel(level + 1);
-    maxExp = manager.getExpForLevel(JobDataManager.LEVEL_HARD_CAP);
+    level = manager.getMaxLevelOfExp(exp);
+    lastLevelExp = manager.getMinExpOfLevel(level - 1);
+    nextLevelExp = manager.getMinExpOfLevel(level + 1);
+    maxExp = manager.getMinExpOfLevel(JobDataManager.LEVEL_HARD_CAP);
   }
 
   private final long maxExp;
@@ -46,6 +55,7 @@ public class JobData {
   private long nextLevelExp;
   @Getter
   private long lastLevelExp;
+  private final UUID userID;
 
   public JsonObject getAsJson() {
     final JsonObject json = new JsonObject();
@@ -90,6 +100,11 @@ public class JobData {
     }
 
     exp += value;
+    final Player player = Bukkit.getPlayer(userID);
+    final String  expAdd = Message.elem("" + value + " Exp");
+    final String  jobName = Message.elem("" + jobType.getDisplayName());
+    Message.send(player, JobModule.class, "Du erhälst " + expAdd + " in " + jobName + ".");
+    UtilPlayer.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8F, 1.35F);
     if (exp >= nextLevelExp) {
       incrementLevel(false);
     }
@@ -97,8 +112,8 @@ public class JobData {
 
   private void incrementLevel(final boolean updateExp) {
     level++;
-    lastLevelExp = jobDataManager.getLevelOfExp(level);
-    nextLevelExp = jobDataManager.getExpForLevel(level + 1);
+    lastLevelExp = jobDataManager.getMinExpOfLevel(level);
+    nextLevelExp = jobDataManager.getMinExpOfLevel(level + 1);
     if (updateExp) {
       exp = lastLevelExp + 1;
     }

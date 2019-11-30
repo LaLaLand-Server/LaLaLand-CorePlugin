@@ -49,4 +49,10 @@ public class StructureCommand extends BaseCommand {
     structureManager.createBaseStructure(schematic, sender.getLocation());
   }
 
+  @Subcommand("create resource")
+  public void onCreate(final Player sender, final ResourceType resourceType) {
+    structureManager.createResource(resourceType, sender.getLocation());
+    Message.send(sender, StructureModule.class, "Resource wurde erstellt.");
+  }
+
 }

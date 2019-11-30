@@ -3,6 +3,7 @@ package de.lalaland.core.user.listener;
 import de.lalaland.core.CorePlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -24,7 +25,7 @@ public class PlayerJoinQuit implements Listener {
     this.plugin = plugin;
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.HIGHEST)
   public void onJoin(final PlayerJoinEvent playerJoinEvent) {
     final Player player = playerJoinEvent.getPlayer();
     plugin.getUserManager().addUserToCache(player.getUniqueId());

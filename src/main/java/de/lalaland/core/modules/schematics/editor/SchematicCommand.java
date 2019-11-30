@@ -103,8 +103,6 @@ public class SchematicCommand extends BaseCommand {
 
     sender.sendMessage("Schematic wurde erstellt.");
 
-    sessions.removeSession(sender);
-
   }
 
 }
