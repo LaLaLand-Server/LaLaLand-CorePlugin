@@ -15,16 +15,22 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum WeaponType {
 
-  SWORD("Schwert"),
-  AXE("Axt"),
-  DAGGER("Dolch"),
-  MACE("Streitkolben"),
-  HELMET("Helm"),
-  CHESTPLATE("Brustharnisch"),
-  LEGGINS("Beinschienen"),
-  BOOTS("Stiefel");
+  SWORD("Schwert", true),
+  AXE("Axt", true),
+  DAGGER("Dolch", true),
+  MACE("Streitkolben", true),
+  SHORT_BOW("Kurzbogen", false),
+  LONG_BOW("Langbogen", false),
+  CROSS_BOW("Armbrust", false),
+  STAFF("Stab", false),
+  HELMET("Helm", false),
+  CHESTPLATE("Brustharnisch", false),
+  LEGGINS("Beinschienen", false),
+  BOOTS("Stiefel", false);
 
   @Getter
   private final String displayName;
+  @Getter
+  private final boolean meele;
 
 }

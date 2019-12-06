@@ -1,6 +1,9 @@
 package de.lalaland.core.user.data;
 
+import com.google.common.collect.Lists;
 import de.lalaland.core.modules.chat.messages.OfflineMessage;
+import de.lalaland.core.modules.protection.zones.WorldZone;
+import java.util.EnumSet;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +29,16 @@ public class UserData {
   private long exp;
   private int moneyOnHand;
   private int moneyOnBank;
-  private List<OfflineMessage> offlineMessages;
+  private List<OfflineMessage> offlineMessages = Lists.newArrayList();
+  private EnumSet<WorldZone> discovoredZones = EnumSet.noneOf(WorldZone.class);
+
+  public boolean hasDiscovered(final WorldZone zone) {
+    return discovoredZones.contains(zone);
+  }
+
+  public void addZoneDiscovery(final WorldZone zone) {
+    discovoredZones.add(zone);
+  }
 
   public boolean canLevelup() {
     return exp >= getNeedExp();
@@ -47,6 +59,5 @@ public class UserData {
   public long getNeedExp() {
     return NEED_EXP_LEVEL[level];
   }
-
 
 }

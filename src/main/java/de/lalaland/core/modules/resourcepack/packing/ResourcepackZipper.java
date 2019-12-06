@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.io.ResourceCopy;
 import de.lalaland.core.modules.resourcepack.skins.FontMeta;
+import de.lalaland.core.modules.resourcepack.skins.ModelBlock;
 import de.lalaland.core.modules.resourcepack.skins.ModelItem;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import java.io.File;
@@ -18,6 +19,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -46,7 +48,7 @@ public class ResourcepackZipper {
     packFolderSet.add(packFolder = new File(plugin.getDataFolder() + File.separator + "resourcepack"));
     packFolderSet.add(assetFolder = new File(packFolder + File.separator + "assets"));
     packFolderSet.add(minecraftFolder = new File(assetFolder + File.separator + "minecraft"));
-    packFolderSet.add(blockStateFolder = new File(minecraftFolder + File.separator + "blockStates"));
+    packFolderSet.add(blockStateFolder = new File(minecraftFolder + File.separator + "blockstates"));
     packFolderSet.add(fontFolder = new File(minecraftFolder + File.separator + "font"));
     packFolderSet.add(langFolder = new File(minecraftFolder + File.separator + "lang"));
     packFolderSet.add(modelsFolder = new File(minecraftFolder + File.separator + "models"));
@@ -94,7 +96,7 @@ public class ResourcepackZipper {
     final File tempFolder = temp.toFile();
     final JsonObject fontJson = new JsonObject();
     final JsonArray providerArray = new JsonArray();
-    char fontIndex = (char)0x3360;
+    char fontIndex = (char) 0x3360;
 
     try {
       final ResourceCopy copy = new ResourceCopy();
@@ -105,6 +107,54 @@ public class ResourcepackZipper {
       ex.printStackTrace();
     }
 
+    //Blocks
+    final File modelBlockFolder = new File(tempFolder, "blockstates");
+    final Map<String, JsonObject> blockstateJsonMap = Maps.newHashMap();
+    for (final ModelBlock modelBlock : ModelBlock.values()) {
+      final String vanillaName = modelBlock.getBaseMaterial().getKey().getKey();
+      final File modelBlockImage = new File(modelBlockFolder, modelBlock.toString() + ".png");
+      if (!modelBlockImage.exists()) {
+        plugin.getLogger().severe("Could not find image of " + modelBlock.toString());
+        continue;
+      }
+      final JsonObject stateJson;
+      if (blockstateJsonMap.containsKey(vanillaName)) {
+        stateJson = blockstateJsonMap.get(vanillaName);
+      } else {
+        stateJson = new JsonObject();
+        blockstateJsonMap.put(vanillaName, stateJson);
+      }
+      final JsonObject variantsJson;
+      if (stateJson.has("variants")) {
+        variantsJson = stateJson.get("variants").getAsJsonObject();
+      } else {
+        variantsJson = new JsonObject();
+      }
+      final JsonObject modelJson = new JsonObject();
+      modelJson.addProperty("model", "block/" + modelBlock.toString());
+      variantsJson.add(modelBlock.getBlockStateApplicant(), modelJson);
+      stateJson.add("variants", variantsJson);
+
+      final JsonObject customModelJson = new JsonObject();
+      customModelJson.addProperty("parent", "block/cube_all");
+      final JsonObject textureJson = new JsonObject();
+      textureJson.addProperty("all", modelBlock.toString().toLowerCase());
+      customModelJson.add("textures", textureJson);
+      FileUtils.copyFile(modelBlockImage, new File(texturesFolder, modelBlock.toString().toLowerCase() + ".png"));
+      final OutputStreamWriter osw = new OutputStreamWriter(
+          new FileOutputStream(new File(blockModelFolder, modelBlock.toString() + ".json")), "UTF-8");
+      osw.write(plugin.getGson().toJson(customModelJson));
+      osw.close();
+    }
+
+    for (final Entry<String, JsonObject> entry : blockstateJsonMap.entrySet()) {
+      final File stateFile = new File(blockStateFolder, entry.getKey() + ".json");
+      final OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(stateFile), "UTF-8");
+      osw.write(plugin.getGson().toJson(entry.getValue()));
+      osw.close();
+    }
+
+    // Items
     final File textureFolder = new File(tempFolder + File.separator + "textures");
 
     for (final File subFolder : textureFolder.listFiles()) {
@@ -175,7 +225,7 @@ public class ResourcepackZipper {
 
     fontJson.add("providers", providerArray);
     final File fontFile = new File(fontFolder, "default.json");
-    final OutputStreamWriter oswFont = new OutputStreamWriter(new FileOutputStream(fontFile),"UTF-8");
+    final OutputStreamWriter oswFont = new OutputStreamWriter(new FileOutputStream(fontFile), "UTF-8");
     oswFont.write(plugin.getGson().toJson(fontJson));
     oswFont.close();
 

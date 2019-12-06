@@ -2,13 +2,11 @@ package de.lalaland.core.modules.combat.stats;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import de.lalaland.core.utils.items.ItemBuilder;
+import de.lalaland.core.modules.resourcepack.skins.ModelItem;
 import java.util.List;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -23,23 +21,24 @@ import org.bukkit.inventory.ItemStack;
 public enum CombatStat {
 
   HEALTH("Lebenspunkte", 100, 1, 5E4D,
-      false, 8000, Lists.newArrayList("§7Erhöht deine Trefferpunkte.")),
+      false, ModelItem.RED_X, Lists.newArrayList("§7Erhöht deine Trefferpunkte.")),
   MEELE_DAMAGE("Nahkampfschaden", 5, 0.5, 2E4,
-      false, 8001, Lists.newArrayList("§7Erhöht deinen Schaden mit", "§7allen Nahkampfwaffen.")),
+      false, ModelItem.RED_X, Lists.newArrayList("§7Erhöht deinen Schaden mit", "§7allen Nahkampfwaffen.")),
   RANGE_DAMAGE("Fernkampfschaden", 4, 0.5, 2E4D,
-      false, 8002, Lists.newArrayList("§7Erhöht deinen Schaden mit","§7allen Fernkampfwaffen.")),
+      false, ModelItem.RED_X, Lists.newArrayList("§7Erhöht deinen Schaden mit", "§7allen Fernkampfwaffen.")),
   ATTACK_SPEED("Angriffsgeschwindigkeit", 50, 1, 500,
-      false, 8003, Lists.newArrayList("§7Legt die Geschwindigkeit zwischen", "§7Angriffen fest.")),
+      false, ModelItem.RED_X, Lists.newArrayList("§7Legt die Geschwindigkeit zwischen", "§7Angriffen fest.")),
   CRIT_CHANCE("Kritische Trefferchance", 0.0D, 0.0D, 100.0D,
-      true, 8004, Lists.newArrayList("§7Erhöht deine Chance auf Kritische Treffer.")),
+      true, ModelItem.RED_X, Lists.newArrayList("§7Erhöht deine Chance auf Kritische Treffer.")),
   CRIT_DAMAGE("Kritischer Zusatzschaden", 50.0D, 25.0D, 500D,
-      true, 8005, Lists.newArrayList("§7Legt den zusätzlichen Schaden von", "§7kritischen Treffern fest.")),
+      true, ModelItem.RED_X, Lists.newArrayList("§7Legt den zusätzlichen Schaden von", "§7kritischen Treffern fest.")),
   PHYSICAL_ARMOR("Verteidigung", 20, 0D, 2E4D,
-      false, 8006, Lists.newArrayList("§7Verringert physikalischen Schaden", "§7durch z.B. Waffenangriffe.")),
+      false, ModelItem.RED_X, Lists.newArrayList("§7Verringert physikalischen Schaden", "§7durch z.B. Waffenangriffe.")),
   MYSTIC_ARMOR("Mystischer Widerstand", 10, 0D, 2E4D,
-      false, 8007, Lists.newArrayList("§7Verringert den Schaden durch mystische", "§7Quellen wie z.B. ...")),
+      false, ModelItem.RED_X, Lists.newArrayList("§7Verringert den Schaden durch mystische", "§7Quellen wie z.B. ...")),
   BIO_ARMOR("Bio Widerstand", 10, 0D, 2E4D,
-      false, 8008, Lists.newArrayList("&7Verringert den Schaden durch", "§7Biologische Angriffe wie", "§7Gift oder Radioaktivität."));
+      false, ModelItem.RED_X,
+      Lists.newArrayList("&7Verringert den Schaden durch", "§7Biologische Angriffe wie", "§7Gift oder Radioaktivität."));
 
   public static final String COMPOUND_KEY = "CombatStats";
   protected static final double DEFENCE_HARD_CAP = 2E4;
@@ -55,18 +54,9 @@ public enum CombatStat {
   @Getter
   private final boolean percentageStyle;
   @Getter
-  private final int modelID;
+  private final ModelItem model;
   @Getter
   private final List<String> description;
-
-  /**
-   * Gets the base ItemStack for display.
-   *
-   * @return the icon
-   */
-  public ItemStack getBaseIcon() {
-    return new ItemBuilder(Material.STICK).name(this.displayName).modelData(this.modelID).build();
-  }
 
   /**
    * Gets the base value of this stat.
@@ -74,11 +64,11 @@ public enum CombatStat {
    * @param forHuman if base value is for human entity.
    * @return the base value.
    */
-  public double getBaseValue(boolean forHuman) {
+  public double getBaseValue(final boolean forHuman) {
     if (forHuman) {
-      return this.playerBaseValue;
+      return playerBaseValue;
     } else {
-      return this.minValue;
+      return minValue;
     }
   }
 
@@ -88,15 +78,15 @@ public enum CombatStat {
    * @param humanEntity if the map should be build for a player.
    * @return A map with the player base values or min values.
    */
-  public static Map<CombatStat, Double> getBaseMap(boolean humanEntity) {
-    Map<CombatStat, Double> map = Maps.newHashMap();
+  public static Map<CombatStat, Double> getBaseMap(final boolean humanEntity) {
+    final Map<CombatStat, Double> map = Maps.newHashMap();
 
     if (humanEntity) {
-      for (CombatStat stat : CombatStat.values()) {
+      for (final CombatStat stat : CombatStat.values()) {
         map.put(stat, stat.getPlayerBaseValue());
       }
     } else {
-      for (CombatStat stat : CombatStat.values()) {
+      for (final CombatStat stat : CombatStat.values()) {
         map.put(stat, stat.minValue);
       }
     }
@@ -110,8 +100,8 @@ public enum CombatStat {
    * @return
    */
   public static Map<CombatStat, Double> getEmptyMap() {
-    Map<CombatStat, Double> map = Maps.newHashMap();
-    for (CombatStat stat : CombatStat.values()) {
+    final Map<CombatStat, Double> map = Maps.newHashMap();
+    for (final CombatStat stat : CombatStat.values()) {
       map.put(stat, 0D);
     }
     return map;

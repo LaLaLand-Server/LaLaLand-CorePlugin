@@ -20,10 +20,11 @@ import org.bukkit.inventory.ItemStack;
 @AllArgsConstructor
 public enum BaseWeapon implements BaseItemProvider {
 
-  WOODEN_SWORD("Holzschwert", ModelItem.RED_X, 5.0, 200D, 200),
-  WOODEN_DAGGER("Holzdolch", ModelItem.RED_X, 3.0, 300D, 200),
-  WOODEN_AXE("Holzaxt", ModelItem.RED_X, 6.0, 150D, 200),
-  WOODEN_MACE("Holzstreitkolben", ModelItem.RED_X, 7.0, 100D, 200);
+  WOODEN_SWORD("Holzschwert", ModelItem.RED_X, 5.0, 200D, 200, WeaponType.SWORD),
+  WOODEN_DAGGER("Holzdolch", ModelItem.RED_X, 3.0, 300D, 200, WeaponType.DAGGER),
+  WOODEN_AXE("Holzaxt", ModelItem.RED_X, 6.0, 150D, 200, WeaponType.AXE),
+  OAK_SHORT_BOW("Eichen Kurbogen", ModelItem.RED_X, 6.0, 150D, 200, WeaponType.SHORT_BOW),
+  WOODEN_MACE("Holzstreitkolben", ModelItem.RED_X, 7.0, 100D, 200, WeaponType.MACE);
 
   @Getter
   private final String displayName;
@@ -35,6 +36,8 @@ public enum BaseWeapon implements BaseItemProvider {
   private final double baseAttackSpeed;
   @Getter
   private final int baseMaxDurability;
+  @Getter
+  private final WeaponType weaponType;
 
   @Override
   public ItemStack createBaseItem() {
@@ -44,10 +47,18 @@ public enum BaseWeapon implements BaseItemProvider {
 
     final StatItem statItem = StatItem.of(nbt);
 
+    statItem.setWeaponType(weaponType);
     statItem.setDurability(baseMaxDurability);
     statItem.setMaxDurability(baseMaxDurability);
     statItem.setCombatStat(CombatStat.ATTACK_SPEED, baseAttackSpeed);
-    statItem.setCombatStat(CombatStat.MEELE_DAMAGE, baseDamage);
+    if (weaponType.isMeele()) {
+      System.out.println("Adding meele");
+      statItem.setCombatStat(CombatStat.MEELE_DAMAGE, baseDamage);
+    } else {
+      System.out.println("Adding ranged");
+      statItem.setCombatStat(CombatStat.RANGE_DAMAGE, baseDamage);
+    }
+
     statItem.addItemInfoCompiler();
 
     return statItem.getItemStack();

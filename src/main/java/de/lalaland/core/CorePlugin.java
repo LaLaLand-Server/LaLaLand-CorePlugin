@@ -85,7 +85,7 @@ public class CorePlugin extends JavaPlugin {
     BukkitTime.start(this);
     Message.init(this);
     coreLogger = LoggerFactory.getLogger(getClass().getName());
-    gson = new GsonBuilder().setPrettyPrinting().create();
+    gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     coreConfig = new ConfigFileHandler(this).createIfNotExists();
     protocolManager = ProtocolLibrary.getProtocolManager();
     taskManager = new TaskManager(this);

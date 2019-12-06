@@ -8,10 +8,12 @@ import de.lalaland.core.io.gson.GsonFileWriter;
 import de.lalaland.core.io.mongodb.MongoDataReader;
 import de.lalaland.core.io.mongodb.MongoDataWriter;
 import de.lalaland.core.modules.chat.messages.OfflineMessage;
+import de.lalaland.core.modules.protection.zones.WorldZone;
 import de.lalaland.core.user.data.UserData;
 import de.lalaland.core.utils.tuples.Unit;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -149,15 +151,15 @@ public class User {
   }
 
   //TODO implement and use format method
-  public String addOfflineMessage(final OfflineMessage offlineMessage){
+  public String addOfflineMessage(final OfflineMessage offlineMessage) {
 
     final List<OfflineMessage> offlineMessages = userData.getOfflineMessages();
 
-    if(offlineMessages.size() >= MAX_OFFLINE_MESSAGES){
+    if (offlineMessages.size() >= MAX_OFFLINE_MESSAGES) {
       return "Der Spieler hat zu viele Nachrichten im Postfach.";
     }
 
-    if(getOfflineMessagesFrom(offlineMessage.getAuthor()).size() >= 2){
+    if (getOfflineMessagesFrom(offlineMessage.getAuthor()).size() >= 2) {
       return "Du hast diesem Spieler bereits 2 Nachrichten hinterlassen.";
     }
 
@@ -166,15 +168,15 @@ public class User {
     return "Du hast dem Spieler deine Nachricht hinterlassen.";
   }
 
-  public void clearOfflineMessages(){
+  public void clearOfflineMessages() {
     userData.getOfflineMessages().clear();
     setUpdateCandidate(true);
   }
 
-  private List<OfflineMessage> getOfflineMessagesFrom(final UUID target){
-    final List<OfflineMessage> offlineMessages =new  ArrayList<>();
-    for(final OfflineMessage offlineMessage : userData.getOfflineMessages()){
-      if(offlineMessage.getAuthor().equals(target)){
+  private List<OfflineMessage> getOfflineMessagesFrom(final UUID target) {
+    final List<OfflineMessage> offlineMessages = new ArrayList<>();
+    for (final OfflineMessage offlineMessage : userData.getOfflineMessages()) {
+      if (offlineMessage.getAuthor().equals(target)) {
         offlineMessages.add(offlineMessage);
       }
     }
@@ -182,7 +184,7 @@ public class User {
   }
 
   private UserData getDefaultUserData() {
-    return new UserData(1, 0, 0, 0, new ArrayList<>()); // everything set to 0 and new
+    return new UserData(1, 0, 0, 0, new ArrayList<>(), EnumSet.noneOf(WorldZone.class)); // everything set to 0 and new
   }
 
 }

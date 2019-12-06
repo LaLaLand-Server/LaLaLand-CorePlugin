@@ -2,7 +2,9 @@ package de.lalaland.core.modules.combat.stats;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.combat.items.StatItem;
+import de.lalaland.core.modules.combat.items.WeaponType;
 import de.lalaland.core.utils.common.UtilMath;
 import de.lalaland.core.utils.common.UtilPlayer;
 import de.lalaland.core.utils.holograms.MovingHologram;
@@ -10,6 +12,9 @@ import de.lalaland.core.utils.holograms.impl.HologramManager;
 import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -20,7 +25,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
@@ -67,15 +76,21 @@ public class CombatDamageListener implements Listener {
       .build();
 
   public CombatDamageListener(final CombatStatManager combatStatManager,
-      final HologramManager hologramManager) {
+      final HologramManager hologramManager, final CorePlugin plugin) {
     this.combatStatManager = combatStatManager;
     critChanceRandom = ThreadLocalRandom.current();
     this.hologramManager = hologramManager;
+    critKey = new NamespacedKey(plugin, "crit");
+    dmgKey = new NamespacedKey(plugin, "damage");
+    random = ThreadLocalRandom.current();
   }
 
   private final CombatStatManager combatStatManager;
   private final ThreadLocalRandom critChanceRandom;
   private final HologramManager hologramManager;
+  private final NamespacedKey critKey;
+  private final NamespacedKey dmgKey;
+  final ThreadLocalRandom random;
 
   @EventHandler
   public void onDamage(final EntityDamageEvent event) {
@@ -114,19 +129,104 @@ public class CombatDamageListener implements Listener {
   }
 
   @EventHandler
+  public void onSwing(final PlayerAnimationEvent event) {
+    final Player player = event.getPlayer();
+    if (event.getAnimationType() != PlayerAnimationType.ARM_SWING) {
+      return;
+    }
+    final ItemStack item = player.getInventory().getItemInMainHand();
+    if (item == null) {
+      return;
+    }
+
+    final StatItem statItem = StatItem.of(item);
+    final WeaponType weaponType = statItem.getWeaponType();
+    if (weaponType.isMeele()) {
+      return;
+    }
+
+    // TODO Quiver with Arrow.class etc
+
+    float cool = UtilPlayer.getAttackCooldown(player);
+    if (cool < 0.5) {
+      UtilPlayer.playSound(player, Sound.ITEM_CROSSBOW_LOADING_MIDDLE);
+      return;
+    }
+
+    if (cool < 0.95) {
+      cool = 0.4F;
+      UtilPlayer.playSound(player, Sound.ENTITY_ARROW_SHOOT, 1.0F, 0.75F);
+    } else {
+      UtilPlayer.playSound(player, Sound.ENTITY_ARROW_SHOOT);
+    }
+
+    double speed = 1D;
+
+    final Vector direction = player.getEyeLocation().getDirection();
+
+    double xOff = 0;
+    double yOff = 0;
+    double zOff = 0;
+
+    switch (weaponType) {
+      case SHORT_BOW:
+        speed = 2.75;
+        xOff = random.nextDouble(-0.032, 0.032);
+        yOff = random.nextDouble(-0.032, 0.032);
+        zOff = random.nextDouble(-0.032, 0.032);
+        break;
+      case LONG_BOW:
+        speed = 3.6;
+        break;
+      default:
+        break;
+    }
+
+    speed *= cool;
+
+    UtilPlayer.playSound(player, Sound.ENTITY_ARROW_SHOOT);
+    final Arrow arrow = player.launchProjectile(Arrow.class, direction.add(new Vector(xOff, yOff, zOff)).multiply(speed));
+
+  }
+
+  @EventHandler
+  public void onProjectile(final ProjectileLaunchEvent event) {
+    final Projectile projectile = event.getEntity();
+    final ProjectileSource source = projectile.getShooter();
+    if (source instanceof LivingEntity) {
+      final LivingEntity attacker = (LivingEntity) source;
+      final CombatStatHolder holder = combatStatManager.getCombatStatHolder(attacker);
+      double dmg = holder.getStatBaseValue(CombatStat.RANGE_DAMAGE);
+      final boolean crit = holder.getStatValue(CombatStat.CRIT_CHANCE) >= critChanceRandom.nextDouble(0, 100);
+      if (crit) {
+        final double dmgMulti = (1D / 100D) * holder.getStatValue(CombatStat.CRIT_DAMAGE);
+        dmg *= dmgMulti;
+        projectile.getPersistentDataContainer().set(critKey, PersistentDataType.INTEGER, 1);
+      }
+      projectile.getPersistentDataContainer().set(dmgKey, PersistentDataType.DOUBLE, dmg);
+    } else {
+      projectile.getPersistentDataContainer().set(dmgKey, PersistentDataType.DOUBLE, 10D);
+    }
+  }
+
+  @EventHandler
   public void onCombat(final EntityDamageByEntityEvent event) {
     Entity attacker = event.getDamager();
     final Entity defender = event.getEntity();
 
+    double damage = 0D;
+    boolean crit = false;
     boolean isRanged = false;
 
     if (attacker instanceof Projectile) {
       isRanged = true;
-      final ProjectileSource source = ((Projectile) attacker).getShooter();
+      final Projectile projectile = ((Projectile) attacker);
+      final Integer critInt = projectile.getPersistentDataContainer().get(critKey, PersistentDataType.INTEGER);
+      crit = critInt != null;
+      damage = projectile.getPersistentDataContainer().get(dmgKey, PersistentDataType.DOUBLE);
+      final ProjectileSource source = projectile.getShooter();
       if (source instanceof Entity) {
         attacker = (Entity) source;
-      } else {
-        //TODO Evaluate random projectiles
       }
     }
 
@@ -141,19 +241,20 @@ public class CombatDamageListener implements Listener {
     final boolean isPlayerAttacker = attacker instanceof Player;
 
     event.setDamage(0);
-    double damage = attackHolder
-        .getStatValue(isRanged ? CombatStat.RANGE_DAMAGE : CombatStat.MEELE_DAMAGE);
 
-    final boolean crit = attackHolder.getStatValue(CombatStat.CRIT_CHANCE) >= critChanceRandom
-        .nextDouble(0, 100);
+    if (!isRanged) {
+      damage = attackHolder.getStatValue(isRanged ? CombatStat.RANGE_DAMAGE : CombatStat.MEELE_DAMAGE);
 
-    if (crit) {
-      final double dmgMulti = (1D / 100D) * attackHolder.getStatValue(CombatStat.CRIT_DAMAGE);
-      damage *= dmgMulti;
+      crit = attackHolder.getStatValue(CombatStat.CRIT_CHANCE) >= critChanceRandom
+          .nextDouble(0, 100);
+
+      if (crit) {
+        final double dmgMulti = (1D / 100D) * attackHolder.getStatValue(CombatStat.CRIT_DAMAGE);
+        damage *= dmgMulti;
+      }
     }
 
-    damage = DamageEvaluator
-        .calculateDamage(defenceHolder, damage, CombatDamageType.ofBukkit(event.getCause()));
+    damage = DamageEvaluator.calculateDamage(defenceHolder, damage, CombatDamageType.ofBukkit(event.getCause()));
 
     ItemStack attackItem = attackerLiving.getActiveItem();
     if (isPlayerAttacker) {
@@ -167,6 +268,12 @@ public class CombatDamageListener implements Listener {
     }
     if (attackItem != null && attackItem.getType() != Material.AIR) {
       final StatItem statItem = StatItem.of(attackItem);
+      final WeaponType weaponType = statItem.getWeaponType();
+      if (!isRanged && weaponType != null && !weaponType.isMeele()) {
+        System.out.println("Blocked");
+        event.setCancelled(true);
+        return;
+      }
       if (statItem.isItemStatComponent()) {
         final Integer durability = statItem.getDurability();
         if (durability != null) {

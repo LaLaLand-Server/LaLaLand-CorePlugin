@@ -13,6 +13,7 @@ import de.lalaland.core.modules.protection.regions.serialization.ProtectedRegion
 import de.lalaland.core.modules.protection.regions.serialization.ProtectedRegionSerializer;
 import de.lalaland.core.modules.protection.regions.serialization.RuleSetDeserializer;
 import de.lalaland.core.modules.protection.regions.serialization.RuleSetSerializer;
+import de.lalaland.core.modules.protection.zones.WorldZoneManager;
 import java.io.File;
 import java.io.IOException;
 import lombok.Getter;
@@ -32,6 +33,8 @@ public class ProtectionModule implements IModule {
   @Getter
   private RegionManager regionManager;
   @Getter
+  private WorldZoneManager worldZoneManager;
+  @Getter
   private Gson gson;
 
   private File regionFolder;
@@ -43,6 +46,7 @@ public class ProtectionModule implements IModule {
 
   @Override
   public void enable(final CorePlugin plugin) {
+    worldZoneManager = new WorldZoneManager(regionManager);
     regionFolder = new File(plugin.getDataFolder() + File.separator + "regions");
     if (!regionFolder.exists()) {
       regionFolder.mkdirs();
@@ -57,7 +61,7 @@ public class ProtectionModule implements IModule {
         .setPrettyPrinting()
         .create();
 
-    Bukkit.getPluginManager().registerEvents(new RegionListener(regionManager), plugin);
+    Bukkit.getPluginManager().registerEvents(new RegionListener(regionManager, plugin, worldZoneManager), plugin);
     plugin.getCommandManager().registerCommand(new RegionCommand(regionManager));
 
     try {
@@ -65,6 +69,7 @@ public class ProtectionModule implements IModule {
     } catch (final IOException e) {
       e.printStackTrace();
     }
+    worldZoneManager.init(regionManager);
   }
 
   @Override

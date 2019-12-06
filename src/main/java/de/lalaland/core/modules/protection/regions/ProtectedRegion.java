@@ -134,4 +134,12 @@ public class ProtectedRegion {
     return chunkKeys;
   }
 
+  @Override
+  public boolean equals(final Object other) {
+    if (!(other instanceof ProtectedRegion)) {
+      return false;
+    }
+    return regionID.equals(((ProtectedRegion)other).regionID);
+  }
+
 }

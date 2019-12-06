@@ -1,7 +1,15 @@
 package de.lalaland.core.modules.protection.regions;
 
 
+import de.lalaland.core.CorePlugin;
+import de.lalaland.core.modules.combat.CombatModule;
+import de.lalaland.core.modules.combat.stats.CombatStatManager;
+import de.lalaland.core.modules.protection.zones.WorldZone;
+import de.lalaland.core.modules.protection.zones.WorldZoneManager;
+import de.lalaland.core.user.UserManager;
+import de.lalaland.core.user.data.UserData;
 import java.util.ListIterator;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -19,6 +27,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.InventoryHolder;
 
 /*******************************************************
@@ -32,11 +41,48 @@ import org.bukkit.inventory.InventoryHolder;
  */
 public class RegionListener implements Listener {
 
-  public RegionListener(final RegionManager regionManager) {
+  public RegionListener(final RegionManager regionManager, final CorePlugin plugin, final WorldZoneManager worldZoneManager) {
+    userManager = plugin.getUserManager();
     this.regionManager = regionManager;
+    this.worldZoneManager = worldZoneManager;
+    combatStatManager = plugin.getModule(CombatModule.class).getCombatStatManager();
   }
 
+  private final WorldZoneManager worldZoneManager;
   private final RegionManager regionManager;
+  private final UserManager userManager;
+  private final CombatStatManager combatStatManager;
+
+  @EventHandler
+  public void onMove(final PlayerMoveEvent event) {
+    final Location toLoc = event.getTo();
+    final Location fromLoc = event.getTo();
+    if (fromLoc.getBlockX() == toLoc.getBlockX() || fromLoc.getBlockZ() == toLoc.getBlockX()) {
+      return;
+    }
+    final ProtectedRegion fromRegion = regionManager.getMostRelevantRegion(toLoc);
+    final ProtectedRegion toRegion = regionManager.getMostRelevantRegion(toLoc);
+    if (fromRegion.equals(toRegion)) {
+      return;
+    }
+    final WorldZone zone = worldZoneManager.getZoneOf(toRegion);
+    if (zone == null) {
+      return;
+    }
+
+    final UserData data = userManager.getUser(event.getPlayer().getUniqueId()).getUserData();
+
+    if (data.hasDiscovered(zone)) {
+      // TODO on discovery
+      data.addZoneDiscovery(zone);
+      event.getPlayer().sendTitle(zone.getDisplayName(), "§eErkundet", 20, 70, 20);
+      // TODO rework EXP system
+      data.addExp(zone.getDiscoveryExp());
+    } else {
+      // TODO on normal enter
+      event.getPlayer().sendTitle(zone.getDisplayName(), "", 10, 30, 10);
+    }
+  }
 
   @EventHandler(priority = EventPriority.LOWEST)
   public void onBlockBreak(final BlockBreakEvent event) {
