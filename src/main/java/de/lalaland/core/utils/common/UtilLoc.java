@@ -1,7 +1,7 @@
 package de.lalaland.core.utils.common;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,23 +20,23 @@ import org.jetbrains.annotations.Nullable;
  */
 public class UtilLoc {
 
-  public static String locToString(Location location) {
+  public static String locToString(final Location location) throws UnsupportedEncodingException {
     return new String(toBytes(location));
   }
 
-  public static Location locFromString(String locationString) {
+  public static Location locFromString(final String locationString) throws UnsupportedEncodingException {
     return fromBytes(locationString.getBytes());
   }
 
-  public static byte[] toBytes(@NotNull Location location) {
-    ByteBuffer buffer = ByteBuffer.allocate(48);
+  public static byte[] toBytes(@NotNull final Location location) {
+    final ByteBuffer buffer = ByteBuffer.allocate(48);
     buffer.rewind();
-    UUID worldID = location.getWorld().getUID();
-    double x = location.getX();
-    double y = location.getY();
-    double z = location.getZ();
-    float pitch = location.getPitch();
-    float yaw = location.getYaw();
+    final UUID worldID = location.getWorld().getUID();
+    final double x = location.getX();
+    final double y = location.getY();
+    final double z = location.getZ();
+    final float pitch = location.getPitch();
+    final float yaw = location.getYaw();
 
     buffer.putLong(worldID.getMostSignificantBits());
     buffer.putLong(worldID.getLeastSignificantBits());
@@ -50,18 +50,18 @@ public class UtilLoc {
   }
 
   @Nullable
-  public static Location fromBytes(byte[] bytes) {
-    ByteBuffer buffer = ByteBuffer.wrap(bytes);
+  public static Location fromBytes(final byte[] bytes) {
+    final ByteBuffer buffer = ByteBuffer.wrap(bytes);
     buffer.rewind();
-    long idMSB = buffer.getLong();
-    long idLSB = buffer.getLong();
-    double x = buffer.getDouble();
-    double y = buffer.getDouble();
-    double z = buffer.getDouble();
-    float pitch = buffer.getFloat();
-    float yaw = buffer.getFloat();
+    final long idMSB = buffer.getLong();
+    final long idLSB = buffer.getLong();
+    final double x = buffer.getDouble();
+    final double y = buffer.getDouble();
+    final double z = buffer.getDouble();
+    final float pitch = buffer.getFloat();
+    final float yaw = buffer.getFloat();
 
-    World world = Bukkit.getWorld(new UUID(idMSB, idLSB));
+    final World world = Bukkit.getWorld(new UUID(idMSB, idLSB));
     if (world == null) {
       return null;
     }
