@@ -2,7 +2,7 @@ package de.lalaland.core.modules.mobs.implementations.dev;
 
 import de.lalaland.core.modules.combat.stats.CombatStat;
 import de.lalaland.core.modules.combat.stats.CombatStatHolder;
-import de.lalaland.core.modules.mobs.custommobs.BiPipedType;
+import de.lalaland.core.modules.mobs.custommobs.ComplexModelType;
 import de.lalaland.core.modules.mobs.custommobs.CustomMobManager;
 import de.lalaland.core.modules.mobs.implementations.GameMob;
 import org.bukkit.Location;
@@ -17,9 +17,9 @@ import org.bukkit.entity.LivingEntity;
  * permission of the owner.
  *
  */
-public class TestMob extends GameMob {
+public class TestBiPiped extends GameMob {
 
-  public TestMob(final int initLevel) {
+  public TestBiPiped(final int initLevel) {
     super(initLevel);
   }
 
@@ -30,7 +30,7 @@ public class TestMob extends GameMob {
 
   @Override
   public LivingEntity spawn(final Location location, final CustomMobManager customMobManager) {
-    return customMobManager.spawnBiPiped(BiPipedType.TEST, location).getBukkit();
+    return customMobManager.spawnModeled(ComplexModelType.TEST_BI, location).getBukkit();
   }
 
 }

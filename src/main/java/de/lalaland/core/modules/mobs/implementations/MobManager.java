@@ -26,11 +26,12 @@ public class MobManager {
   private final CombatStatManager combatStatManager;
   // TODO Skill linker.
 
-  public void createMob(final GameMobType type, final int level, final Location location) {
+  public LivingEntity createMob(final GameMobType type, final int level, final Location location) {
     final GameMob mob = type.getGameMobFunction().apply(level);
     final LivingEntity bukkitEntity = mob.spawn(location, customMobManager);
     final CombatStatHolder holder = combatStatManager.initEntity(bukkitEntity);
     mob.initCombatStats(holder);
+    return bukkitEntity;
   }
 
 }

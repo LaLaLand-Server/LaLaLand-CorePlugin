@@ -1,8 +1,8 @@
 package de.lalaland.core.modules.mobs.custommobs.zombie;
 
 import de.lalaland.core.modules.mobs.modeledentities.MobModelManager;
-import de.lalaland.core.modules.mobs.modeledentities.bipiped.BipipedModel;
-import de.lalaland.core.modules.mobs.modeledentities.bipiped.IBiPiped;
+import de.lalaland.core.modules.mobs.modeledentities.singlemodel.ISingleModel;
+import de.lalaland.core.modules.mobs.modeledentities.singlemodel.SingleModel;
 import java.util.UUID;
 import net.minecraft.server.v1_14_R1.EntityArmorStand;
 import net.minecraft.server.v1_14_R1.EnumMoveType;
@@ -20,19 +20,20 @@ import org.bukkit.entity.LivingEntity;
  * permission of the owner.
  *
  */
-public class BiPipedZombie extends CustomZombieMob implements IBiPiped {
+public class SingleModelZombie extends CustomZombieMob implements ISingleModel {
 
   private static final int STANDING_TICK_THRESHOLD = 3;
   private static final double MIN_MOVING_DIST = 0.1 * 0.1;
 
-  public BiPipedZombie(final World world, final BipipedModel model, final MobModelManager mobModelManager, final EntityArmorStand token) {
+  public SingleModelZombie(final World world, final SingleModel model, final MobModelManager mobModelManager,
+      final EntityArmorStand token) {
     super(world);
     this.model = model;
     mobModelManager.addModel(this);
     this.token = token;
   }
 
-  private final BipipedModel model;
+  private final SingleModel model;
   private boolean moving = false;
   private int nonMovingTicks = 0;
   private final EntityArmorStand token;
@@ -43,7 +44,7 @@ public class BiPipedZombie extends CustomZombieMob implements IBiPiped {
   }
 
   @Override
-  public BipipedModel getModel() {
+  public SingleModel getModel() {
     return model;
   }
 
@@ -60,6 +61,11 @@ public class BiPipedZombie extends CustomZombieMob implements IBiPiped {
   @Override
   public ArmorStand getToken() {
     return (ArmorStand) token.getBukkitLivingEntity();
+  }
+
+  @Override
+  public int getAttackFrames() {
+    return 4;
   }
 
   @Override

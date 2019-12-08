@@ -1,6 +1,8 @@
 package de.lalaland.core.modules.mobs.implementations;
 
-import de.lalaland.core.modules.mobs.implementations.dev.TestMob;
+import de.lalaland.core.modules.mobs.implementations.dev.TestBiPiped;
+import de.lalaland.core.modules.mobs.implementations.dev.TestDisguised;
+import de.lalaland.core.modules.mobs.implementations.dev.TestSingleModel;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +19,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum GameMobType {
 
-  TEST_MOB((lvl) -> new TestMob(lvl));
+  TEST_BI_MOB((lvl) -> new TestBiPiped(lvl)),
+  TEST_DISGUISED((lvl) -> new TestDisguised(lvl)),
+  TEST_SINGLE((lvl) -> new TestSingleModel(lvl));
 
   @Getter
   private final Function<Integer, GameMob> gameMobFunction;

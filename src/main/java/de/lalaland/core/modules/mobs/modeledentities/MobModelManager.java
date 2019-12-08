@@ -1,7 +1,6 @@
 package de.lalaland.core.modules.mobs.modeledentities;
 
 import de.lalaland.core.CorePlugin;
-import de.lalaland.core.modules.mobs.modeledentities.bipiped.IBiPiped;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.UUID;
@@ -23,17 +22,17 @@ public class MobModelManager {
     Bukkit.getPluginManager().registerEvents(new ModelListener(plugin, this), plugin);
   }
 
-  private final Object2ObjectMap<UUID, IBiPiped> bipipedMappings;
+  private final Object2ObjectMap<UUID, ComplexModel<?>> bipipedMappings;
 
-  public void addBiModel(final IBiPiped piped) {
-    bipipedMappings.put(piped.getEntityID(), piped);
+  public void addModel(final ComplexModel<?> model) {
+    bipipedMappings.put(model.getEntityID(), model);
   }
 
-  public IBiPiped getBiModel(final UUID entityID) {
+  public ComplexModel<?> getModel(final UUID entityID) {
     return bipipedMappings.get(entityID);
   }
 
-  public void removeBiModel(final UUID entityID) {
+  public void removeModel(final UUID entityID) {
     bipipedMappings.remove(entityID);
   }
 

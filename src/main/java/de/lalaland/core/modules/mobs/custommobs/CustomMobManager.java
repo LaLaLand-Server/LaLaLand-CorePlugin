@@ -1,8 +1,11 @@
 package de.lalaland.core.modules.mobs.custommobs;
 
+import de.lalaland.core.modules.mobs.modeledentities.ComplexModel;
 import de.lalaland.core.modules.mobs.modeledentities.MobModelManager;
-import de.lalaland.core.modules.mobs.modeledentities.bipiped.IBiPiped;
+import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -21,8 +24,16 @@ public class CustomMobManager {
 
   private final MobModelManager mobModelManager;
 
-  public IBiPiped spawnBiPiped(final BiPipedType type, final Location location) {
+  public ComplexModel<?> spawnModeled(final ComplexModelType type, final Location location) {
     return type.getModelFactory().spawn(location, mobModelManager);
+  }
+
+  public LivingEntity spawnPlayerDisguised(final EntityType type, final String playerName, final Location location) {
+    final PlayerDisguise disguise = new PlayerDisguise(playerName);
+    final LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, type);
+    disguise.setEntity(entity);
+    disguise.startDisguise();
+    return entity;
   }
 
 

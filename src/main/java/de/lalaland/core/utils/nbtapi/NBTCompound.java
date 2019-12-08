@@ -68,7 +68,7 @@ public class NBTCompound implements Cloneable {
   }
 
   public void setUUID(@NotNull final String key, @NotNull final UUID value) {
-    nmsCompound.setUUID(key, value);
+    nmsCompound.setString(key, value.toString());
   }
 
   public void remove(final String key) {

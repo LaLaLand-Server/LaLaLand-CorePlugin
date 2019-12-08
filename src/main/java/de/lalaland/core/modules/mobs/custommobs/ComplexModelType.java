@@ -1,8 +1,8 @@
 package de.lalaland.core.modules.mobs.custommobs;
 
-import de.lalaland.core.modules.mobs.modeledentities.MobModelManager;
-import de.lalaland.core.modules.mobs.modeledentities.bipiped.IBiPiped;
-import org.bukkit.Location;
+import de.lalaland.core.modules.mobs.custommobs.zombie.BiTestFactory;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -13,8 +13,13 @@ import org.bukkit.Location;
  * permission of the owner.
  *
  */
-public interface BiPipedFactory <T extends IBiPiped> {
+@AllArgsConstructor
+public enum ComplexModelType {
 
-  public T spawn(Location location, MobModelManager mobModelManager);
+  TEST_BI(new BiTestFactory()),
+  TEST_SINGLE(new BiTestFactory());
+
+  @Getter
+  private final ComplexModelFactory<?> modelFactory;
 
 }

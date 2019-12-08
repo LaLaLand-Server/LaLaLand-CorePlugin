@@ -1,7 +1,7 @@
 package de.lalaland.core.modules.mobs.custommobs.zombie;
 
 import de.lalaland.core.modules.mobs.modeledentities.MobModelManager;
-import de.lalaland.core.modules.mobs.modeledentities.bipiped.BipipedModel;
+import de.lalaland.core.modules.mobs.modeledentities.singlemodel.SingleModel;
 import net.minecraft.server.v1_14_R1.EntityArmorStand;
 import net.minecraft.server.v1_14_R1.World;
 
@@ -14,12 +14,12 @@ import net.minecraft.server.v1_14_R1.World;
  * permission of the owner.
  *
  */
-public class CustomTestZombie extends BiPipedZombie {
+public class TestSingleZombie extends SingleModelZombie {
 
-  public CustomTestZombie(final World world,
+  public TestSingleZombie(final World world,
       final MobModelManager mobModelManager,
       final EntityArmorStand token) {
-    super(world, BipipedModel.TEST, mobModelManager, token);
+    super(world, SingleModel.TEST, mobModelManager, token);
   }
 
 }

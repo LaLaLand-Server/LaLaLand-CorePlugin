@@ -1,8 +1,6 @@
 package de.lalaland.core.modules.mobs.modeledentities.bipiped;
 
-import java.util.UUID;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.LivingEntity;
+import de.lalaland.core.modules.mobs.modeledentities.ComplexModel;
 import org.bukkit.inventory.EntityEquipment;
 
 /*******************************************************
@@ -14,20 +12,14 @@ import org.bukkit.inventory.EntityEquipment;
  * permission of the owner.
  *
  */
-public interface IBiPiped {
+public interface IBiPiped extends ComplexModel<BipipedModel> {
 
-  public abstract UUID getEntityID();
+  @Override
+  public abstract BipipedModel getModel();
 
-  public abstract BipipedModel getBiModel();
-
-  public abstract LivingEntity getBukkit();
-
-  public abstract boolean isMoving();
-
-  public abstract ArmorStand getToken();
-
+  @Override
   public default void equipNormal() {
-    final BiModelEquipment equip = getBiModel().getEquipment();
+    final BiModelEquipment equip = getModel().getEquipment();
     final EntityEquipment inv = getBukkit().getEquipment();
     inv.setHelmet(equip.getHeadItem());
     inv.setItemInMainHand(equip.getRightHand());
@@ -35,8 +27,9 @@ public interface IBiPiped {
     getToken().setHelmet(equip.getTorso());
   }
 
+  @Override
   public default void equipMoving() {
-    final BiModelEquipment equip = getBiModel().getEquipment();
+    final BiModelEquipment equip = getModel().getEquipment();
     final EntityEquipment inv = getBukkit().getEquipment();
     inv.setHelmet(equip.getHeadItem());
     inv.setItemInMainHand(equip.getRightHand());
@@ -44,8 +37,9 @@ public interface IBiPiped {
     getToken().setHelmet(equip.getTorso_moving());
   }
 
+  @Override
   public default void equipHurt() {
-    final BiModelEquipment equip = getBiModel().getEquipment();
+    final BiModelEquipment equip = getModel().getEquipment();
     final EntityEquipment inv = getBukkit().getEquipment();
     if (isMoving()) {
       inv.setHelmet(equip.getHeadItem_hurt());
@@ -58,6 +52,15 @@ public interface IBiPiped {
       inv.setItemInOffHand(equip.getLeftHand_hurt());
       getToken().setHelmet(equip.getTorso_hurt());
     }
+  }
+
+  @Override
+  public default void equipAttack() {
+  }
+
+  @Override
+  public default int getAttackFrames() {
+    return 0;
   }
 
 }

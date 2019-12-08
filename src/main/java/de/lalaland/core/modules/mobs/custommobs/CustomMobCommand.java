@@ -3,6 +3,7 @@ package de.lalaland.core.modules.mobs.custommobs;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Subcommand;
+import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import org.bukkit.entity.Player;
 
 /*******************************************************
@@ -25,8 +26,16 @@ public class CustomMobCommand extends BaseCommand {
   private final CustomMobManager customMobManager;
 
   @Subcommand("spawn")
-  public void spawnMob(final Player issuer, final BiPipedType type) {
-    customMobManager.spawnBiPiped(type, issuer.getLocation());
+  public void spawnMob(final Player issuer, final ComplexModelType type) {
+    customMobManager.spawnModeled(type, issuer.getLocation());
+  }
+
+  @Subcommand("disguise")
+  public void disguise(final Player issuer, final String name) {
+    final PlayerDisguise dis = new PlayerDisguise(name);
+    dis.setViewSelfDisguise(true);
+    dis.setEntity(issuer);
+    dis.startDisguise();
   }
 
 }

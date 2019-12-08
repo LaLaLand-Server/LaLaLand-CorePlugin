@@ -18,10 +18,10 @@ import org.bukkit.entity.EntityType;
  * permission of the owner.
  *
  */
-public class BiTestFactory implements ComplexModelFactory<TestBiZombie> {
+public class SingleTestFactory implements ComplexModelFactory<TestSingleZombie> {
 
   @Override
-  public TestBiZombie spawn(final Location location, final MobModelManager mobModelManager) {
+  public TestSingleZombie spawn(final Location location, final MobModelManager mobModelManager) {
     final World world = ((CraftWorld) location.getWorld()).getHandle();
 
     final ArmorStand as = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
@@ -29,7 +29,7 @@ public class BiTestFactory implements ComplexModelFactory<TestBiZombie> {
     as.setGravity(false);
     as.setMarker(true);
 
-    final TestBiZombie mob = new TestBiZombie(world.getMinecraftWorld(), mobModelManager, ((CraftArmorStand) as).getHandle());
+    final TestSingleZombie mob = new TestSingleZombie(world.getMinecraftWorld(), mobModelManager, ((CraftArmorStand) as).getHandle());
     world.addEntity(mob);
     mob.getBukkitLivingEntity().teleport(location);
     mob.getBukkitLivingEntity().addPassenger(as);

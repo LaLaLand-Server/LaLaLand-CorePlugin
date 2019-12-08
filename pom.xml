@@ -37,6 +37,14 @@
       <version>4.4.0</version>
       <scope>compile</scope>
     </dependency>
+    <!-- LibsDisguises-->
+    <dependency>
+      <groupId>LibsDisguises</groupId>
+      <artifactId>LibsDisguises</artifactId>
+      <version>9.8.4</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/libs/LibsDisguises-9.8.4.jar</systemPath>
+    </dependency>
     <!-- Patched NMS-->
     <dependency>
       <groupId>com.destroystokyo.paper</groupId>

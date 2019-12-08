@@ -1,11 +1,14 @@
 package de.lalaland.core.modules.mobs.modeledentities;
 
 import de.lalaland.core.CorePlugin;
-import de.lalaland.core.modules.mobs.modeledentities.bipiped.IBiPiped;
 import de.lalaland.core.tasks.TaskManager;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -28,7 +31,7 @@ public class ModelListener implements Listener {
 
   @EventHandler
   public void onDamaged(final EntityDamageEvent event) {
-    final IBiPiped model = mobModelManager.getBiModel(event.getEntity().getUniqueId());
+    final ComplexModel<?> model = mobModelManager.getModel(event.getEntity().getUniqueId());
     if (model == null) {
       return;
     }
@@ -38,6 +41,36 @@ public class ModelListener implements Listener {
         model.equipNormal();
       }
     }, 4L);
+  }
+
+  @EventHandler
+  public void onAttack(final EntityDamageByEntityEvent event) {
+    final ComplexModel<?> model = mobModelManager.getModel(event.getEntity().getUniqueId());
+    if (model == null) {
+      return;
+    }
+    final int attackFrames = model.getAttackFrames();
+    if (attackFrames < 1) {
+      return;
+    }
+    model.equipAttack();
+    taskManager.runBukkitSyncDelayed(() -> {
+      if (!model.getBukkit().isDead()) {
+        model.equipNormal();
+      }
+    }, attackFrames);
+  }
+
+  @EventHandler
+  public void onDeath(final EntityDeathEvent event) {
+    mobModelManager.removeModel(event.getEntity().getUniqueId());
+  }
+
+  @EventHandler
+  public void onUnload(final ChunkUnloadEvent event) {
+    for (final Entity entity : event.getChunk().getEntities()) {
+      mobModelManager.removeModel(entity.getUniqueId());
+    }
   }
 
 }
