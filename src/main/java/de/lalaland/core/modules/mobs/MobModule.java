@@ -2,6 +2,13 @@ package de.lalaland.core.modules.mobs;
 
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
+import de.lalaland.core.modules.combat.CombatModule;
+import de.lalaland.core.modules.mobs.custommobs.CustomMobCommand;
+import de.lalaland.core.modules.mobs.custommobs.CustomMobManager;
+import de.lalaland.core.modules.mobs.implementations.MobManager;
+import de.lalaland.core.modules.mobs.modeledentities.MobModelManager;
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -14,6 +21,13 @@ import de.lalaland.core.modules.IModule;
  */
 public class MobModule implements IModule {
 
+  @Getter(AccessLevel.PACKAGE)
+  private MobModelManager mobModelManager;
+  @Getter(AccessLevel.PACKAGE)
+  private CustomMobManager customMobManager;
+  @Getter
+  private MobManager mobManager;
+
   @Override
   public String getModuleName() {
     return "MobModule";
@@ -21,11 +35,15 @@ public class MobModule implements IModule {
 
   @Override
   public void enable(final CorePlugin plugin) throws Exception, Exception {
-
+    mobModelManager = new MobModelManager(plugin);
+    customMobManager = new CustomMobManager(mobModelManager);
+    mobManager = new MobManager(plugin.getModule(CombatModule.class).getCombatStatManager(), customMobManager);
+    plugin.getCommandManager().registerCommand(new CustomMobCommand(customMobManager));
   }
 
   @Override
   public void disable(final CorePlugin plugin) throws Exception {
 
   }
+
 }

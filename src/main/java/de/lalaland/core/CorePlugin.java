@@ -13,6 +13,7 @@ import de.lalaland.core.modules.chat.ChatModule;
 import de.lalaland.core.modules.combat.CombatModule;
 import de.lalaland.core.modules.economy.EconomyModule;
 import de.lalaland.core.modules.jobs.JobModule;
+import de.lalaland.core.modules.mobs.MobModule;
 import de.lalaland.core.modules.protection.ProtectionModule;
 import de.lalaland.core.modules.recipe.RecipeModule;
 import de.lalaland.core.modules.resourcepack.ResourcepackModule;
@@ -24,14 +25,10 @@ import de.lalaland.core.ui.gui.manager.GuiManager;
 import de.lalaland.core.user.UserManager;
 import de.lalaland.core.utils.UtilModule;
 import de.lalaland.core.utils.common.BukkitTime;
-import de.lalaland.core.utils.common.UtilLoc;
 import de.lalaland.core.utils.items.display.ItemDisplayCompiler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import java.io.UnsupportedEncodingException;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,6 +102,7 @@ public class CorePlugin extends JavaPlugin {
         .put(UtilModule.class, new UtilModule())
         .put(ResourcepackModule.class, new ResourcepackModule())
         .put(CombatModule.class, new CombatModule())
+        .put(MobModule.class, new MobModule())
         .put(JobModule.class, new JobModule())
         .put(ProtectionModule.class, new ProtectionModule())
         .put(SchematicModule.class, new SchematicModule())
@@ -125,24 +123,6 @@ public class CorePlugin extends JavaPlugin {
         e.printStackTrace();
       }
     });
-
-    final Location loc = new Location(Bukkit.getWorlds().get(0), 22, 33, 44);
-    final byte[] b1 = UtilLoc.toBytes(loc);
-    final Location loc2 = UtilLoc.fromBytes(b1);
-    final Location loc3 = new Location(Bukkit.getWorlds().get(0), 22, 33, 44);
-    String s1 = null;
-    try {
-      s1 = UtilLoc.locToString(loc3);
-      System.out.println(s1);
-    } catch (final UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
-
-    try {
-      UtilLoc.locFromString(s1);
-    } catch (final UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
 
   }
 

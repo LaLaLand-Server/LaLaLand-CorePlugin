@@ -135,13 +135,13 @@ public class CombatDamageListener implements Listener {
       return;
     }
     final ItemStack item = player.getInventory().getItemInMainHand();
-    if (item == null) {
+    if (item == null || item.getType() == Material.AIR) {
       return;
     }
 
     final StatItem statItem = StatItem.of(item);
     final WeaponType weaponType = statItem.getWeaponType();
-    if (weaponType.isMeele()) {
+    if (weaponType == null || weaponType.isMeele()) {
       return;
     }
 

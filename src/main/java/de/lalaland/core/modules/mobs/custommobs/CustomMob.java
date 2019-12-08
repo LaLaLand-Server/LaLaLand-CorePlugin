@@ -1,4 +1,7 @@
-package de.lalaland.core.modules.mobs.modeledentities.bipiped;
+package de.lalaland.core.modules.mobs.custommobs;
+
+import net.minecraft.server.v1_14_R1.EntityLiving;
+import org.bukkit.entity.LivingEntity;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -9,8 +12,9 @@ package de.lalaland.core.modules.mobs.modeledentities.bipiped;
  * permission of the owner.
  *
  */
-public class BiPipedModelLibrary {
+public interface CustomMob {
 
-  public static BiModelEquipment TEST_MODEL = BiModelEquipment.ofModelIDs(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+  public EntityLiving getAsNMSEntity();
+  public LivingEntity getAsBukkitEntity();
 
 }

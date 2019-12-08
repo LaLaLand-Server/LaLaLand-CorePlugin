@@ -22,16 +22,16 @@ import org.bukkit.entity.LivingEntity;
  */
 public class CombatStatManager implements Runnable {
 
-  public CombatStatManager(CorePlugin plugin) {
+  public CombatStatManager(final CorePlugin plugin) {
     this.plugin = plugin;
-    this.taskManager = plugin.getTaskManager();
-    this.combatStatCalculator = new CombatStatCalculator();
-    this.combatStatEntityMapping = new Object2ObjectOpenHashMap<>();
-    this.scheduledRecalculations = new ObjectOpenHashSet<UUID>();
-    for (World world : Bukkit.getWorlds()) {
-      for (Entity entity : world.getEntities()) {
+    taskManager = plugin.getTaskManager();
+    combatStatCalculator = new CombatStatCalculator();
+    combatStatEntityMapping = new Object2ObjectOpenHashMap<>();
+    scheduledRecalculations = new ObjectOpenHashSet<>();
+    for (final World world : Bukkit.getWorlds()) {
+      for (final Entity entity : world.getEntities()) {
         if (entity instanceof LivingEntity) {
-          this.initEntity((LivingEntity) entity);
+          initEntity((LivingEntity) entity);
         }
       }
     }
@@ -49,8 +49,8 @@ public class CombatStatManager implements Runnable {
    * @param entity
    * @return
    */
-  public CombatStatHolder getCombatStatHolder(LivingEntity entity) {
-    return this.getCombatStatHolder(entity.getUniqueId());
+  public CombatStatHolder getCombatStatHolder(final LivingEntity entity) {
+    return getCombatStatHolder(entity.getUniqueId());
   }
 
   /**
@@ -60,10 +60,10 @@ public class CombatStatManager implements Runnable {
    * @return
    */
   @Nullable
-  public CombatStatHolder getCombatStatHolder(UUID entityID) {
-    CombatStatHolder holder = this.combatStatEntityMapping.get(entityID);
+  public CombatStatHolder getCombatStatHolder(final UUID entityID) {
+    final CombatStatHolder holder = combatStatEntityMapping.get(entityID);
     if (holder == null) {
-      this.plugin.getLogger().warning("Tried to request holder of non mapped entity.");
+      plugin.getLogger().warning("Tried to request holder of non mapped entity.");
     }
     return holder;
   }
@@ -73,10 +73,11 @@ public class CombatStatManager implements Runnable {
    *
    * @param entity
    */
-  protected void initEntity(LivingEntity entity) {
-    CombatStatHolder holder = new CombatStatHolder(entity);
+  public CombatStatHolder initEntity(final LivingEntity entity) {
+    final CombatStatHolder holder = new CombatStatHolder(entity);
     combatStatCalculator.recalculateValues(holder);
-    this.combatStatEntityMapping.put(entity.getUniqueId(), holder);
+    combatStatEntityMapping.put(entity.getUniqueId(), holder);
+    return holder;
   }
 
   /**
@@ -86,8 +87,8 @@ public class CombatStatManager implements Runnable {
    *
    * @param entityID
    */
-  protected void recalculateValues(UUID entityID) {
-    CombatStatHolder holder = this.combatStatEntityMapping.get(entityID);
+  protected void recalculateValues(final UUID entityID) {
+    final CombatStatHolder holder = combatStatEntityMapping.get(entityID);
     if (holder == null) {
       plugin.getLogger().warning("Tried to call recalculation on non mapped entity.");
       return;
@@ -96,8 +97,8 @@ public class CombatStatManager implements Runnable {
       return;
     }
     holder.setRecalculatingSheduled(true);
-    this.scheduledRecalculations.add(entityID);
-    this.taskManager.runBukkitSync(this);
+    scheduledRecalculations.add(entityID);
+    taskManager.runBukkitSync(this);
   }
 
   /**
@@ -105,21 +106,21 @@ public class CombatStatManager implements Runnable {
    *
    * @param entity
    */
-  protected void terminateEntity(LivingEntity entity) {
-    CombatStatHolder holder = this.combatStatEntityMapping.get(entity.getUniqueId());
+  protected void terminateEntity(final LivingEntity entity) {
+    final CombatStatHolder holder = combatStatEntityMapping.get(entity.getUniqueId());
     if (holder == null) {
       plugin.getLogger().warning("Tried to call termination on non mapped entity.");
       return;
     }
-    this.combatStatEntityMapping.remove(entity.getUniqueId());
+    combatStatEntityMapping.remove(entity.getUniqueId());
   }
 
   @Override
   public void run() {
-    for (UUID schedID : this.scheduledRecalculations) {
-      CombatStatHolder holder = this.combatStatEntityMapping.get(schedID);
+    for (final UUID schedID : scheduledRecalculations) {
+      final CombatStatHolder holder = combatStatEntityMapping.get(schedID);
       if (holder != null) {
-        this.combatStatCalculator.recalculateValues(holder);
+        combatStatCalculator.recalculateValues(holder);
         holder.setRecalculatingSheduled(false);
       }
     }
