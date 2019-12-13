@@ -1,7 +1,7 @@
 package de.lalaland.core.modules.economy.gui;
 
 import de.lalaland.core.CorePlugin;
-import de.lalaland.core.modules.resourcepack.skins.ModelItem;
+import de.lalaland.core.modules.resourcepack.skins.Model;
 import de.lalaland.core.ui.gui.PrivateGui;
 import de.lalaland.core.ui.gui.icon.ClickableIcon;
 import de.lalaland.core.ui.gui.icon.SimpleIcon;
@@ -31,9 +31,9 @@ public class MobileEconomyGui {
       }
     };
 
-    final SimpleIcon moneyOnHand = new SimpleIcon(ModelItem.RED_X.create());
+    final SimpleIcon moneyOnHand = new SimpleIcon(Model.RED_X.getItem());
 
-    final ClickableIcon dropMoney = new ClickableIcon(ModelItem.RED_X.create()) {
+    final ClickableIcon dropMoney = new ClickableIcon(Model.RED_X.getItem()) {
       @Override
       public void handleRightClick(final InventoryClickEvent event) {
 

@@ -6,7 +6,7 @@ import de.lalaland.core.modules.IModule;
 import de.lalaland.core.modules.resourcepack.distribution.ResourcepackListener;
 import de.lalaland.core.modules.resourcepack.distribution.ResourcepackManager;
 import de.lalaland.core.modules.resourcepack.packing.ResourcepackZipper;
-import de.lalaland.core.modules.resourcepack.skins.ModelItem;
+import de.lalaland.core.modules.resourcepack.skins.Model;
 import de.lalaland.core.modules.resourcepack.skins.ModelItemCommand;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -28,7 +28,7 @@ public class ResourcepackModule implements IModule {
     plugin.getCommandManager()
         .getCommandCompletions()
         .registerStaticCompletion("ModelItem",
-            ImmutableList.copyOf(Arrays.stream(ModelItem.values()).map(Enum::toString).collect(Collectors.toList())));
+            ImmutableList.copyOf(Arrays.stream(Model.values()).map(Enum::toString).collect(Collectors.toList())));
     resourcepackManager = new ResourcepackManager(plugin);
     Bukkit.getPluginManager().registerEvents(new ResourcepackListener(plugin, resourcepackManager), plugin);
   }

@@ -1,7 +1,7 @@
 package de.lalaland.core.modules.combat.items;
 
 import de.lalaland.core.modules.jobs.jobdata.JobType;
-import de.lalaland.core.modules.resourcepack.skins.ModelItem;
+import de.lalaland.core.modules.resourcepack.skins.Model;
 import de.lalaland.core.utils.items.ItemBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,9 +19,9 @@ import org.bukkit.inventory.ItemStack;
 @AllArgsConstructor
 public enum BaseTool implements BaseItemProvider {
 
-  WOODEN_PICKAXE("Holz Spitzhacke", JobType.MINER, 5D, 1, 200, ModelItem.RED_X),
-  WOODEN_WOODCUTTING_AXE("Holz Axt", JobType.WOODCUTTER, 5D, 1, 200, ModelItem.RED_X),
-  WOODEN_SPADE("Holz Spaten", JobType.GATHERER, 5D, 1, 200, ModelItem.RED_X);
+  WOODEN_PICKAXE("Holz Spitzhacke", JobType.MINER, 5D, 1, 200, Model.RED_X),
+  WOODEN_WOODCUTTING_AXE("Holz Axt", JobType.WOODCUTTER, 5D, 1, 200, Model.RED_X),
+  WOODEN_SPADE("Holz Spaten", JobType.HERBLORE, 5D, 1, 200, Model.RED_X);
 
   @Getter
   private final String displayName;
@@ -34,11 +34,11 @@ public enum BaseTool implements BaseItemProvider {
   @Getter
   private final int baseMaxDurability;
   @Getter
-  private final ModelItem model;
+  private final Model model;
 
   @Override
   public ItemStack createBaseItem() {
-    final StatItem statItem = StatItem.of(new ItemBuilder(model.create()).name(displayName).build());
+    final StatItem statItem = StatItem.of(new ItemBuilder(model.getItem()).name(displayName).build());
 
     statItem.setDurability(baseMaxDurability);
     statItem.setMaxDurability(baseMaxDurability);

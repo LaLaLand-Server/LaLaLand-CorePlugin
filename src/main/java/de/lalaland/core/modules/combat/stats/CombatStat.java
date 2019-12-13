@@ -2,7 +2,7 @@ package de.lalaland.core.modules.combat.stats;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import de.lalaland.core.modules.resourcepack.skins.ModelItem;
+import de.lalaland.core.modules.resourcepack.skins.Model;
 import java.util.List;
 import java.util.Map;
 import lombok.AllArgsConstructor;
@@ -21,23 +21,23 @@ import lombok.Getter;
 public enum CombatStat {
 
   HEALTH("Lebenspunkte", 100, 1, 5E4D,
-      false, ModelItem.RED_X, Lists.newArrayList("§7Erhöht deine Trefferpunkte.")),
+      false, Model.RED_X, Lists.newArrayList("§7Erhöht deine Trefferpunkte.")),
   MEELE_DAMAGE("Nahkampfschaden", 5, 0.5, 2E4,
-      false, ModelItem.RED_X, Lists.newArrayList("§7Erhöht deinen Schaden mit", "§7allen Nahkampfwaffen.")),
+      false, Model.RED_X, Lists.newArrayList("§7Erhöht deinen Schaden mit", "§7allen Nahkampfwaffen.")),
   RANGE_DAMAGE("Fernkampfschaden", 4, 0.5, 2E4D,
-      false, ModelItem.RED_X, Lists.newArrayList("§7Erhöht deinen Schaden mit", "§7allen Fernkampfwaffen.")),
+      false, Model.RED_X, Lists.newArrayList("§7Erhöht deinen Schaden mit", "§7allen Fernkampfwaffen.")),
   ATTACK_SPEED("Angriffsgeschwindigkeit", 50, 1, 500,
-      false, ModelItem.RED_X, Lists.newArrayList("§7Legt die Geschwindigkeit zwischen", "§7Angriffen fest.")),
+      false, Model.RED_X, Lists.newArrayList("§7Legt die Geschwindigkeit zwischen", "§7Angriffen fest.")),
   CRIT_CHANCE("Kritische Trefferchance", 0.0D, 0.0D, 100.0D,
-      true, ModelItem.RED_X, Lists.newArrayList("§7Erhöht deine Chance auf Kritische Treffer.")),
+      true, Model.RED_X, Lists.newArrayList("§7Erhöht deine Chance auf Kritische Treffer.")),
   CRIT_DAMAGE("Kritischer Zusatzschaden", 50.0D, 25.0D, 500D,
-      true, ModelItem.RED_X, Lists.newArrayList("§7Legt den zusätzlichen Schaden von", "§7kritischen Treffern fest.")),
+      true, Model.RED_X, Lists.newArrayList("§7Legt den zusätzlichen Schaden von", "§7kritischen Treffern fest.")),
   PHYSICAL_ARMOR("Verteidigung", 20, 0D, 2E4D,
-      false, ModelItem.RED_X, Lists.newArrayList("§7Verringert physikalischen Schaden", "§7durch z.B. Waffenangriffe.")),
+      false, Model.RED_X, Lists.newArrayList("§7Verringert physikalischen Schaden", "§7durch z.B. Waffenangriffe.")),
   MYSTIC_ARMOR("Mystischer Widerstand", 10, 0D, 2E4D,
-      false, ModelItem.RED_X, Lists.newArrayList("§7Verringert den Schaden durch mystische", "§7Quellen wie z.B. ...")),
+      false, Model.RED_X, Lists.newArrayList("§7Verringert den Schaden durch mystische", "§7Quellen wie z.B. ...")),
   BIO_ARMOR("Bio Widerstand", 10, 0D, 2E4D,
-      false, ModelItem.RED_X,
+      false, Model.RED_X,
       Lists.newArrayList("&7Verringert den Schaden durch", "§7Biologische Angriffe wie", "§7Gift oder Radioaktivität."));
 
   public static final String COMPOUND_KEY = "CombatStats";
@@ -54,7 +54,7 @@ public enum CombatStat {
   @Getter
   private final boolean percentageStyle;
   @Getter
-  private final ModelItem model;
+  private final Model model;
   @Getter
   private final List<String> description;
 

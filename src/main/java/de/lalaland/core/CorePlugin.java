@@ -25,13 +25,12 @@ import de.lalaland.core.ui.gui.manager.GuiManager;
 import de.lalaland.core.user.UserManager;
 import de.lalaland.core.utils.UtilModule;
 import de.lalaland.core.utils.common.BukkitTime;
+import de.lalaland.core.utils.common.UtilMath;
 import de.lalaland.core.utils.items.display.ItemDisplayCompiler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /*******************************************************
  * Copyright (C) 2015-2019 Piinguiin neuraxhd@gmail.com
@@ -44,8 +43,6 @@ import org.slf4j.LoggerFactory;
  *******************************************************/
 public class CorePlugin extends JavaPlugin {
 
-  @Getter
-  private Logger coreLogger;
   @Getter
   private Gson gson;
   @Getter
@@ -85,7 +82,6 @@ public class CorePlugin extends JavaPlugin {
   private void init() {
     BukkitTime.start(this);
     Message.init(this);
-    coreLogger = LoggerFactory.getLogger(getClass().getName());
     gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     coreConfig = new ConfigFileHandler(this).createIfNotExists();
     protocolManager = ProtocolLibrary.getProtocolManager();
@@ -94,6 +90,7 @@ public class CorePlugin extends JavaPlugin {
     commandManager = new PaperCommandManager(this);
     moduleMap = new Object2ObjectLinkedOpenHashMap<>();
     guiManager = new GuiManager(this);
+
   }
 
   private void enableModules() {
@@ -116,13 +113,15 @@ public class CorePlugin extends JavaPlugin {
       try {
         module.enable(this);
         moduleMap.put(clazz, module);
-        coreLogger.info("Successfully enabled module '" + module.getModuleName() + "'.");
+        getLogger().info("Successfully enabled module '" + module.getModuleName() + "'.");
       } catch (final Exception e) {
-        coreLogger.error("Cannot enable module '" + module.getModuleName() + "'.");
-        coreLogger.error(e.getMessage());
+        getLogger().severe("Cannot enable module '" + module.getModuleName() + "'.");
+        getLogger().severe(e.getMessage());
         e.printStackTrace();
       }
     });
+
+    UtilMath.initHPMap();
 
   }
 
@@ -131,10 +130,10 @@ public class CorePlugin extends JavaPlugin {
     for (final IModule module : moduleMap.values()) {
       try {
         module.disable(this);
-        coreLogger.info("Successfully disable module '" + module.getModuleName() + "'.");
+        getLogger().info("Successfully disabled module '" + module.getModuleName() + "'.");
       } catch (final Exception e) {
-        coreLogger.error("Cannot disable module '" + module.getModuleName() + "'.");
-        coreLogger.error(e.getMessage());
+        getLogger().severe("Cannot disable module '" + module.getModuleName() + "'.");
+        getLogger().severe(e.getMessage());
         e.printStackTrace();
       }
     }

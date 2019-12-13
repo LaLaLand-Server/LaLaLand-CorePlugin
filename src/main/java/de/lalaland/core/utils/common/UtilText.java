@@ -1,5 +1,7 @@
 package de.lalaland.core.utils.common;
 
+import java.util.UUID;
+
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
  *
@@ -9,7 +11,7 @@ package de.lalaland.core.utils.common;
  * permission of the owner.
  *
  */
-public class UtilChar {
+public class UtilText {
 
   public static String unicodeEscaped(final char ch) {
     if (ch < 0x10) {
@@ -20,6 +22,11 @@ public class UtilChar {
       return "\\u0" + Integer.toHexString(ch);
     }
     return "\\u" + Integer.toHexString(ch);
+  }
+
+  public static UUID uuidFromShortString(final String idWithoutDashes) {
+    return UUID.fromString(
+        idWithoutDashes.replaceFirst("(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5"));
   }
 
 }

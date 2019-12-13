@@ -2,6 +2,7 @@ package de.lalaland.core.modules.mobs.implementations;
 
 import de.lalaland.core.modules.combat.stats.CombatStatHolder;
 import de.lalaland.core.modules.mobs.custommobs.CustomMobManager;
+import de.lalaland.core.utils.holograms.infobars.InfoLineSpacing;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
@@ -25,5 +26,9 @@ public abstract class GameMob {
   public abstract void initCombatStats(CombatStatHolder holder);
 
   public abstract LivingEntity spawn(Location location, CustomMobManager customMobManager);
+
+  public abstract InfoLineSpacing getBottomLineSpacing();
+
+  public abstract String getName();
 
 }

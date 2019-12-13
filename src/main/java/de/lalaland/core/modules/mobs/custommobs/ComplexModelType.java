@@ -1,6 +1,7 @@
 package de.lalaland.core.modules.mobs.custommobs;
 
 import de.lalaland.core.modules.mobs.custommobs.zombie.BiTestFactory;
+import de.lalaland.core.modules.mobs.custommobs.zombie.SingleTestFactory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,7 +18,7 @@ import lombok.Getter;
 public enum ComplexModelType {
 
   TEST_BI(new BiTestFactory()),
-  TEST_SINGLE(new BiTestFactory());
+  TEST_SINGLE(new SingleTestFactory());
 
   @Getter
   private final ComplexModelFactory<?> modelFactory;

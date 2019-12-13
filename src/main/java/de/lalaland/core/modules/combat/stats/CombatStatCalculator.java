@@ -25,12 +25,17 @@ public class CombatStatCalculator {
    *
    * @param holder
    */
-  protected void recalculateValues(CombatStatHolder holder) {
-    LivingEntity entity = holder.getBukkitEntity();
+  protected void recalculateValues(final CombatStatHolder holder) {
+    final LivingEntity entity = holder.getBukkitEntity();
+    final double preHealth = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
     if (entity instanceof Player) {
-      this.calculateForPlayer((Player) entity, holder);
+      calculateForPlayer((Player) entity, holder);
     } else {
-      this.calculateForEntity(entity, holder);
+      calculateForEntity(entity, holder);
+    }
+    final double postHealth = holder.getStatValue(CombatStat.HEALTH);
+    if (preHealth != postHealth) {
+      entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(postHealth);
     }
   }
 
@@ -40,26 +45,26 @@ public class CombatStatCalculator {
    * @param player
    * @param holder
    */
-  private void calculateForPlayer(Player player, CombatStatHolder holder) {
-    PlayerInventory inventory = player.getInventory();
-    Map<CombatStat, Double> statMap = CombatStat.getEmptyMap();
-    ItemStack[] validStatItems = new ItemStack[6];
+  private void calculateForPlayer(final Player player, final CombatStatHolder holder) {
+    final PlayerInventory inventory = player.getInventory();
+    final Map<CombatStat, Double> statMap = CombatStat.getEmptyMap();
+    final ItemStack[] validStatItems = new ItemStack[6];
     validStatItems[4] = inventory.getItemInMainHand();
     validStatItems[5] = inventory.getItemInOffHand();
-    ItemStack[] armor = inventory.getArmorContents();
+    final ItemStack[] armor = inventory.getArmorContents();
 
     for (int index = 0; index < 4; index++) {
       validStatItems[index] = armor[index];
     }
 
-    for (ItemStack item : validStatItems) {
+    for (final ItemStack item : validStatItems) {
       if (item == null) {
         continue;
       }
       mergeStats(StatItem.of(item), statMap);
     }
 
-    statMap.forEach((stat, value) -> holder.setValue(stat, value));
+    statMap.forEach((stat, value) -> holder.setExtraValue(stat, value));
   }
 
   /**
@@ -68,33 +73,29 @@ public class CombatStatCalculator {
    * @param entity
    * @param holder
    */
-  private void calculateForEntity(LivingEntity entity, CombatStatHolder holder) {
-    double preHealth = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-    Map<CombatStat, Double> statMap = CombatStat.getEmptyMap();
-    EntityEquipment equipment = entity.getEquipment();
+  private void calculateForEntity(final LivingEntity entity, final CombatStatHolder holder) {
+
+    final Map<CombatStat, Double> statMap = CombatStat.getEmptyMap();
+    final EntityEquipment equipment = entity.getEquipment();
 
     if (equipment == null) {
       return;
     }
-    ItemStack[] validStatItems = new ItemStack[6];
+    final ItemStack[] validStatItems = new ItemStack[6];
     validStatItems[4] = equipment.getItemInMainHand();
     validStatItems[5] = equipment.getItemInOffHand();
-    ItemStack[] armor = equipment.getArmorContents();
+    final ItemStack[] armor = equipment.getArmorContents();
     for (int index = 0; index < 4; index++) {
       validStatItems[index] = armor[index];
     }
-    for (ItemStack item : validStatItems) {
+    for (final ItemStack item : validStatItems) {
       if (item == null) {
         continue;
       }
       mergeStats(StatItem.of(item), statMap);
     }
 
-    statMap.forEach((stat, value) -> holder.setValue(stat, value));
-    double postHealth = holder.getStatValue(CombatStat.HEALTH);
-    if (preHealth != postHealth) {
-      entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(postHealth);
-    }
+    statMap.forEach((stat, value) -> holder.setExtraValue(stat, value));
   }
 
   /**
@@ -103,8 +104,8 @@ public class CombatStatCalculator {
    * @param statItem
    * @param valueMap
    */
-  private void mergeStats(StatItem statItem, Map<CombatStat, Double> valueMap) {
-    Map<CombatStat, Double> itemMap = statItem.getCombatStatMap();
+  private void mergeStats(final StatItem statItem, final Map<CombatStat, Double> valueMap) {
+    final Map<CombatStat, Double> itemMap = statItem.getCombatStatMap();
     if (itemMap == null) {
       return;
     }

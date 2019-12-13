@@ -43,7 +43,7 @@ public class GsonFileReader implements IReader {
 
     if (!file.exists()) {
       sendFileNotFoundMessage();
-      plugin.getCoreLogger().info("Saving default file.");
+      plugin.getLogger().info("Saving default file.");
       final IWriter writer = new GsonFileWriter(plugin, directory, fileName);
       writer.write(defaultValue);
       return defaultValue;
@@ -55,7 +55,7 @@ public class GsonFileReader implements IReader {
       reader = new BufferedReader(new FileReader(file));
     } catch (final FileNotFoundException e) {
       sendFileNotFoundMessage();
-      plugin.getCoreLogger().error(e.getMessage());
+      plugin.getLogger().severe(e.getMessage());
       return defaultValue;
     }
 
@@ -63,7 +63,7 @@ public class GsonFileReader implements IReader {
   }
 
   private void sendFileNotFoundMessage() {
-    plugin.getCoreLogger().error(
+    plugin.getLogger().severe(
         "Cannot find file '" + fileName + "' in directory '" + directory.getAbsolutePath()
             + "'.");
   }

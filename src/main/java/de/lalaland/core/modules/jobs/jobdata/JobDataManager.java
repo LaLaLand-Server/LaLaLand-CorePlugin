@@ -70,7 +70,13 @@ public class JobDataManager {
       while ((read = inputStreamReader.read()) != -1) {
         builder.append((char) read);
       }
-      final JobHolder holder = new JobHolder(plugin.getGson().fromJson(builder.toString(), JsonObject.class), this, userID);
+      final JsonObject json = plugin.getGson().fromJson(builder.toString(), JsonObject.class);
+      final JobHolder holder;
+      if (json != null) {
+        holder = new JobHolder(json, this, userID);
+      } else {
+        holder = new JobHolder(this, userID);
+      }
       jobHolderMap.put(userID, holder);
     } else {
       jobHolderMap.put(userID, new JobHolder(this, userID));

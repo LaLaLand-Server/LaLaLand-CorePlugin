@@ -1,28 +1,35 @@
 package de.lalaland.core.modules.resourcepack.packing;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.io.ResourceCopy;
 import de.lalaland.core.modules.resourcepack.skins.FontMeta;
+import de.lalaland.core.modules.resourcepack.skins.Model;
 import de.lalaland.core.modules.resourcepack.skins.ModelBlock;
-import de.lalaland.core.modules.resourcepack.skins.ModelItem;
+import de.lalaland.core.utils.UtilModule;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import net.crytec.libs.protocol.skinclient.PlayerSkinManager;
+import net.crytec.libs.protocol.skinclient.PlayerSkinManager.ConsumingCallback;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 
@@ -41,9 +48,14 @@ public class ResourcepackZipper {
   // TODO pack description
   private static final String META_DESC = "- -";
 
+  private static final boolean LOCK = false;
+
   public ResourcepackZipper(final CorePlugin plugin) {
     this.plugin = plugin;
+    playerSkinManager = plugin.getModule(UtilModule.class).getPlayerSkinManager();
     packFolderSet = new ObjectLinkedOpenHashSet<>();
+
+    skinBackupFile = new File(plugin.getDataFolder(), "skindata.json");
 
     packFolderSet.add(packFolder = new File(plugin.getDataFolder() + File.separator + "resourcepack"));
     packFolderSet.add(assetFolder = new File(packFolder + File.separator + "assets"));
@@ -65,7 +77,9 @@ public class ResourcepackZipper {
 
   private final ObjectLinkedOpenHashSet<File> packFolderSet;
   private final CorePlugin plugin;
+  private final PlayerSkinManager playerSkinManager;
 
+  private final File skinBackupFile;
   private final File resourceZipFile;
 
   private final File packFolder;
@@ -96,7 +110,7 @@ public class ResourcepackZipper {
     final File tempFolder = temp.toFile();
     final JsonObject fontJson = new JsonObject();
     final JsonArray providerArray = new JsonArray();
-    char fontIndex = (char) 0x3360;
+    char fontIndex = (char) 0x2F00;
 
     try {
       final ResourceCopy copy = new ResourceCopy();
@@ -117,6 +131,9 @@ public class ResourcepackZipper {
         plugin.getLogger().severe("Could not find image of " + modelBlock.toString());
         continue;
       }
+
+      // --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
       final JsonObject stateJson;
       if (blockstateJsonMap.containsKey(vanillaName)) {
         stateJson = blockstateJsonMap.get(vanillaName);
@@ -156,10 +173,16 @@ public class ResourcepackZipper {
 
     // Items
     final File textureFolder = new File(tempFolder + File.separator + "textures");
-
+    final File imageCache = new File(plugin.getDataFolder() + File.separator + "imagecache");
+    if (!imageCache.exists()) {
+      imageCache.mkdirs();
+    }
     for (final File subFolder : textureFolder.listFiles()) {
       for (final File icon : subFolder.listFiles()) {
-        final ModelItem model = ModelItem.valueOf(icon.getName().replace(".png", ""));
+        final Model model = Model.valueOf(icon.getName().replace(".png", ""));
+        final File cachedImage = new File(imageCache, model.toString() + ".png");
+        FileUtils.copyFile(icon, cachedImage);
+        model.setLinkedImageFile(cachedImage);
         final boolean isBlock = model.getBaseMaterial().isBlock();
         final String nmsName = model.getBaseMaterial().getKey().getKey();
         final File resourceTextureFolder = new File(texturesFolder + File.separator + nmsName);
@@ -209,6 +232,65 @@ public class ResourcepackZipper {
       }
     }
 
+    // Create Skin
+    final EnumSet<Model> skinlessModels = EnumSet.noneOf(Model.class);
+    for (final Model model : Model.values()) {
+      if (model.isHeadSkinEnabled()) {
+        skinlessModels.add(model);
+      }
+    }
+    JsonObject skinJson = new JsonObject();
+    if (skinBackupFile.exists()) {
+      final InputStreamReader isr = new InputStreamReader(new FileInputStream(skinBackupFile));
+      final StringBuilder builder = new StringBuilder();
+      int read;
+      while ((read = isr.read()) != -1) {
+        builder.append((char) read);
+      }
+      skinJson = plugin.getGson().fromJson(builder.toString(), JsonObject.class);
+      for (final Entry<String, JsonElement> entry : skinJson.entrySet()) {
+        final int threadCount = 20;
+        final Model model = Model.valueOf(entry.getKey());
+        final Integer id = entry.getValue().getAsInt();
+        final ConsumingCallback callback = playerSkinManager.callback(skin -> model.setSkin(skin));
+        playerSkinManager.requestSkin(id, callback);
+        while (callback.locked) {
+          await(250);
+        }
+        await(100);
+        skinlessModels.remove(model);
+      }
+      isr.close();
+    }
+    final JsonObject skinWriteJson = skinJson;
+    final File uploadFolder = new File(plugin.getDataFolder() + File.separator + "uploadcache");
+    if (!uploadFolder.exists()) {
+      uploadFolder.mkdirs();
+    }
+    for (final Model model : skinlessModels) {
+      final File imageFile = model.getLinkedImageFile();
+      Preconditions.checkState(imageFile != null);
+      final ConsumingCallback callback = playerSkinManager.callback(skin -> {
+        if (skin != null) {
+          skinWriteJson.addProperty(model.toString(), "" + skin.id);
+          model.setSkin(skin);
+        } else {
+          plugin.getLogger().warning("Callback on skin is null!");
+        }
+      });
+      playerSkinManager.uploadAndScaleHeadImage(imageFile, "AC_MODEL_" + model.toString(), callback);
+      while (callback.locked) {
+        await(250);
+      }
+      await(100);
+    }
+
+    OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(skinBackupFile));
+    osw.write(plugin.getGson().toJson(skinWriteJson));
+    osw.close();
+
+    // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
     final JsonObject ttfProvider = new JsonObject();
     ttfProvider.addProperty("type", "ttf");
     ttfProvider.addProperty("size", 9.5);
@@ -231,7 +313,7 @@ public class ResourcepackZipper {
 
     final Map<Material, JsonObject> cachedJsons = Maps.newHashMap();
 
-    for (final ModelItem model : ModelItem.values()) {
+    for (final Model model : Model.values()) {
       final String nmsName = model.getBaseMaterial().getKey().getKey();
       final boolean isBlock = model.getBaseMaterial().isBlock();
       final JsonArray overrideArray;
@@ -271,10 +353,10 @@ public class ResourcepackZipper {
 
     final Gson gson = plugin.getGson();
 
-    for (final ModelItem model : ModelItem.values()) {
+    for (final Model model : Model.values()) {
       final File modelFolder = model.getBaseMaterial().isBlock() ? blockModelFolder : itemModelFolder;
       final File modelFile = new File(modelFolder, model.getBaseMaterial().getKey().getKey() + ".json");
-      final OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(modelFile));
+      osw = new OutputStreamWriter(new FileOutputStream(modelFile));
       osw.write(gson.toJson(cachedJsons.get(model.getBaseMaterial())));
       osw.close();
     }
@@ -331,6 +413,14 @@ public class ResourcepackZipper {
       zipOut.write(bytes, 0, length);
     }
     fis.close();
+  }
+
+  private void await(final long ms) {
+    try {
+      Thread.sleep(ms);
+    } catch (final InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 
 

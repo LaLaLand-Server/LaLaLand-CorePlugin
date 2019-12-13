@@ -1,7 +1,7 @@
 package de.lalaland.core.modules.combat.items;
 
 import de.lalaland.core.modules.combat.stats.CombatStat;
-import de.lalaland.core.modules.resourcepack.skins.ModelItem;
+import de.lalaland.core.modules.resourcepack.skins.Model;
 import de.lalaland.core.utils.items.ItemBuilder;
 import de.lalaland.core.utils.nbtapi.NBTItem;
 import lombok.AllArgsConstructor;
@@ -20,16 +20,16 @@ import org.bukkit.inventory.ItemStack;
 @AllArgsConstructor
 public enum BaseWeapon implements BaseItemProvider {
 
-  WOODEN_SWORD("Holzschwert", ModelItem.RED_X, 5.0, 200D, 200, WeaponType.SWORD),
-  WOODEN_DAGGER("Holzdolch", ModelItem.RED_X, 3.0, 300D, 200, WeaponType.DAGGER),
-  WOODEN_AXE("Holzaxt", ModelItem.RED_X, 6.0, 150D, 200, WeaponType.AXE),
-  OAK_SHORT_BOW("Eichen Kurbogen", ModelItem.RED_X, 6.0, 150D, 200, WeaponType.SHORT_BOW),
-  WOODEN_MACE("Holzstreitkolben", ModelItem.RED_X, 7.0, 100D, 200, WeaponType.MACE);
+  WOODEN_SWORD("Holzschwert", Model.RED_X, 5.0, 200D, 200, WeaponType.SWORD),
+  WOODEN_DAGGER("Holzdolch", Model.RED_X, 3.0, 300D, 200, WeaponType.DAGGER),
+  WOODEN_AXE("Holzaxt", Model.RED_X, 6.0, 150D, 200, WeaponType.AXE),
+  OAK_SHORT_BOW("Eichen Kurbogen", Model.RED_X, 6.0, 150D, 200, WeaponType.SHORT_BOW),
+  WOODEN_MACE("Holzstreitkolben", Model.RED_X, 7.0, 100D, 200, WeaponType.MACE);
 
   @Getter
   private final String displayName;
   @Getter
-  private final ModelItem model;
+  private final Model model;
   @Getter
   private final double baseDamage;
   @Getter
@@ -41,7 +41,7 @@ public enum BaseWeapon implements BaseItemProvider {
 
   @Override
   public ItemStack createBaseItem() {
-    final NBTItem nbt = new NBTItem(new ItemBuilder(model.create())
+    final NBTItem nbt = new NBTItem(new ItemBuilder(model.getItem())
         .name(displayName)
         .build());
 

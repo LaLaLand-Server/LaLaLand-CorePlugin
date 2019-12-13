@@ -17,7 +17,14 @@ public enum JobType {
 
   MINER("Bergbau"),
   WOODCUTTER("Holzfällerei"),
-  GATHERER("Sammlerkunde");
+  HERBLORE("Botanik"), // Pflanzenkunde?
+  FISHING("Fischen"),
+
+  CONSTRUCTION("Konstruktion"),
+  SMITHING("Schmieden"),
+  CRAFTING("Handwerk"),
+  COOKING("Kochen"),
+  ;
 
   @Getter
   private final String displayName;

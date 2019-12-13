@@ -32,99 +32,100 @@ import org.bukkit.event.world.ChunkUnloadEvent;
  */
 public class CombatCalculationListener implements Listener {
 
-  public CombatCalculationListener(CombatStatManager manager) {
-    this.combatStatManager = manager;
+  public CombatCalculationListener(final CombatStatManager manager) {
+    combatStatManager = manager;
   }
 
   private final CombatStatManager combatStatManager;
 
   @EventHandler
-  public void onItemDrop(PlayerDropItemEvent event) {
-    StatItem statItem = StatItem.of(event.getItemDrop().getItemStack());
+  public void onItemDrop(final PlayerDropItemEvent event) {
+    final StatItem statItem = StatItem.of(event.getItemDrop().getItemStack());
     if (statItem.isCombatStatComponent()) {
-      this.combatStatManager.recalculateValues(event.getPlayer().getUniqueId());
+      combatStatManager.recalculateValues(event.getPlayer().getUniqueId());
     }
   }
 
   @EventHandler
-  public void onItemDrop(EntityDropItemEvent event) {
-    StatItem statItem = StatItem.of(event.getItemDrop().getItemStack());
+  public void onItemDrop(final EntityDropItemEvent event) {
+    final StatItem statItem = StatItem.of(event.getItemDrop().getItemStack());
     if (statItem.isCombatStatComponent()) {
-      this.combatStatManager.recalculateValues(event.getEntity().getUniqueId());
+      combatStatManager.recalculateValues(event.getEntity().getUniqueId());
+    }
+  }
+
+
+  @EventHandler
+  public void onItemPickup(final EntityPickupItemEvent event) {
+    final StatItem statItem = StatItem.of(event.getItem().getItemStack());
+    if (statItem.isCombatStatComponent()) {
+      combatStatManager.recalculateValues(event.getEntity().getUniqueId());
     }
   }
 
   @EventHandler
-  public void onItemPickup(EntityPickupItemEvent event) {
-    StatItem statItem = StatItem.of(event.getItem().getItemStack());
-    if (statItem.isCombatStatComponent()) {
-      this.combatStatManager.recalculateValues(event.getEntity().getUniqueId());
-    }
+  public void onItemHeldChange(final PlayerItemHeldEvent event) {
+    combatStatManager.recalculateValues(event.getPlayer().getUniqueId());
   }
 
   @EventHandler
-  public void onItemHeldChange(PlayerItemHeldEvent event) {
-    this.combatStatManager.recalculateValues(event.getPlayer().getUniqueId());
+  public void onArmorChange(final PlayerArmorChangeEvent event) {
+    combatStatManager.recalculateValues(event.getPlayer().getUniqueId());
   }
 
   @EventHandler
-  public void onArmorChange(PlayerArmorChangeEvent event) {
-    this.combatStatManager.recalculateValues(event.getPlayer().getUniqueId());
+  public void onRespawn(final PlayerRespawnEvent event) {
+    combatStatManager.recalculateValues(event.getPlayer().getUniqueId());
   }
 
   @EventHandler
-  public void onRespawn(PlayerRespawnEvent event) {
-    this.combatStatManager.recalculateValues(event.getPlayer().getUniqueId());
+  public void onSwapHandItems(final PlayerSwapHandItemsEvent event) {
+    combatStatManager.recalculateValues(event.getPlayer().getUniqueId());
   }
 
   @EventHandler
-  public void onSwapHandItems(PlayerSwapHandItemsEvent event) {
-    this.combatStatManager.recalculateValues(event.getPlayer().getUniqueId());
+  public void onChangeMainHand(final PlayerChangedMainHandEvent event) {
+    combatStatManager.recalculateValues(event.getPlayer().getUniqueId());
   }
 
   @EventHandler
-  public void onChangeMainHand(PlayerChangedMainHandEvent event) {
-    this.combatStatManager.recalculateValues(event.getPlayer().getUniqueId());
-  }
-
-  @EventHandler
-  public void onPlayerJoin(PlayerJoinEvent event) {
+  public void onPlayerJoin(final PlayerJoinEvent event) {
     combatStatManager.initEntity(event.getPlayer());
   }
 
   @EventHandler
-  public void onPlayerQuit(PlayerQuitEvent event) {
+  public void onPlayerQuit(final PlayerQuitEvent event) {
     combatStatManager.terminateEntity(event.getPlayer());
   }
 
   @EventHandler
-  public void onEntitySpawn(EntitySpawnEvent event) {
-    Entity entity = event.getEntity();
+  public void onEntitySpawn(final EntitySpawnEvent event) {
+    final Entity entity = event.getEntity();
     if (!(entity instanceof LivingEntity) || entity.getType() == EntityType.ARMOR_STAND) {
       return;
     }
-    this.combatStatManager.initEntity((LivingEntity) entity);
+    combatStatManager.initEntity((LivingEntity) entity);
   }
 
   @EventHandler
-  public void onEntityDeath(EntityDeathEvent event) {
-    this.combatStatManager.terminateEntity(event.getEntity());
+  public void onEntityDeath(final EntityDeathEvent event) {
+    combatStatManager.terminateEntity(event.getEntity());
   }
 
   @EventHandler
-  public void onChunkUnload(ChunkUnloadEvent event) {
-    for (Entity entity : event.getChunk().getEntities()) {
+  public void onChunkUnload(final ChunkUnloadEvent event) {
+    for (final Entity entity : event.getChunk().getEntities()) {
       if (entity instanceof LivingEntity) {
-        this.combatStatManager.terminateEntity((LivingEntity) entity);
+        combatStatManager.terminateEntity((LivingEntity) entity);
       }
     }
   }
 
   @EventHandler
-  public void onChunkLoad(ChunkLoadEvent event) {
-    for (Entity entity : event.getChunk().getEntities()) {
+  public void onChunkLoad(final ChunkLoadEvent event) {
+    for (final Entity entity : event.getChunk().getEntities()) {
       if (entity instanceof LivingEntity) {
-        this.combatStatManager.initEntity((LivingEntity) entity);
+        combatStatManager.initEntity((LivingEntity) entity);
       }
     }
   }

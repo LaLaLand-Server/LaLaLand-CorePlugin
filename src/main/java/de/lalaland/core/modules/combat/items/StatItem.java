@@ -524,4 +524,27 @@ public class StatItem {
     return data.getLevel() >= getLevelRequirement();
   }
 
+  public Double getRetailPrice() {
+    if (itemStatComponent) {
+      final NBTCompound itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
+      if (itemStatCompound.hasKey(ItemStat.RETAIL_PRICE.getNbtKey())) {
+        return itemStatCompound.getDouble(ItemStat.RETAIL_PRICE.getNbtKey());
+      }
+    }
+    return null;
+  }
+
+  public void setRetailPrice(final double price) {
+    final NBTCompound itemStatCompound;
+
+    if (!itemStatComponent) {
+      itemStatCompound = nbt.createCompound(ItemStat.COMPOUND_KEY);
+      itemStatComponent = true;
+    } else {
+      itemStatCompound = nbt.getCompound(ItemStat.COMPOUND_KEY);
+    }
+
+    itemStatCompound.setDouble(ItemStat.RETAIL_PRICE.getNbtKey(), price);
+  }
+
 }

@@ -34,15 +34,15 @@ import org.spigotmc.event.entity.EntityMountEvent;
 
 public class InfoBarManager implements Listener {
 
-  public InfoBarManager(JavaPlugin host, Function<Entity, AbstractInfoBar> barSupplier) {
+  public InfoBarManager(final JavaPlugin host, final Function<Entity, AbstractInfoBar> barSupplier) {
     this.barSupplier = barSupplier;
     this.host = host;
-    this.playerViews = Maps.newHashMap();
-    this.infoBarMap = new HashMap<Integer, AbstractInfoBar>();
+    playerViews = Maps.newHashMap();
+    infoBarMap = new HashMap<>();
     Bukkit.getPluginManager().registerEvents(this, host);
-    this.hologramEntityMappings = new Int2ObjectOpenHashMap<Entity>();
-    this.registerPacketListener(host);
-    this.runnable = new InfoBarRunnable(host, this);
+    hologramEntityMappings = new Int2ObjectOpenHashMap<>();
+    registerPacketListener(host);
+    runnable = new InfoBarRunnable(host, this);
   }
 
   private final InfoBarRunnable runnable;
@@ -52,162 +52,162 @@ public class InfoBarManager implements Listener {
   private final Function<Entity, AbstractInfoBar> barSupplier;
   protected final Map<Player, Set<AbstractInfoBar>> playerViews;
 
-  public void addMapping(int hologramEntityID, Entity host) {
+  public void addMapping(final int hologramEntityID, final Entity host) {
     hologramEntityMappings.put(hologramEntityID, host);
   }
 
   @EventHandler
-  public void onJoin(PlayerJoinEvent event) {
-    this.playerViews.put(event.getPlayer(), Sets.newHashSet());
+  public void onJoin(final PlayerJoinEvent event) {
+    playerViews.put(event.getPlayer(), Sets.newHashSet());
     runnable.addPlayer(event.getPlayer());
   }
 
   @EventHandler
-  public void onQuit(PlayerQuitEvent event) {
-    this.playerViews.remove(event.getPlayer());
+  public void onQuit(final PlayerQuitEvent event) {
+    playerViews.remove(event.getPlayer());
     runnable.removePlayer(event.getPlayer());
   }
 
   @EventHandler
-  protected void onDismount(EntityDismountEvent event) {
-    int entityID = event.getDismounted().getEntityId();
-    AbstractInfoBar infoBar = infoBarMap.get(entityID);
+  protected void onDismount(final EntityDismountEvent event) {
+    final int entityID = event.getDismounted().getEntityId();
+    final AbstractInfoBar infoBar = infoBarMap.get(entityID);
 		if (infoBar == null) {
 			return;
 		}
-    for (Player player : event.getEntity().getWorld().getPlayers()) {
+    for (final Player player : event.getEntity().getWorld().getPlayers()) {
       if (UtilPlayer.getEntityViewOf(player).contains(entityID)) {
-        this.playerViews.get(player).add(infoBar);
+        playerViews.get(player).add(infoBar);
       }
     }
   }
 
   @EventHandler
-  protected void onMount(EntityMountEvent event) {
-    int entityID = event.getMount().getEntityId();
-    AbstractInfoBar infoBar = infoBarMap.get(entityID);
+  protected void onMount(final EntityMountEvent event) {
+    final int entityID = event.getMount().getEntityId();
+    final AbstractInfoBar infoBar = infoBarMap.get(entityID);
 		if (infoBar == null) {
 			return;
 		}
-    for (Player player : Sets.newHashSet(infoBar.viewingPlayer)) {
+    for (final Player player : Sets.newHashSet(infoBar.viewingPlayer)) {
       infoBar.hideFrom(player);
-      this.playerViews.get(player).remove(infoBar);
+      playerViews.get(player).remove(infoBar);
     }
   }
 
   @EventHandler
-  protected void onEntityShowing(PlayerReceiveEntityEvent event) {
-    Bukkit.getScheduler().runTaskLater(this.host, () -> {
-      AbstractInfoBar bar = infoBarMap.get(event.getEntityID());
+  protected void onEntityShowing(final PlayerReceiveEntityEvent event) {
+    Bukkit.getScheduler().runTaskLater(host, () -> {
+      final AbstractInfoBar bar = infoBarMap.get(event.getEntityID());
       if (bar != null) {
 				if (!bar.getEntity().getPassengers().isEmpty()) {
 					return;
 				}
-        this.playerViews.get(event.getPlayer()).add(bar);
+        playerViews.get(event.getPlayer()).add(bar);
       }
     }, 1L);
   }
 
   @EventHandler
-  protected void onEntityHiding(PlayerUnloadsEntityEvent event) {
-    for (Integer entityID : event.getEntityIDs()) {
-      AbstractInfoBar bar = infoBarMap.get(entityID);
+  protected void onEntityHiding(final PlayerUnloadsEntityEvent event) {
+    for (final Integer entityID : event.getEntityIDs()) {
+      final AbstractInfoBar bar = infoBarMap.get(entityID);
       if (bar != null) {
         bar.hideFrom(event.getPlayer());
-        this.playerViews.get(event.getPlayer()).remove(bar);
+        playerViews.get(event.getPlayer()).remove(bar);
       }
     }
   }
 
   @EventHandler
-  protected void onDeath(EntityDeathEvent event) {
-    Integer entityID = event.getEntity().getEntityId();
-    AbstractInfoBar bar = infoBarMap.get(entityID);
+  protected void onDeath(final EntityDeathEvent event) {
+    final Integer entityID = event.getEntity().getEntityId();
+    final AbstractInfoBar bar = infoBarMap.get(entityID);
     if (bar != null) {
-      Set<Player> viewing = Sets.newHashSet(bar.viewingPlayer);
-      for (Player viewer : viewing) {
+      final Set<Player> viewing = Sets.newHashSet(bar.viewingPlayer);
+      for (final Player viewer : viewing) {
         bar.hideFrom(viewer);
-        this.playerViews.get(viewer).remove(bar);
+        playerViews.get(viewer).remove(bar);
       }
-      this.infoBarMap.remove(entityID);
+      infoBarMap.remove(entityID);
     }
   }
 
   @EventHandler
-  protected void onChunkUnload(ChunkUnloadEvent event) {
-    for (Entity entity : event.getChunk().getEntities()) {
-      Integer entityID = entity.getEntityId();
-      AbstractInfoBar bar = infoBarMap.get(entityID);
+  protected void onChunkUnload(final ChunkUnloadEvent event) {
+    for (final Entity entity : event.getChunk().getEntities()) {
+      final Integer entityID = entity.getEntityId();
+      final AbstractInfoBar bar = infoBarMap.get(entityID);
       if (bar != null) {
-        for (Player player : bar.viewingPlayer) {
+        for (final Player player : bar.viewingPlayer) {
           if (player.isOnline()) {
             bar.hideFrom(player);
-            this.playerViews.get(player).remove(bar);
+            playerViews.get(player).remove(bar);
           }
         }
-        this.infoBarMap.remove(entityID);
+        infoBarMap.remove(entityID);
       }
     }
   }
 
   @Nullable
-  public AbstractInfoBar getInfoBar(Entity entity) {
-    return this.infoBarMap.get(entity.getEntityId());
+  public AbstractInfoBar getInfoBar(final Entity entity) {
+    return infoBarMap.get(entity.getEntityId());
   }
 
   @Nullable
-  public AbstractInfoBar createInfoBar(Entity entity) {
-    Integer entityID = entity.getEntityId();
-    AbstractInfoBar bar = this.infoBarMap.get(entityID);
+  public AbstractInfoBar createInfoBar(final Entity entity) {
+    final Integer entityID = entity.getEntityId();
+    AbstractInfoBar bar = infoBarMap.get(entityID);
 		if (bar != null) {
 			return bar;
 		}
 
-    InfoBarCreateEvent event = new InfoBarCreateEvent(entity);
+    final InfoBarCreateEvent event = new InfoBarCreateEvent(entity);
     event.callEvent();
 		if (event.isCancelled()) {
 			return bar;
 		}
 
-    bar = this.barSupplier.apply(entity);
-    this.infoBarMap.put(entityID, bar);
-    List<Pair<String, InfoLineSpacing>> lines = event.getLines();
+    bar = barSupplier.apply(entity);
+    infoBarMap.put(entityID, bar);
+    final List<Pair<String, InfoLineSpacing>> lines = event.getLines();
 
     for (int i = 0; i < lines.size(); i++) {
-      Pair<String, InfoLineSpacing> entry = lines.get(i);
+      final Pair<String, InfoLineSpacing> entry = lines.get(i);
       bar.addLine(entry.getLeft(), entry.getRight());
     }
 
-    for (Player player : entity.getWorld().getPlayers()) {
+    for (final Player player : entity.getWorld().getPlayers()) {
       if (UtilPlayer.getEntityViewOf(player).contains(entity.getEntityId())) {
-        this.playerViews.get(player).add(bar);
+        playerViews.get(player).add(bar);
       }
     }
 
     return bar;
   }
 
-  public void removeInfoBar(Entity entity) {
-    Integer entityID = entity.getEntityId();
-    AbstractInfoBar bar = this.infoBarMap.get(entityID);
+  public void removeInfoBar(final Entity entity) {
+    final Integer entityID = entity.getEntityId();
+    final AbstractInfoBar bar = infoBarMap.get(entityID);
 		if (bar == null) {
 			return;
 		}
-    for (Player player : bar.viewingPlayer) {
+    for (final Player player : bar.viewingPlayer) {
       bar.hideFrom(player);
-      this.playerViews.get(player).remove(bar);
+      playerViews.get(player).remove(bar);
     }
-    this.infoBarMap.remove(entityID);
+    infoBarMap.remove(entityID);
   }
 
-  private void registerPacketListener(JavaPlugin plugin) {
-    ProtocolManager manager = ProtocolLibrary.getProtocolManager();
+  private void registerPacketListener(final JavaPlugin plugin) {
+    final ProtocolManager manager = ProtocolLibrary.getProtocolManager();
     manager.addPacketListener(new PacketAdapter(plugin, PacketType.Play.Client.USE_ENTITY) {
 
       @Override
-      public void onPacketReceiving(PacketEvent event) {
-        int entityID = event.getPacket().getIntegers().getValues().get(0);
-        Entity entity = hologramEntityMappings.get(entityID);
+      public void onPacketReceiving(final PacketEvent event) {
+        final int entityID = event.getPacket().getIntegers().getValues().get(0);
+        final Entity entity = hologramEntityMappings.get(entityID);
         if (entity != null) {
           event.getPacket().getIntegers().modify(0, (old) -> entity.getEntityId());
         }

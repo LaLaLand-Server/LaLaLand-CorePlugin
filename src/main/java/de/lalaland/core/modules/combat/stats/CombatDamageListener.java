@@ -5,10 +5,14 @@ import com.google.common.collect.ImmutableMap;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.combat.items.StatItem;
 import de.lalaland.core.modules.combat.items.WeaponType;
+import de.lalaland.core.utils.UtilModule;
 import de.lalaland.core.utils.common.UtilMath;
 import de.lalaland.core.utils.common.UtilPlayer;
 import de.lalaland.core.utils.holograms.MovingHologram;
 import de.lalaland.core.utils.holograms.impl.HologramManager;
+import de.lalaland.core.utils.holograms.infobars.AbstractInfoBar;
+import de.lalaland.core.utils.holograms.infobars.InfoBarManager;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +20,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -83,8 +88,10 @@ public class CombatDamageListener implements Listener {
     critKey = new NamespacedKey(plugin, "crit");
     dmgKey = new NamespacedKey(plugin, "damage");
     random = ThreadLocalRandom.current();
+    infoBarManager = plugin.getModule(UtilModule.class).getInfoBarManager();
   }
 
+  private final InfoBarManager infoBarManager;
   private final CombatStatManager combatStatManager;
   private final ThreadLocalRandom critChanceRandom;
   private final HologramManager hologramManager;
@@ -118,6 +125,17 @@ public class CombatDamageListener implements Listener {
 
     defenderLiving.setHealth(healthLeft);
 
+    final List<Entity> pass = defenderLiving.getPassengers();
+    if (!pass.isEmpty()) {
+      final Entity token = pass.get(0);
+      if (token.getType() == EntityType.ARMOR_STAND) {
+        final AbstractInfoBar bar = infoBarManager.getInfoBar(pass.get(0));
+        if (bar == null) {
+          return;
+        }
+        bar.setLine(0, "" + UtilMath.getHPBar(defenderLiving.getHealth(), holderDefender.getStatValue(CombatStat.HEALTH)));
+      }
+    }
   }
 
   @EventHandler
@@ -125,7 +143,22 @@ public class CombatDamageListener implements Listener {
     if (!(event.getEntity() instanceof LivingEntity)) {
       return;
     }
+    final LivingEntity defenderLiving = (LivingEntity) event.getEntity();
+    final CombatStatHolder holderDefender = combatStatManager.getCombatStatHolder(defenderLiving.getUniqueId());
+
     createHealingHologram((LivingEntity) event.getEntity(), UtilMath.cut(event.getAmount(), 1));
+
+    final List<Entity> pass = defenderLiving.getPassengers();
+    if (!pass.isEmpty()) {
+      final Entity token = pass.get(0);
+      if (token.getType() == EntityType.ARMOR_STAND) {
+        final AbstractInfoBar bar = infoBarManager.getInfoBar(pass.get(0));
+        if (bar == null) {
+          return;
+        }
+        bar.setLine(0, "" + UtilMath.getHPBar(defenderLiving.getHealth(), holderDefender.getStatValue(CombatStat.HEALTH)));
+      }
+    }
   }
 
   @EventHandler
@@ -236,25 +269,25 @@ public class CombatDamageListener implements Listener {
 
     final LivingEntity defenderLiving = (LivingEntity) defender;
     final LivingEntity attackerLiving = (LivingEntity) attacker;
-    final CombatStatHolder attackHolder = combatStatManager.getCombatStatHolder(attackerLiving);
-    final CombatStatHolder defenceHolder = combatStatManager.getCombatStatHolder(defenderLiving);
+    final CombatStatHolder holderAttacker = combatStatManager.getCombatStatHolder(attackerLiving);
+    final CombatStatHolder holderDefender = combatStatManager.getCombatStatHolder(defenderLiving);
     final boolean isPlayerAttacker = attacker instanceof Player;
 
     event.setDamage(0);
 
     if (!isRanged) {
-      damage = attackHolder.getStatValue(isRanged ? CombatStat.RANGE_DAMAGE : CombatStat.MEELE_DAMAGE);
+      damage = holderAttacker.getStatValue(isRanged ? CombatStat.RANGE_DAMAGE : CombatStat.MEELE_DAMAGE);
 
-      crit = attackHolder.getStatValue(CombatStat.CRIT_CHANCE) >= critChanceRandom
+      crit = holderAttacker.getStatValue(CombatStat.CRIT_CHANCE) >= critChanceRandom
           .nextDouble(0, 100);
 
       if (crit) {
-        final double dmgMulti = (1D / 100D) * attackHolder.getStatValue(CombatStat.CRIT_DAMAGE);
+        final double dmgMulti = (1D / 100D) * holderAttacker.getStatValue(CombatStat.CRIT_DAMAGE);
         damage *= dmgMulti;
       }
     }
 
-    damage = DamageEvaluator.calculateDamage(defenceHolder, damage, CombatDamageType.ofBukkit(event.getCause()));
+    damage = DamageEvaluator.calculateDamage(holderDefender, damage, CombatDamageType.ofBukkit(event.getCause()));
 
     ItemStack attackItem = attackerLiving.getActiveItem();
     if (isPlayerAttacker) {
@@ -308,6 +341,18 @@ public class CombatDamageListener implements Listener {
       healthLeft = 0;
     }
     defenderLiving.setHealth(healthLeft);
+
+    final List<Entity> pass = defenderLiving.getPassengers();
+    if (!pass.isEmpty()) {
+      final Entity token = pass.get(0);
+      if (token.getType() == EntityType.ARMOR_STAND) {
+        final AbstractInfoBar bar = infoBarManager.getInfoBar(pass.get(0));
+        if (bar == null) {
+          return;
+        }
+        bar.setLine(0, "" + UtilMath.getHPBar(defenderLiving.getHealth(), holderDefender.getStatValue(CombatStat.HEALTH)));
+      }
+    }
 
   }
 

@@ -5,6 +5,7 @@ import de.lalaland.core.modules.combat.stats.CombatStatHolder;
 import de.lalaland.core.modules.mobs.custommobs.ComplexModelType;
 import de.lalaland.core.modules.mobs.custommobs.CustomMobManager;
 import de.lalaland.core.modules.mobs.implementations.GameMob;
+import de.lalaland.core.utils.holograms.infobars.InfoLineSpacing;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
@@ -31,5 +32,15 @@ public class TestSingleModel extends GameMob {
   @Override
   public LivingEntity spawn(final Location location, final CustomMobManager customMobManager) {
     return customMobManager.spawnModeled(ComplexModelType.TEST_SINGLE, location).getBukkit();
+  }
+
+  @Override
+  public InfoLineSpacing getBottomLineSpacing() {
+    return InfoLineSpacing.LARGE;
+  }
+
+  @Override
+  public String getName() {
+    return "Base Mob";
   }
 }

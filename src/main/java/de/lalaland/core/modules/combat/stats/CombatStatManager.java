@@ -74,8 +74,9 @@ public class CombatStatManager implements Runnable {
    * @param entity
    */
   public CombatStatHolder initEntity(final LivingEntity entity) {
-    final CombatStatHolder holder = new CombatStatHolder(entity);
-    combatStatCalculator.recalculateValues(holder);
+    final CombatStatHolder holder =
+        combatStatEntityMapping.getOrDefault(entity.getUniqueId(), new CombatStatHolder(entity, combatStatCalculator));
+    holder.recalculate();
     combatStatEntityMapping.put(entity.getUniqueId(), holder);
     return holder;
   }

@@ -4,6 +4,7 @@ import de.lalaland.core.modules.combat.stats.CombatStat;
 import de.lalaland.core.modules.combat.stats.CombatStatHolder;
 import de.lalaland.core.modules.mobs.custommobs.CustomMobManager;
 import de.lalaland.core.modules.mobs.implementations.GameMob;
+import de.lalaland.core.utils.holograms.infobars.InfoLineSpacing;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -30,7 +31,18 @@ public class TestDisguised extends GameMob {
 
   @Override
   public LivingEntity spawn(final Location location, final CustomMobManager customMobManager) {
-    return customMobManager.spawnPlayerDisguised(EntityType.PIG_ZOMBIE, "h0n1kkuchen", location);
+    final LivingEntity mob = customMobManager.spawnPlayerDisguised(EntityType.PIG_ZOMBIE, "h0n1kkuchen", location);
+    return mob;
+  }
+
+  @Override
+  public InfoLineSpacing getBottomLineSpacing() {
+    return InfoLineSpacing.LARGE;
+  }
+
+  @Override
+  public String getName() {
+    return "Base Mob";
   }
 
 }

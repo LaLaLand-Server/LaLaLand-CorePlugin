@@ -3,7 +3,7 @@ package de.lalaland.core.modules.resourcepack.packing;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import de.lalaland.core.CorePlugin;
-import de.lalaland.core.modules.resourcepack.skins.ModelItem;
+import de.lalaland.core.modules.resourcepack.skins.Model;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,7 +40,7 @@ public class AssetLibrary {
 
   private void iterateAssets() {
 
-    for (final ModelItem model : ModelItem.values()) {
+    for (final Model model : Model.values()) {
       final String modelFolder = model.getBaseMaterial().isBlock() ? "block" : "item";
       final String nmsName = model.getBaseMaterial().getKey().getKey();
       if (!itemModelDefaultAssets.containsKey(nmsName)) {

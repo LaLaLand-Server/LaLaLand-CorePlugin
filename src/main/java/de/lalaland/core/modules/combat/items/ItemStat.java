@@ -21,7 +21,8 @@ public enum ItemStat {
   VERSION("Version"),
   CREATION_DATE("CreationDate"),
   UNBREAKABLE("Unbreakable"),
-  CREATOR("Creator");
+  CREATOR("Creator"),
+  RETAIL_PRICE("RetailPrice");
 
   public static String COMPOUND_KEY = "ItemStats";
 

@@ -3,8 +3,8 @@ package de.lalaland.core.modules.mobs;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
 import de.lalaland.core.modules.combat.CombatModule;
-import de.lalaland.core.modules.mobs.custommobs.CustomMobCommand;
 import de.lalaland.core.modules.mobs.custommobs.CustomMobManager;
+import de.lalaland.core.modules.mobs.implementations.GameMobCommand;
 import de.lalaland.core.modules.mobs.implementations.MobManager;
 import de.lalaland.core.modules.mobs.modeledentities.MobModelManager;
 import lombok.AccessLevel;
@@ -37,8 +37,8 @@ public class MobModule implements IModule {
   public void enable(final CorePlugin plugin) throws Exception, Exception {
     mobModelManager = new MobModelManager(plugin);
     customMobManager = new CustomMobManager(mobModelManager);
-    mobManager = new MobManager(plugin.getModule(CombatModule.class).getCombatStatManager(), customMobManager);
-    plugin.getCommandManager().registerCommand(new CustomMobCommand(customMobManager));
+    mobManager = new MobManager(plugin.getModule(CombatModule.class).getCombatStatManager(), customMobManager, plugin);
+    plugin.getCommandManager().registerCommand(new GameMobCommand(mobManager));
   }
 
   @Override

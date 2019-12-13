@@ -28,17 +28,25 @@ public class ModelItemCommand extends BaseCommand {
     Message.send(sender, ResourcepackModule.class, "Benutze '/modelitem get <ModelItem>' um ein ModelItem zu erhalten.");
   }
 
-  @Subcommand("get")
+  @Subcommand("asitem")
   @CommandCompletion("@ModelItem")
-  public void onGetCommand(final Player sender, final ModelItem model) {
-    sender.getInventory().addItem(model.create());
+  public void onGetCommand(final Player sender, final Model model) {
+    sender.getInventory().addItem(model.getItem());
     final String modelName = Message.elem(model.toString());
     Message.send(sender, ResourcepackModule.class, "Du hast ein ModelItem erhalten: " + modelName);
   }
 
+  @Subcommand("ashead")
+  @CommandCompletion("@ModelItem")
+  public void onGetSkillCommand(final Player sender, final Model model) {
+    sender.getInventory().addItem(model.getHead());
+    final String modelName = Message.elem(model.toString());
+    Message.send(sender, ResourcepackModule.class, "Du hast einen ModelItem Kopf erhalten: " + modelName);
+  }
+
   @Subcommand("tell")
   @CommandCompletion("@ModelItem")
-  public void onTellCommand(final Player sender, final ModelItem model) {
+  public void onTellCommand(final Player sender, final Model model) {
     Message.send(sender, ResourcepackModule.class, "Model: " + model.getChar());
   }
 
