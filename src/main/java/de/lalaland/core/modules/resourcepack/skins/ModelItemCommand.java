@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import de.lalaland.core.modules.resourcepack.ResourcepackModule;
 import de.lalaland.core.ui.Message;
+import de.lalaland.core.utils.common.UtilMath;
 import org.bukkit.entity.Player;
 
 /*******************************************************
@@ -19,7 +20,7 @@ import org.bukkit.entity.Player;
  * permission of the owner.
  *
  */
-@CommandAlias("modelitem")
+@CommandAlias("model")
 @CommandPermission("admin")
 public class ModelItemCommand extends BaseCommand {
 
@@ -48,6 +49,16 @@ public class ModelItemCommand extends BaseCommand {
   @CommandCompletion("@ModelItem")
   public void onTellCommand(final Player sender, final Model model) {
     Message.send(sender, ResourcepackModule.class, "Model: " + model.getChar());
+  }
+
+  @Subcommand("hp")
+  public void onHpCommand(final Player sender, final double current, final double max) {
+    Message.send(sender, ResourcepackModule.class, "" + current + "/" + max + " " + UtilMath.getHPBarAsChar(current, max));
+  }
+
+  @Subcommand("progress")
+  public void onProgressCommand(final Player sender, final double progress) {
+    Message.send(sender, ResourcepackModule.class, "" + (progress * 100) + " " + UtilMath.getProgressBarAsChar(progress));
   }
 
 }

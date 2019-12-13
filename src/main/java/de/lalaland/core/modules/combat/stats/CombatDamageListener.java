@@ -133,7 +133,7 @@ public class CombatDamageListener implements Listener {
         if (bar == null) {
           return;
         }
-        bar.setLine(0, "" + UtilMath.getHPBar(defenderLiving.getHealth(), holderDefender.getStatValue(CombatStat.HEALTH)));
+        bar.setLine(0, "" + UtilMath.getHPBarAsChar(defenderLiving.getHealth(), holderDefender.getStatValue(CombatStat.HEALTH)));
       }
     }
   }
@@ -156,7 +156,7 @@ public class CombatDamageListener implements Listener {
         if (bar == null) {
           return;
         }
-        bar.setLine(0, "" + UtilMath.getHPBar(defenderLiving.getHealth(), holderDefender.getStatValue(CombatStat.HEALTH)));
+        bar.setLine(0, "" + UtilMath.getHPBarAsChar(defenderLiving.getHealth(), holderDefender.getStatValue(CombatStat.HEALTH)));
       }
     }
   }
@@ -350,7 +350,7 @@ public class CombatDamageListener implements Listener {
         if (bar == null) {
           return;
         }
-        bar.setLine(0, "" + UtilMath.getHPBar(defenderLiving.getHealth(), holderDefender.getStatValue(CombatStat.HEALTH)));
+        bar.setLine(0, "" + UtilMath.getHPBarAsChar(defenderLiving.getHealth(), holderDefender.getStatValue(CombatStat.HEALTH)));
       }
     }
 

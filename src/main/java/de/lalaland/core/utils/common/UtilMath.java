@@ -61,12 +61,47 @@ public class UtilMath {
     HP_BAR_BASE_MAP.put(r90_95, Model.HP_95.getChar());
     HP_BAR_BASE_MAP.put(r95_100, Model.HP_100.getChar());
 
+    PROGRESS_BAR_MAP.put(r0, Model.PROGRESS_0.getChar());
+    PROGRESS_BAR_MAP.put(r0_5, Model.PROGRESS_5.getChar());
+    PROGRESS_BAR_MAP.put(r5_10, Model.PROGRESS_10.getChar());
+    PROGRESS_BAR_MAP.put(r10_15, Model.PROGRESS_15.getChar());
+    PROGRESS_BAR_MAP.put(r15_20, Model.PROGRESS_20.getChar());
+    PROGRESS_BAR_MAP.put(r20_25, Model.PROGRESS_25.getChar());
+    PROGRESS_BAR_MAP.put(r25_30, Model.PROGRESS_30.getChar());
+    PROGRESS_BAR_MAP.put(r30_35, Model.PROGRESS_35.getChar());
+    PROGRESS_BAR_MAP.put(r35_40, Model.PROGRESS_40.getChar());
+    PROGRESS_BAR_MAP.put(r40_45, Model.PROGRESS_45.getChar());
+    PROGRESS_BAR_MAP.put(r45_50, Model.PROGRESS_50.getChar());
+    PROGRESS_BAR_MAP.put(r50_55, Model.PROGRESS_55.getChar());
+    PROGRESS_BAR_MAP.put(r55_60, Model.PROGRESS_60.getChar());
+    PROGRESS_BAR_MAP.put(r60_65, Model.PROGRESS_65.getChar());
+    PROGRESS_BAR_MAP.put(r65_70, Model.PROGRESS_70.getChar());
+    PROGRESS_BAR_MAP.put(r70_75, Model.PROGRESS_75.getChar());
+    PROGRESS_BAR_MAP.put(r75_80, Model.PROGRESS_80.getChar());
+    PROGRESS_BAR_MAP.put(r80_85, Model.PROGRESS_85.getChar());
+    PROGRESS_BAR_MAP.put(r85_90, Model.PROGRESS_90.getChar());
+    PROGRESS_BAR_MAP.put(r90_95, Model.PROGRESS_95.getChar());
+    PROGRESS_BAR_MAP.put(r95_100, Model.PROGRESS_100.getChar());
+
   }
 
   private static final RangeMap<Double, Character> HP_BAR_BASE_MAP = TreeRangeMap.create();
+  private static final RangeMap<Double, Character> PROGRESS_BAR_MAP = TreeRangeMap.create();
 
-  public static Character getHPBar(final double current, final double max) {
-    return HP_BAR_BASE_MAP.get(1D / max * current);
+  public static Character getHPBarAsChar(final double hpPercent) {
+    return HP_BAR_BASE_MAP.get(hpPercent);
+  }
+
+  public static Character getHPBarAsChar(final double current, final double max) {
+    return getHPBarAsChar(1D / max * current);
+  }
+
+  public static Character getProgressBarAsChar(final double progressPercent) {
+    return PROGRESS_BAR_MAP.get(progressPercent);
+  }
+
+  public static Character getProgressBarAsChar(final double current, final double max) {
+    return getProgressBarAsChar(1D / max * current);
   }
 
   public static double cut(double value, final int decimalPoints) {

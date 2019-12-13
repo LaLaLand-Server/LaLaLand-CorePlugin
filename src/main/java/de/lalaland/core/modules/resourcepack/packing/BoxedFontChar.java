@@ -12,7 +12,6 @@ package de.lalaland.core.modules.resourcepack.packing;
 public class BoxedFontChar {
 
   protected char value = '⛔';
-
   public char getAsCharacter() {
     return value;
   }

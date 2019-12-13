@@ -34,7 +34,6 @@ public class AssetLibrary {
 
   private final CorePlugin plugin;
   @Getter(AccessLevel.PROTECTED)
-  private JsonObject defaultFont;
 
   private final Map<String, JsonObject> itemModelDefaultAssets;
 

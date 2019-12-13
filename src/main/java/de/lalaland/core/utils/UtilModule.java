@@ -2,7 +2,6 @@ package de.lalaland.core.utils;
 
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
-import de.lalaland.core.modules.resourcepack.skins.Model;
 import de.lalaland.core.utils.actionbar.ActionBarManager;
 import de.lalaland.core.utils.anvilgui.AnvilGUI;
 import de.lalaland.core.utils.common.UtilChunk;
@@ -17,11 +16,8 @@ import lombok.Getter;
 import net.crytec.libs.protocol.ProtocolAPI;
 import net.crytec.libs.protocol.npc.NpcAPI;
 import net.crytec.libs.protocol.skinclient.PlayerSkinManager;
-import net.crytec.libs.protocol.skinclient.data.Skin;
 import net.crytec.libs.protocol.tablist.TabListManager;
 import net.crytec.libs.protocol.tablist.implementation.EmptyTablist;
-import net.crytec.libs.protocol.tablist.implementation.TabLine;
-import org.bukkit.Bukkit;
 
 public class UtilModule implements IModule {
 
@@ -65,24 +61,25 @@ public class UtilModule implements IModule {
     npcAPI = new NpcAPI(plugin);
     tabListManager = new TabListManager(plugin, (p) -> et);
     et = new EmptyTablist(tabListManager);
-    final Skin skin = Model.AC_SEMIDIRT.getSkin();
-    for (int i = 0; i < 80; i++) {
-      final TabLine tl = new TabLine(i, " - ");
-      tl.setTexture(skin.data.texture.signature, skin.data.texture.value);
-      et.addLine(tl);
-    }
-    et.updateAndSendHeaderFooter("\n\n\n" + Model.SERVER_ICON.getChar(),
-        "Test1: " + Model.HP_85.getChar() + "\n" +
-            "Test2: " + Model.HP_85.getChar() + "\n" +
-            "Test3: " + Model.HP_85.getChar() + "\n" +
-            "Test4: " + Model.HP_85.getChar() + "\n" +
-            "Test5: " + Model.HP_85.getChar() + "\n");
-    Bukkit.getScheduler().runTaskLater(plugin, () -> et.updateAndSendHeaderFooter("\n\n\n" + Model.SERVER_ICON.getChar(),
-        "Test11: " + Model.HP_85.getChar() + "   Test12: " + Model.HP_85.getChar() + "\n" +
-            "Test21: " + Model.HP_85.getChar() + "   Test22: " + Model.HP_85.getChar() + "\n" +
-            "Test31: " + Model.HP_85.getChar() + "   Test32: " + Model.HP_85.getChar() + "\n" +
-            "Test41: " + Model.HP_85.getChar() + "   Test42: " + Model.HP_85.getChar() + "\n" +
-            "Test51: " + Model.HP_85.getChar() + "   Test52: " + Model.HP_85.getChar() + "\n"), 100L);
+//
+//    final Skin skin = Model.AC_SEMIDIRT.getSkin();
+//    for (int i = 0; i < 80; i++) {
+//      final TabLine tl = new TabLine(i, " - ");
+//      tl.setTexture(skin.data.texture.signature, skin.data.texture.value);
+//      et.addLine(tl);
+//    }
+//    et.updateAndSendHeaderFooter("\n\n\n" + Model.SERVER_ICON.getChar(),
+//        "Test1: " + Model.HP_85.getChar() + "\n" +
+//            "Test2: " + Model.HP_85.getChar() + "\n" +
+//            "Test3: " + Model.HP_85.getChar() + "\n" +
+//            "Test4: " + Model.HP_85.getChar() + "\n" +
+//            "Test5: " + Model.HP_85.getChar() + "\n");
+//    Bukkit.getScheduler().runTaskLater(plugin, () -> et.updateAndSendHeaderFooter("\n\n\n" + Model.SERVER_ICON.getChar(),
+//        "Test11: " + Model.HP_85.getChar() + "   Test12: " + Model.HP_85.getChar() + "\n" +
+//            "Test21: " + Model.HP_85.getChar() + "   Test22: " + Model.HP_85.getChar() + "\n" +
+//            "Test31: " + Model.HP_85.getChar() + "   Test32: " + Model.HP_85.getChar() + "\n" +
+//            "Test41: " + Model.HP_85.getChar() + "   Test42: " + Model.HP_85.getChar() + "\n" +
+//            "Test51: " + Model.HP_85.getChar() + "   Test52: " + Model.HP_85.getChar() + "\n"), 100L);
   }
 
   @Override

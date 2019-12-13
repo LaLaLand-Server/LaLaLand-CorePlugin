@@ -60,7 +60,7 @@ public class MobManager {
     }
 
     final AbstractInfoBar infoBar = infoBarManager.createInfoBar(bukkitEntity.getPassengers().get(0));
-    infoBar.addLine("" + UtilMath.getHPBar(100, 100), mob.getBottomLineSpacing());
+    infoBar.addLine("" + UtilMath.getHPBarAsChar(100, 100), mob.getBottomLineSpacing());
     infoBar.addLine(mob.getName() + " §e[§f" + mob.level + "§e]", InfoLineSpacing.MEDIUM);
     infoBar.addLine("", InfoLineSpacing.MEDIUM);
 

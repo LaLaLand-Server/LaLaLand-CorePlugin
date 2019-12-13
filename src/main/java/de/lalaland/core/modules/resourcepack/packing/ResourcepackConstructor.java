@@ -42,7 +42,7 @@ import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
  * permission of the owner.
  *
  */
-public class ResourcepackZipper {
+public class ResourcepackConstructor {
 
   private static final int META_FORMAT = 4;
   // TODO pack description
@@ -50,12 +50,13 @@ public class ResourcepackZipper {
 
   private static final boolean LOCK = false;
 
-  public ResourcepackZipper(final CorePlugin plugin) {
+  public ResourcepackConstructor(final CorePlugin plugin) {
     this.plugin = plugin;
     playerSkinManager = plugin.getModule(UtilModule.class).getPlayerSkinManager();
     packFolderSet = new ObjectLinkedOpenHashSet<>();
 
     skinBackupFile = new File(plugin.getDataFolder(), "skindata.json");
+    skinCacheFile = new File(plugin.getDataFolder(), "skinchache.json");
 
     packFolderSet.add(packFolder = new File(plugin.getDataFolder() + File.separator + "resourcepack"));
     packFolderSet.add(assetFolder = new File(packFolder + File.separator + "assets"));
@@ -80,6 +81,7 @@ public class ResourcepackZipper {
   private final PlayerSkinManager playerSkinManager;
 
   private final File skinBackupFile;
+  private final File skinCacheFile;
   private final File resourceZipFile;
 
   private final File packFolder;
@@ -233,6 +235,8 @@ public class ResourcepackZipper {
     }
 
     // Create Skin
+
+    playerSkinManager.loadSkins(skinCacheFile);
     final EnumSet<Model> skinlessModels = EnumSet.noneOf(Model.class);
     for (final Model model : Model.values()) {
       if (model.isHeadSkinEnabled()) {
@@ -289,6 +293,7 @@ public class ResourcepackZipper {
     osw.write(plugin.getGson().toJson(skinWriteJson));
     osw.close();
 
+    playerSkinManager.cacheSkins(skinCacheFile);
     // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     final JsonObject ttfProvider = new JsonObject();
