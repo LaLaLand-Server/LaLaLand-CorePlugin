@@ -444,18 +444,19 @@ public class StatItem {
   }
 
   public Object2IntMap<JobType> getJobRequirements() {
-    final Object2IntMap<JobType> map = new Object2IntOpenHashMap<>();
     if (itemRequirementComponent) {
       final NBTCompound reqComp = nbt.getCompound(REQUIREMENT_KEY);
       if (reqComp.hasKey(JOB_REQUIREMENT_KEY)) {
+        final Object2IntMap<JobType> map = new Object2IntOpenHashMap<>();
         final NBTCompound jobComp = reqComp.getCompound(JOB_REQUIREMENT_KEY);
         final Set<String> keys = jobComp.getKeys();
         for (final String jobName : keys) {
           map.put(JobType.valueOf(jobName), jobComp.getInt(jobName));
         }
+        return map;
       }
     }
-    return map;
+    return null;
   }
 
   public int getJobRequirement(final JobType job) {
@@ -483,14 +484,15 @@ public class StatItem {
   }
 
   public Object2DoubleMap<JobType> getJobValues() {
-    final Object2DoubleMap<JobType> map = new Object2DoubleOpenHashMap<>();
     if (jobStatsComponent) {
+      final Object2DoubleMap<JobType> map = new Object2DoubleOpenHashMap<>();
       final NBTCompound jobComp = nbt.getCompound(JOB_STATS_KEY);
       for (final String jobName : jobComp.getKeys()) {
         map.put(JobType.valueOf(jobName), jobComp.getDouble(jobName));
       }
+      return map;
     }
-    return map;
+    return null;
   }
 
   public double getJobValue(final JobType jobType) {

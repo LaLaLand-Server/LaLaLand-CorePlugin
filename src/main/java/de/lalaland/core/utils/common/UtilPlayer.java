@@ -84,7 +84,7 @@ public class UtilPlayer implements Listener, Runnable {
   @EventHandler
   public void onDamage(final EntityDamageByEntityEvent event) {
     final Entity entity = event.getEntity();
-    if (entity instanceof Player) {
+    if (!(entity instanceof Player)) {
       return;
     }
     final WaitingPlayer waiting = WAITING_PLAYERS.get((Player) entity);

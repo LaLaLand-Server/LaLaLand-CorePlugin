@@ -5,7 +5,7 @@ import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
 import de.lalaland.core.modules.resourcepack.distribution.ResourcepackListener;
 import de.lalaland.core.modules.resourcepack.distribution.ResourcepackManager;
-import de.lalaland.core.modules.resourcepack.packing.ResourcepackConstructor;
+import de.lalaland.core.modules.resourcepack.packing.ResourcepackAssembler;
 import de.lalaland.core.modules.resourcepack.skins.Model;
 import de.lalaland.core.modules.resourcepack.skins.ModelItemCommand;
 import java.util.Arrays;
@@ -23,7 +23,7 @@ public class ResourcepackModule implements IModule {
 
   @Override
   public void enable(final CorePlugin plugin) throws Exception, Exception {
-    new ResourcepackConstructor(plugin).zipResourcepack();
+    new ResourcepackAssembler(plugin).zipResourcepack();
     plugin.getCommandManager().registerCommand(new ModelItemCommand());
     plugin.getCommandManager()
         .getCommandCompletions()

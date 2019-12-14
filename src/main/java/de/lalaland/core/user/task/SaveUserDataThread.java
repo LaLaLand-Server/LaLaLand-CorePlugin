@@ -2,6 +2,7 @@ package de.lalaland.core.user.task;
 
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.user.User;
+import de.lalaland.core.user.UserManager;
 
 /*******************************************************
  * Copyright (C) 2015-2019 Piinguiin neuraxhd@gmail.com
@@ -14,27 +15,26 @@ import de.lalaland.core.user.User;
  *******************************************************/
 public class SaveUserDataThread implements Runnable {
 
-  private final CorePlugin corePlugin;
-
   /**
-   * Instantiates a new Remove offline user thread. Remove User classes stored in cache when they
-   * are not in use.
+   * Instantiates a new Remove offline user thread. Remove User classes stored in cache when they are not in use.
    *
    * @param corePlugin the core plugin
    */
   public SaveUserDataThread(final CorePlugin corePlugin) {
-    this.corePlugin = corePlugin;
+    userManager = corePlugin.getUserManager();
   }
+
+  private final UserManager userManager;
 
   @Override
   public void run() {
-    corePlugin.getTaskManager().runBukkitSync(() ->{
-      for (final User user : corePlugin.getUserManager()) {
-        if (user.isUpdateCandidate()) {
-          user.save();
-        }
+
+    for (final User user : userManager) {
+      if (user.isUpdateCandidate()) {
+        user.save();
       }
-    });
+    }
+
   }
 
 

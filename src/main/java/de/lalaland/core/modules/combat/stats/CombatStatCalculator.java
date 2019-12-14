@@ -37,6 +37,12 @@ public class CombatStatCalculator {
     if (preHealth != postHealth) {
       entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(postHealth);
     }
+    if (entity instanceof Player) {
+      final float walk = (float) (0.002D * holder.getStatValue(CombatStat.SPEED));
+      ((Player) entity).setWalkSpeed(walk);
+      final double atsp = 0.005D * holder.getStatValue(CombatStat.ATTACK_SPEED);
+      entity.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(atsp);
+    }
   }
 
   /**

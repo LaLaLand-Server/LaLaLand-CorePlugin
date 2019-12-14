@@ -7,11 +7,11 @@ import org.bukkit.entity.Player;
 
 public class EconomyModule implements IModule {
 
-  private final CorePlugin corePlugin;
-
   public EconomyModule(final CorePlugin corePlugin) {
     this.corePlugin = corePlugin;
   }
+
+  private final CorePlugin corePlugin;
 
   @Override
   public void enable(final CorePlugin plugin) throws Exception {

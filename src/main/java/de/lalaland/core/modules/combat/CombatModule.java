@@ -42,7 +42,7 @@ public class CombatModule implements IModule {
     final HologramManager holo = plugin.getModule(UtilModule.class).getHologramManager();
     Bukkit.getPluginManager()
         .registerEvents(new CombatDamageListener(combatStatManager, holo, plugin), plugin);
-    plugin.getDisplayCompiler().registerConverter(new ItemInfoCompiler());
+    plugin.getDisplayCompiler().registerConverter(new ItemInfoCompiler(plugin));
   }
 
   @Override

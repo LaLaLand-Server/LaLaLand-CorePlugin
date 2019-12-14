@@ -20,16 +20,16 @@ public class BiModelEquipment {
 
   public static BiModelEquipment ofModelIDs(final int... modelIds) {
     Preconditions.checkArgument(modelIds.length == 10, "Needs exactly 10 Items.");
-    final ItemStack head = new ItemBuilder(Material.STRUCTURE_VOID).modelData(modelIds[0]).build();
-    final ItemStack left = new ItemBuilder(Material.STRUCTURE_VOID).modelData(modelIds[1]).build();
-    final ItemStack right = new ItemBuilder(Material.STRUCTURE_VOID).modelData(modelIds[2]).build();
-    final ItemStack torso = new ItemBuilder(Material.STRUCTURE_VOID).modelData(modelIds[3]).build();
-    final ItemStack torso_moving = new ItemBuilder(Material.STRUCTURE_VOID).modelData(modelIds[4]).build();
-    final ItemStack head_hurt = new ItemBuilder(Material.STRUCTURE_VOID).modelData(modelIds[5]).build();
-    final ItemStack left_hurt = new ItemBuilder(Material.STRUCTURE_VOID).modelData(modelIds[6]).build();
-    final ItemStack right_hurt = new ItemBuilder(Material.STRUCTURE_VOID).modelData(modelIds[7]).build();
-    final ItemStack torso_hurt = new ItemBuilder(Material.STRUCTURE_VOID).modelData(modelIds[8]).build();
-    final ItemStack torso_moving_hurt = new ItemBuilder(Material.STRUCTURE_VOID).modelData(modelIds[9]).build();
+    final ItemStack head = new ItemBuilder(Material.STICK).modelData(modelIds[0]).build();
+    final ItemStack left = new ItemBuilder(Material.STICK).modelData(modelIds[1]).build();
+    final ItemStack right = new ItemBuilder(Material.STICK).modelData(modelIds[2]).build();
+    final ItemStack torso = new ItemBuilder(Material.STICK).modelData(modelIds[3]).build();
+    final ItemStack torso_moving = new ItemBuilder(Material.STICK).modelData(modelIds[4]).build();
+    final ItemStack head_hurt = new ItemBuilder(Material.STICK).modelData(modelIds[5]).build();
+    final ItemStack left_hurt = new ItemBuilder(Material.STICK).modelData(modelIds[6]).build();
+    final ItemStack right_hurt = new ItemBuilder(Material.STICK).modelData(modelIds[7]).build();
+    final ItemStack torso_hurt = new ItemBuilder(Material.STICK).modelData(modelIds[8]).build();
+    final ItemStack torso_moving_hurt = new ItemBuilder(Material.STICK).modelData(modelIds[9]).build();
     return new BiModelEquipment(head, left, right, torso, torso_moving, head_hurt, left_hurt, right_hurt, torso_hurt, torso_moving_hurt);
   }
 

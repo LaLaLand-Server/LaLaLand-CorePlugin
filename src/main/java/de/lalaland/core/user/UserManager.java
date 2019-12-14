@@ -105,7 +105,7 @@ public class UserManager implements Iterable<User> {
     return cachedUsers.get(uuid);
   }
 
-  private boolean isCached(final UUID uuid) {
+  public boolean isCached(final UUID uuid) {
     return cachedUsers.containsKey(uuid);
   }
 

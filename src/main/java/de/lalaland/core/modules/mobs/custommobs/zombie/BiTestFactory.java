@@ -8,6 +8,8 @@ import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftArmorStand;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -33,7 +35,10 @@ public class BiTestFactory implements ComplexModelFactory<TestBiZombie> {
     world.addEntity(mob);
     mob.getBukkitLivingEntity().teleport(location);
     mob.getBukkitLivingEntity().addPassenger(as);
+    mob.setInvisible(true);
+    mob.getAsBukkitEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 99999, 1, false, false));
     mob.equipNormal();
+
 
     return mob;
   }

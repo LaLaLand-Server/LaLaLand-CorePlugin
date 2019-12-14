@@ -10,16 +10,17 @@ import de.lalaland.core.io.mongodb.MongoDataWriter;
 import de.lalaland.core.modules.chat.messages.OfflineMessage;
 import de.lalaland.core.modules.protection.zones.WorldZone;
 import de.lalaland.core.user.data.UserData;
+import de.lalaland.core.utils.common.UtilPlayer;
 import de.lalaland.core.utils.tuples.Unit;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
-import lombok.AccessLevel;
+import java.util.function.Consumer;
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 /*******************************************************
@@ -37,7 +38,6 @@ public class User {
 
   private final CorePlugin corePlugin;
   @Getter
-  @Setter(AccessLevel.PRIVATE)
   private boolean updateCandidate;
   @Getter
   private final UUID uuid;
@@ -57,6 +57,20 @@ public class User {
     updateCandidate = false;
   }
 
+  public void applyWhenOnline(final Consumer<Player> playerConsumer) {
+    if (onlinePlayer.isPresent()) {
+      playerConsumer.accept(onlinePlayer.getValue());
+    }
+  }
+
+  public void setOnline() {
+    onlinePlayer.setValue(Bukkit.getPlayer(uuid));
+  }
+
+  public void setOffline() {
+    onlinePlayer.setValue(null);
+  }
+
   public void save() {
 
     final IWriter writer;
@@ -64,10 +78,10 @@ public class User {
     if (corePlugin.getCoreConfig().isSaveDataInDatabase()) {
       writer = new MongoDataWriter();
     } else {
-      writer = new GsonFileWriter(corePlugin, getUserDataDirectory(), uuid.toString());
+      writer = new GsonFileWriter(corePlugin, userDataDirectory, uuid.toString());
     }
     writer.write(getUserData());
-    setUpdateCandidate(false);
+    updateCandidate = false;
   }
 
   private UserData loadData() {
@@ -77,21 +91,31 @@ public class User {
     if (corePlugin.getCoreConfig().isSaveDataInDatabase()) {
       reader = new MongoDataReader();
     } else {
-      reader = new GsonFileReader(corePlugin, getUserDataDirectory(), uuid.toString());
+      reader = new GsonFileReader(corePlugin, userDataDirectory, uuid.toString());
     }
 
-    return (UserData) reader.read(UserData.class, getDefaultUserData());
+    return reader.read(UserData.class, getDefaultUserData());
   }
 
   public void addExp(final long amount) {
 
     userData.addExp(amount);
+    applyWhenOnline(player -> {
+      UtilPlayer.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
+      // TODO show +exp
+    });
 
     if (userData.canLevelup()) {
       userData.increaseLevel();
-      //TODO: Send player message
+      applyWhenOnline(player -> {
+        UtilPlayer.playSound(player, Sound.ENTITY_PLAYER_LEVELUP);
+        player.sendTitle("§6Level Up", "§fLevel > " + userData.getLevel(), 20, 60, 20);
+        if (userData.getLevel() % 10 == 0) {
+          UtilPlayer.playSound(player, Sound.UI_TOAST_CHALLENGE_COMPLETE);
+        }
+      });
     }
-    setUpdateCandidate(true);
+    updateCandidate = true;
   }
 
   public void addMoney(final int amount, final boolean bank) {
@@ -101,7 +125,7 @@ public class User {
     } else {
       userData.setMoneyOnHand(userData.getMoneyOnHand() + amount);
     }
-    setUpdateCandidate(true);
+    updateCandidate = true;
   }
 
 
@@ -109,7 +133,7 @@ public class User {
 
     if (bank) {
 
-      if (userData.getMoneyOnBank() - amount > 0) {
+      if (userData.getMoneyOnBank() - amount < 0) {
         userData.setMoneyOnBank(0);
       } else {
         userData.setMoneyOnBank(userData.getMoneyOnBank() - amount);
@@ -117,14 +141,14 @@ public class User {
 
     } else {
 
-      if (userData.getMoneyOnHand() - amount > 0) {
+      if (userData.getMoneyOnHand() - amount < 0) {
         userData.setMoneyOnHand(0);
       } else {
         userData.setMoneyOnHand(userData.getMoneyOnHand() - amount);
       }
 
     }
-    setUpdateCandidate(true);
+    updateCandidate = true;
   }
 
   public boolean hasEnoughMoney(final int amount, final boolean bank) {
@@ -140,7 +164,6 @@ public class User {
   public void transferMoney(final int amount, final boolean handToBank) {
 
     if (handToBank) {
-
       removeMoney(amount, false);
       addMoney(amount, true);
     } else {
@@ -164,13 +187,13 @@ public class User {
     }
 
     userData.getOfflineMessages().add(offlineMessage);
-    setUpdateCandidate(true);
+    updateCandidate = true;
     return "Du hast dem Spieler deine Nachricht hinterlassen.";
   }
 
   public void clearOfflineMessages() {
     userData.getOfflineMessages().clear();
-    setUpdateCandidate(true);
+    updateCandidate = true;
   }
 
   private List<OfflineMessage> getOfflineMessagesFrom(final UUID target) {

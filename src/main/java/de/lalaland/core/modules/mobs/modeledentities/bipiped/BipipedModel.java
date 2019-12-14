@@ -15,7 +15,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum BipipedModel {
 
-  TEST(BiModelEquipment.ofModelIDs(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
+  TEST(BiModelEquipment.ofModelIDs(1029, 1028, 1027, 1030, 1030, 1029, 1028, 1027, 1030, 1030));
 
   @Getter
   private final BiModelEquipment equipment;

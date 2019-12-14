@@ -1,5 +1,6 @@
 package de.lalaland.core.modules.jobs.jobdata;
 
+import de.lalaland.core.modules.resourcepack.skins.Model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,18 +16,19 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum JobType {
 
-  MINER("Bergbau"),
-  WOODCUTTER("Holzfällerei"),
-  HERBLORE("Botanik"), // Pflanzenkunde?
-  FISHING("Fischen"),
+  MINER("Bergbau", Model.RED_X),
+  WOODCUTTER("Holzfällerei", Model.RED_X),
+  HERBLORE("Botanik", Model.RED_X), // Pflanzenkunde?
+  FISHING("Fischen", Model.RED_X),
 
-  CONSTRUCTION("Konstruktion"),
-  SMITHING("Schmieden"),
-  CRAFTING("Handwerk"),
-  COOKING("Kochen"),
-  ;
+  CONSTRUCTION("Konstruktion", Model.RED_X),
+  SMITHING("Schmieden", Model.RED_X),
+  CRAFTING("Handwerk", Model.RED_X),
+  COOKING("Kochen", Model.RED_X);
 
   @Getter
   private final String displayName;
+  @Getter
+  private final Model model;
 
 }
