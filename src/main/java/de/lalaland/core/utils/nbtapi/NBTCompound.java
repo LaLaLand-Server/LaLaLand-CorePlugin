@@ -2,7 +2,7 @@ package de.lalaland.core.utils.nbtapi;
 
 import java.util.Set;
 import java.util.UUID;
-import net.minecraft.server.v1_14_R1.NBTTagCompound;
+import net.minecraft.server.v1_15_R1.NBTTagCompound;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

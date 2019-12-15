@@ -1,10 +1,10 @@
 package de.lalaland.core.modules.mobs.custommobs.zombie;
 
 import de.lalaland.core.modules.mobs.custommobs.CustomMob;
-import net.minecraft.server.v1_14_R1.EntityLiving;
-import net.minecraft.server.v1_14_R1.EntityTypes;
-import net.minecraft.server.v1_14_R1.EntityZombie;
-import net.minecraft.server.v1_14_R1.World;
+import net.minecraft.server.v1_15_R1.EntityLiving;
+import net.minecraft.server.v1_15_R1.EntityTypes;
+import net.minecraft.server.v1_15_R1.EntityZombie;
+import net.minecraft.server.v1_15_R1.World;
 import org.bukkit.entity.LivingEntity;
 
 /*******************************************************

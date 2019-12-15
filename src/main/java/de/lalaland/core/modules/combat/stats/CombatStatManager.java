@@ -1,7 +1,6 @@
 package de.lalaland.core.modules.combat.stats;
 
 import de.lalaland.core.CorePlugin;
-import de.lalaland.core.tasks.TaskManager;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.UUID;
@@ -24,7 +23,7 @@ public class CombatStatManager implements Runnable {
 
   public CombatStatManager(final CorePlugin plugin) {
     this.plugin = plugin;
-    taskManager = plugin.getTaskManager();
+    plugin.getTaskManager().runRepeatedBukkitAsync(this, 0L, 1L);
     combatStatCalculator = new CombatStatCalculator();
     combatStatEntityMapping = new Object2ObjectOpenHashMap<>();
     scheduledRecalculations = new ObjectOpenHashSet<>();
@@ -40,7 +39,6 @@ public class CombatStatManager implements Runnable {
   private final CorePlugin plugin;
   private final CombatStatCalculator combatStatCalculator;
   private final Object2ObjectOpenHashMap<UUID, CombatStatHolder> combatStatEntityMapping;
-  private final TaskManager taskManager;
   private final ObjectOpenHashSet<UUID> scheduledRecalculations;
 
   /**
@@ -99,7 +97,6 @@ public class CombatStatManager implements Runnable {
     }
     holder.setRecalculatingSheduled(true);
     scheduledRecalculations.add(entityID);
-    taskManager.runBukkitSync(this);
   }
 
   /**
@@ -124,6 +121,9 @@ public class CombatStatManager implements Runnable {
         combatStatCalculator.recalculateValues(holder);
         holder.setRecalculatingSheduled(false);
       }
+    }
+    for (final CombatStatHolder holder : combatStatEntityMapping.values()) {
+      holder.tickBuffs();
     }
   }
 }

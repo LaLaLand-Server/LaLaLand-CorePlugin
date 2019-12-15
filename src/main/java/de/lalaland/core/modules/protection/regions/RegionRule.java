@@ -69,6 +69,11 @@ public enum RegionRule {
       .put(Relation.FRIENDLY, Permit.ALLOW)
       .put(Relation.HOSTILE, Permit.DENY)
       .put(Relation.NEUTRAL, Permit.ALLOW)
+      .build()),
+  FIRE_SPREAD(ImmutableMap.<Relation, Permit>builder()
+      .put(Relation.FRIENDLY, Permit.ALLOW)
+      .put(Relation.HOSTILE, Permit.DENY)
+      .put(Relation.NEUTRAL, Permit.ALLOW)
       .build());
   //TODO fire spread
 

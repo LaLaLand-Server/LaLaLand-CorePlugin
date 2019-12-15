@@ -8,7 +8,9 @@ import de.lalaland.core.io.gson.GsonFileWriter;
 import de.lalaland.core.io.mongodb.MongoDataReader;
 import de.lalaland.core.io.mongodb.MongoDataWriter;
 import de.lalaland.core.modules.chat.messages.OfflineMessage;
+import de.lalaland.core.modules.economy.EconomyModule;
 import de.lalaland.core.modules.protection.zones.WorldZone;
+import de.lalaland.core.ui.Message;
 import de.lalaland.core.user.data.UserData;
 import de.lalaland.core.utils.common.UtilPlayer;
 import de.lalaland.core.utils.tuples.Unit;
@@ -122,8 +124,18 @@ public class User {
 
     if (bank) {
       userData.setMoneyOnBank(userData.getMoneyOnBank() + amount);
+      applyWhenOnline(player -> {
+        Message.send(player, EconomyModule.class, "Deine Bank erhält §6" + amount + " Gold");
+        // TODO custom sound
+        UtilPlayer.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.75F, 1.45F);
+      });
     } else {
       userData.setMoneyOnHand(userData.getMoneyOnHand() + amount);
+      applyWhenOnline(player -> {
+        Message.send(player, EconomyModule.class, "Du erhälst §e" + amount + " Gold");
+        // TODO custom sound
+        UtilPlayer.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.75F, 1.45F);
+      });
     }
     updateCandidate = true;
   }

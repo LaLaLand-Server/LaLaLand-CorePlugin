@@ -6,8 +6,8 @@ import de.lalaland.core.modules.combat.CombatModule;
 import de.lalaland.core.modules.combat.stats.CombatStatManager;
 import de.lalaland.core.modules.protection.zones.WorldZone;
 import de.lalaland.core.modules.protection.zones.WorldZoneManager;
+import de.lalaland.core.user.User;
 import de.lalaland.core.user.UserManager;
-import de.lalaland.core.user.data.UserData;
 import java.util.ListIterator;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -19,9 +19,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
@@ -70,14 +72,13 @@ public class RegionListener implements Listener {
       return;
     }
 
-    final UserData data = userManager.getUser(event.getPlayer().getUniqueId()).getUserData();
+    final User user = userManager.getUser(event.getPlayer().getUniqueId());
 
-    if (data.hasDiscovered(zone)) {
-      // TODO on discovery
-      data.addZoneDiscovery(zone);
+    if (user.getUserData().hasDiscovered(zone)) {
+      // TODO on discovery (Shift to User class)
+      user.getUserData().addZoneDiscovery(zone);
       event.getPlayer().sendTitle(zone.getDisplayName(), "§eErkundet", 20, 70, 20);
-      // TODO rework EXP system
-      data.addExp(zone.getDiscoveryExp());
+      user.addExp(zone.getDiscoveryExp());
     } else {
       // TODO on normal enter
       event.getPlayer().sendTitle(zone.getDisplayName(), "", 10, 30, 10);
@@ -109,6 +110,33 @@ public class RegionListener implements Listener {
     if (permit == Permit.DENY) {
       event.setCancelled(true);
       // TODO play deny effect
+    }
+  }
+
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void onFirePlace(final BlockIgniteEvent event) {
+    final ProtectedRegion region = regionManager
+        .getMostRelevantRegion(event.getBlock().getLocation());
+    if (region == null) {
+      return;
+    }
+    final Permit permit = region.getPermit(event.getPlayer().getUniqueId(), RegionRule.FIRE_SPREAD);
+    if (permit == Permit.DENY) {
+      event.setCancelled(true);
+      // TODO play deny effect
+    }
+  }
+
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void onFireSpread(final BlockSpreadEvent event) {
+    final ProtectedRegion region = regionManager
+        .getMostRelevantRegion(event.getBlock().getLocation());
+    if (region == null) {
+      return;
+    }
+    final Permit permit = region.getRuleSet().getPermit(Relation.NEUTRAL, RegionRule.FIRE_SPREAD);
+    if (permit == Permit.DENY) {
+      event.setCancelled(true);
     }
   }
 

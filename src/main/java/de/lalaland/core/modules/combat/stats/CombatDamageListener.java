@@ -53,31 +53,31 @@ public class CombatDamageListener implements Listener {
   private static final Vector BASE_HOLOGRAM_VELOCITY = new Vector(0, 0.075, 0);
   private static final Vector BASE_SCALAR_XZ = new Vector(1, 0, 1);
   private static final ImmutableMap<DamageCause, Double> ENVIRONMENTAL_BASE_PERCENTAGE = ImmutableMap.<DamageCause, Double>builder()
-      .put(DamageCause.BLOCK_EXPLOSION, 25D)
-      .put(DamageCause.CONTACT, 2.5D)
-      .put(DamageCause.CRAMMING, 15D)
-      .put(DamageCause.DRAGON_BREATH, 20D)
-      .put(DamageCause.DROWNING, 33.33D)
-      .put(DamageCause.DRYOUT, 50D)
-      .put(DamageCause.ENTITY_EXPLOSION, 25D)
-      .put(DamageCause.FALL, 12.5D)
-      .put(DamageCause.FALLING_BLOCK, 15D)
-      .put(DamageCause.FIRE, 17.5D)
-      .put(DamageCause.FIRE_TICK, 10D)
-      .put(DamageCause.FLY_INTO_WALL, 50D)
-      .put(DamageCause.HOT_FLOOR, 9D)
-      .put(DamageCause.LAVA, 20D)
-      .put(DamageCause.LIGHTNING, 50D)
-      .put(DamageCause.MAGIC, 15D)
-      .put(DamageCause.MELTING, 33.33D)
-      .put(DamageCause.POISON, 7.5D)
-      .put(DamageCause.PROJECTILE, 10D)
-      .put(DamageCause.STARVATION, 50D)
-      .put(DamageCause.SUFFOCATION, 45D)
-      .put(DamageCause.SUICIDE, 100D)
-      .put(DamageCause.THORNS, 7.5D)
-      .put(DamageCause.VOID, 50D)
-      .put(DamageCause.WITHER, 8.5D)
+      .put(DamageCause.BLOCK_EXPLOSION, 2.5D)
+      .put(DamageCause.CONTACT, 2.0D)
+      .put(DamageCause.CRAMMING, 5D)
+      .put(DamageCause.DRAGON_BREATH, 7.5D)
+      .put(DamageCause.DROWNING, 5.0D)
+      .put(DamageCause.DRYOUT, 8.0D)
+      .put(DamageCause.ENTITY_EXPLOSION, 6.5D)
+      .put(DamageCause.FALL, 2.5D)
+      .put(DamageCause.FALLING_BLOCK, 3.5D)
+      .put(DamageCause.FIRE, 5.0D)
+      .put(DamageCause.FIRE_TICK, 2.5D)
+      .put(DamageCause.FLY_INTO_WALL, 25.0D)
+      .put(DamageCause.HOT_FLOOR, 3.5D)
+      .put(DamageCause.LAVA, 12.0D)
+      .put(DamageCause.LIGHTNING, 20.0D)
+      .put(DamageCause.MAGIC, 5.0D)
+      .put(DamageCause.MELTING, 3.33D)
+      .put(DamageCause.POISON, 1.0D)
+      .put(DamageCause.PROJECTILE, 3.0D)
+      .put(DamageCause.STARVATION, 5.0D)
+      .put(DamageCause.SUFFOCATION, 4.5D)
+      .put(DamageCause.SUICIDE, 25.0D)
+      .put(DamageCause.THORNS, 4.5D)
+      .put(DamageCause.VOID, 15.0D)
+      .put(DamageCause.WITHER, 3.5D)
       .build();
 
   public CombatDamageListener(final CombatStatManager combatStatManager,
@@ -109,16 +109,24 @@ public class CombatDamageListener implements Listener {
       return;
     }
     final LivingEntity defenderLiving = (LivingEntity) defender;
-    double damage = event.getDamage() * ENVIRONMENTAL_BASE_PERCENTAGE.get(event.getCause());
-    damage *= (100D / defenderLiving.getHealth());
+
+    final CombatContext context = new CombatContext();
+    context.setDamage(event.getDamage() * ENVIRONMENTAL_BASE_PERCENTAGE.get(event.getCause()));
+    context.setCause(event.getCause());
+    context.setDamage(defenderLiving.getHealth() / 100D * context.getDamage());
+
     final CombatStatHolder holderDefender = combatStatManager
         .getCombatStatHolder(defender.getUniqueId());
-    damage = DamageEvaluator
-        .calculateDamage(holderDefender, damage, CombatDamageType.ofBukkit(event.getCause()));
+
+    context.setDefenderHolder(holderDefender);
+
+    context.setDamage(DamageEvaluator.calculateDamage(holderDefender, context.getDamage(), event.getCause()));
 
     event.setDamage(0);
 
-    double healthLeft = defenderLiving.getHealth() - damage;
+    holderDefender.applyCombatBuffs(context, false);
+
+    double healthLeft = defenderLiving.getHealth() - context.getDamage();
     if (healthLeft < 0) {
       healthLeft = 0;
     }
@@ -247,16 +255,18 @@ public class CombatDamageListener implements Listener {
     Entity attacker = event.getDamager();
     final Entity defender = event.getEntity();
 
-    double damage = 0D;
-    boolean crit = false;
-    boolean isRanged = false;
+    final CombatContext context = new CombatContext();
+    context.setDamage(0);
+    context.setCrit(false);
+    context.setRanged(false);
+    context.setCause(event.getCause());
 
     if (attacker instanceof Projectile) {
-      isRanged = true;
+      context.setRanged(true);
       final Projectile projectile = ((Projectile) attacker);
       final Integer critInt = projectile.getPersistentDataContainer().get(critKey, PersistentDataType.INTEGER);
-      crit = critInt != null;
-      damage = projectile.getPersistentDataContainer().get(dmgKey, PersistentDataType.DOUBLE);
+      context.setCrit(critInt != null);
+      context.setDamage(projectile.getPersistentDataContainer().get(dmgKey, PersistentDataType.DOUBLE));
       final ProjectileSource source = projectile.getShooter();
       if (source instanceof Entity) {
         attacker = (Entity) source;
@@ -273,37 +283,42 @@ public class CombatDamageListener implements Listener {
     final CombatStatHolder holderDefender = combatStatManager.getCombatStatHolder(defenderLiving);
     final boolean isPlayerAttacker = attacker instanceof Player;
 
+    context.setAttackerHolder(holderAttacker);
+    context.setDefenderHolder(holderDefender);
+
     event.setDamage(0);
 
-    if (!isRanged) {
-      damage = holderAttacker.getStatValue(isRanged ? CombatStat.RANGE_DAMAGE : CombatStat.MEELE_DAMAGE);
+    holderAttacker.applyCombatBuffs(context, true);
+    holderDefender.applyCombatBuffs(context, false);
 
-      crit = holderAttacker.getStatValue(CombatStat.CRIT_CHANCE) >= critChanceRandom
-          .nextDouble(0, 100);
+    if (!context.isRanged()) {
+      context.setDamage(holderAttacker.getStatValue(context.isRanged() ? CombatStat.RANGE_DAMAGE : CombatStat.MEELE_DAMAGE));
 
-      if (crit) {
+      context.setCrit(holderAttacker.getStatValue(CombatStat.CRIT_CHANCE) >= critChanceRandom
+          .nextDouble(0, 100));
+
+      if (context.isCrit()) {
         final double dmgMulti = (1D / 100D) * holderAttacker.getStatValue(CombatStat.CRIT_DAMAGE);
-        damage *= dmgMulti;
+        context.setDamage(context.getDamage() * dmgMulti);
       }
     }
 
-    damage = DamageEvaluator.calculateDamage(holderDefender, damage, CombatDamageType.ofBukkit(event.getCause()));
+    context.setDamage(DamageEvaluator.calculateDamage(holderDefender, holderAttacker, context.getDamage(), event.getCause()));
 
     ItemStack attackItem = attackerLiving.getActiveItem();
     if (isPlayerAttacker) {
       final float multi = UtilPlayer.getAttackCooldown((Player) attacker);
       if (multi < 0.9F) {
-        damage *= 0.05;
+        context.setDamage(context.getDamage() * 0.05);
       } else {
-        damage *= multi;
+        context.setDamage(context.getDamage() * multi);
       }
       attackItem = ((Player) attacker).getInventory().getItemInMainHand();
     }
     if (attackItem != null && attackItem.getType() != Material.AIR) {
       final StatItem statItem = StatItem.of(attackItem);
       final WeaponType weaponType = statItem.getWeaponType();
-      if (!isRanged && weaponType != null && !weaponType.isMeele()) {
-        System.out.println("Blocked");
+      if (!context.isRanged() && weaponType != null && !weaponType.isMeele()) {
         event.setCancelled(true);
         return;
       }
@@ -312,7 +327,7 @@ public class CombatDamageListener implements Listener {
         if (durability != null) {
           Preconditions.checkState(durability >= 0, "Item durability is below 0");
           if (durability == 0) {
-            damage *= 0.025;
+            context.setDamage(context.getDamage() * 0.025);
           } else if (durability > 0) {
             final int leftDurability = durability - 1;
             if (leftDurability == 0) {
@@ -329,14 +344,14 @@ public class CombatDamageListener implements Listener {
       }
     }
 
-    damage = UtilMath.cut(damage, 1);
+    context.setDamage(UtilMath.cut(context.getDamage(), 1));
 
     if (isPlayerAttacker) {
       final Player attackerPlayer = (Player) attacker;
-      createDamageHologram(attackerPlayer, defender, crit, damage);
+      createDamageHologram(attackerPlayer, defender, context.isCrit(), context.getDamage());
     }
 
-    double healthLeft = defenderLiving.getHealth() - damage;
+    double healthLeft = defenderLiving.getHealth() - context.getDamage();
     if (healthLeft <= 0) {
       healthLeft = 0;
     }

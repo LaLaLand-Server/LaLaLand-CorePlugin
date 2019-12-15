@@ -2,8 +2,16 @@ package de.lalaland.core.modules.combat.stats;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import de.lalaland.core.modules.combat.stats.buffs.Buff;
+import de.lalaland.core.modules.combat.stats.buffs.BuffEnvironment;
+import de.lalaland.core.modules.combat.stats.buffs.BuffType;
+import de.lalaland.core.modules.combat.stats.buffs.CombatBuff;
+import de.lalaland.core.modules.combat.stats.buffs.StatBuff;
 import de.lalaland.core.utils.tuples.Pair;
 import java.util.EnumMap;
+import java.util.Map;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +39,8 @@ public class CombatStatHolder {
     baseValues = Maps.newEnumMap(CombatStat.getBaseMap(human));
     recalculatingSheduled = false;
     this.combatStatCalculator = combatStatCalculator;
+    combatBuffMap = new EnumMap<>(BuffType.class);
+    statBuffMap = new EnumMap<>(BuffType.class);
   }
 
   @Setter(AccessLevel.PROTECTED)
@@ -43,7 +53,58 @@ public class CombatStatHolder {
   private final EnumMap<CombatStat, Double> combatStatMappings;
   private final EnumMap<CombatStat, Double> baseValues;
   private final CombatStatCalculator combatStatCalculator;
+  private final EnumMap<BuffType, CombatBuff> combatBuffMap;
+  private final EnumMap<BuffType, StatBuff> statBuffMap;
 
+  public void applyCombatBuffs(final CombatContext combatContext, final boolean asAttacker) {
+    for (final CombatBuff cBuff : combatBuffMap.values()) {
+      if (asAttacker) {
+        if (!cBuff.getBuffType().isDefensive()) {
+          cBuff.apply(combatContext);
+        }
+      } else {
+        if (cBuff.getBuffType().isDefensive()) {
+          cBuff.apply(combatContext);
+        }
+      }
+    }
+  }
+
+  protected void applyStatBuffs(final Map<CombatStat, Double> statMap) {
+    for (final StatBuff statBuff : statBuffMap.values()) {
+      statBuff.apply(statMap);
+    }
+  }
+
+  public void addBuff(final Buff buff) {
+    if (buff.getBuffType().getBuffEnvironment() == BuffEnvironment.COMBAT) {
+      final BuffType buffType = buff.getBuffType();
+      final Buff currentBuff = combatBuffMap.get(buffType);
+      if (buff.getBuffTier() >= currentBuff.getBuffTier()) {
+        combatBuffMap.put(buffType, (CombatBuff) buff);
+      }
+    } else {
+      final BuffType buffType = buff.getBuffType();
+      final Buff currentBuff = statBuffMap.get(buffType);
+      if (buff.getBuffTier() >= currentBuff.getBuffTier()) {
+        statBuffMap.put(buffType, (StatBuff) buff);
+      }
+    }
+  }
+
+  public void removeBuff(final Buff buff) {
+    if (buff.getBuffType().getBuffEnvironment() == BuffEnvironment.COMBAT) {
+      final Buff oldBuff = combatBuffMap.get(buff.getBuffType());
+      if (oldBuff.equals(buff)) {
+        combatBuffMap.remove(buff.getBuffType());
+      }
+    } else {
+      final Buff oldBuff = statBuffMap.get(buff.getBuffType());
+      if (oldBuff.equals(buff)) {
+        statBuffMap.remove(buff.getBuffType());
+      }
+    }
+  }
 
   /**
    * Gets the complete value of a stat.
@@ -112,6 +173,23 @@ public class CombatStatHolder {
   protected void resetStatMap() {
     for (final CombatStat stat : CombatStat.values()) {
       combatStatMappings.put(stat, getStatBaseValue(stat));
+    }
+  }
+
+  protected void tickBuffs() {
+    final Set<Buff> removers = Sets.newHashSet();
+    for (final Buff buff : combatBuffMap.values()) {
+      if (buff.tickDuration()) {
+        removers.add(buff);
+      }
+    }
+    for (final Buff buff : statBuffMap.values()) {
+      if (buff.tickDuration()) {
+        removers.add(buff);
+      }
+    }
+    for (final Buff remover : removers) {
+      remover.remove();
     }
   }
 

@@ -76,11 +76,11 @@ public class AssetLibrary {
     return json;
   }
 
-  public String getAssetModelParent(final String nmsKey) {
+  protected String getAssetModelParent(final String nmsKey) {
     return itemModelDefaultAssets.get(nmsKey).get("parent").getAsString();
   }
 
-  public String getAssetModelLayer0(final String nmsKey) {
+  protected String getAssetModelLayer0(final String nmsKey) {
     return itemModelDefaultAssets.get(nmsKey)
         .get("textures")
         .getAsJsonObject()

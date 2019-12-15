@@ -2,23 +2,23 @@ package de.lalaland.core.utils.anvilgui;
 
 import de.lalaland.core.utils.items.ItemBuilder;
 import java.lang.reflect.Field;
-import net.minecraft.server.v1_14_R1.BlockPosition;
-import net.minecraft.server.v1_14_R1.ChatComponentText;
-import net.minecraft.server.v1_14_R1.ChatMessage;
-import net.minecraft.server.v1_14_R1.Container;
-import net.minecraft.server.v1_14_R1.ContainerAccess;
-import net.minecraft.server.v1_14_R1.ContainerAnvil;
-import net.minecraft.server.v1_14_R1.Containers;
-import net.minecraft.server.v1_14_R1.EntityHuman;
-import net.minecraft.server.v1_14_R1.EntityPlayer;
-import net.minecraft.server.v1_14_R1.ItemStack;
-import net.minecraft.server.v1_14_R1.PacketPlayOutCloseWindow;
-import net.minecraft.server.v1_14_R1.PacketPlayOutOpenWindow;
+import net.minecraft.server.v1_15_R1.BlockPosition;
+import net.minecraft.server.v1_15_R1.ChatComponentText;
+import net.minecraft.server.v1_15_R1.ChatMessage;
+import net.minecraft.server.v1_15_R1.Container;
+import net.minecraft.server.v1_15_R1.ContainerAccess;
+import net.minecraft.server.v1_15_R1.ContainerAnvil;
+import net.minecraft.server.v1_15_R1.Containers;
+import net.minecraft.server.v1_15_R1.EntityHuman;
+import net.minecraft.server.v1_15_R1.EntityPlayer;
+import net.minecraft.server.v1_15_R1.ItemStack;
+import net.minecraft.server.v1_15_R1.PacketPlayOutCloseWindow;
+import net.minecraft.server.v1_15_R1.PacketPlayOutOpenWindow;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_14_R1.event.CraftEventFactory;
-import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_15_R1.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -33,32 +33,39 @@ import org.bukkit.inventory.Inventory;
  */
 public class AnvilMod extends NMSMod implements AnvilImplementation {
 
-  public int getNextContainerId(Player player) {
+  @Override
+  public int getNextContainerId(final Player player) {
     return toNMS(player).nextContainerCounter();
   }
 
-  public void handleInventoryCloseEvent(Player player) {
+  @Override
+  public void handleInventoryCloseEvent(final Player player) {
     CraftEventFactory.handleInventoryCloseEvent(toNMS(player));
   }
 
-  public void sendPacketOpenWindow(Player player, int containerId) {
+  @Override
+  public void sendPacketOpenWindow(final Player player, final int containerId) {
     toNMS(player).playerConnection.sendPacket(
         new PacketPlayOutOpenWindow(containerId, Containers.ANVIL, new ChatMessage("Anvil")));
   }
 
-  public void sendPacketCloseWindow(Player player, int containerId) {
+  @Override
+  public void sendPacketCloseWindow(final Player player, final int containerId) {
     toNMS(player).playerConnection.sendPacket(new PacketPlayOutCloseWindow(containerId));
   }
 
-  public void setActiveContainerDefault(Player player) {
+  @Override
+  public void setActiveContainerDefault(final Player player) {
     toNMS(player).activeContainer = toNMS(player).defaultContainer;
   }
 
-  public void setActiveContainer(Player player, Object container) {
+  @Override
+  public void setActiveContainer(final Player player, final Object container) {
     toNMS(player).activeContainer = (Container) container;
   }
 
-  public void setActiveContainerId(Object container, int containerId) {
+  @Override
+  public void setActiveContainerId(final Object container, final int containerId) {
     Field id = null;
     try {
 
@@ -66,20 +73,23 @@ public class AnvilMod extends NMSMod implements AnvilImplementation {
       id.setAccessible(true);
       id.setInt(container, containerId);
 
-    } catch (SecurityException | NoSuchFieldException | IllegalAccessException e) {
+    } catch (final SecurityException | NoSuchFieldException | IllegalAccessException e) {
       e.printStackTrace();
     }
   }
 
-  public void addActiveContainerSlotListener(Object container, Player player) {
+  @Override
+  public void addActiveContainerSlotListener(final Object container, final Player player) {
     ((Container) container).addSlotListener(toNMS(player));
   }
 
-  public Inventory toBukkitInventory(Object container) {
+  @Override
+  public Inventory toBukkitInventory(final Object container) {
     return ((Container) container).getBukkitView().getTopInventory();
   }
 
-  public Object newContainerAnvil(Player player) {
+  @Override
+  public Object newContainerAnvil(final Player player) {
     return new AnvilContainer(toNMS(player));
   }
 
@@ -89,7 +99,7 @@ public class AnvilMod extends NMSMod implements AnvilImplementation {
    * @param player The player to be converted
    * @return the NMS EntityPlayer
    */
-  private EntityPlayer toNMS(Player player) {
+  private EntityPlayer toNMS(final Player player) {
     return ((CraftPlayer) player).getHandle();
   }
 
@@ -98,33 +108,33 @@ public class AnvilMod extends NMSMod implements AnvilImplementation {
    */
   private class AnvilContainer extends ContainerAnvil {
 
-    public AnvilContainer(EntityHuman entityhuman) {
+    public AnvilContainer(final EntityHuman entityhuman) {
       super(getNextContainerId((Player) entityhuman.getBukkitEntity()), entityhuman.inventory,
           ContainerAccess
               .at(entityhuman.world, new BlockPosition(0, 0, 0)));
-      this.checkReachable = false;
+      checkReachable = false;
       setTitle(new ChatMessage("Repair & Name"));
 
       output = CraftItemStack.asNMSCopy(new ItemBuilder(Material.COAL).modelData(1000).build());
       // this.getSlot(1).set(CraftItemStack.asNMSCopy(new
       // ItemBuilderWrapper(Material.COAL).setModelData(5000).build()));
-      this.getSlot(1).set(CraftItemStack.asNMSCopy(new ItemBuilder(Material.COAL).build()));
+      getSlot(1).set(CraftItemStack.asNMSCopy(new ItemBuilder(Material.COAL).build()));
     }
 
     private final ItemStack output;
 
     @Override
     public void e() {
-      this.levelCost.set(0);
-      if (this.renameText != null && !this.renameText.isEmpty()) {
-        this.output
-            .a(new ChatComponentText(ChatColor.translateAlternateColorCodes('&', this.renameText)));
-        this.getSlot(2).set(this.output);
+      levelCost.set(0);
+      if (renameText != null && !renameText.isEmpty()) {
+        output
+            .a(new ChatComponentText(ChatColor.translateAlternateColorCodes('&', renameText)));
+        getSlot(2).set(output);
       } else {
         return;
       }
-      CraftEventFactory.callPrepareAnvilEvent(this.getBukkitView(), this.output);
-      this.c();
+      CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), output);
+      c();
     }
   }
 

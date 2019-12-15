@@ -14,21 +14,21 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import net.minecraft.server.v1_14_R1.ChatMessage;
-import net.minecraft.server.v1_14_R1.EntityArmorStand;
-import net.minecraft.server.v1_14_R1.EntityPig;
-import net.minecraft.server.v1_14_R1.EntityRabbit;
-import net.minecraft.server.v1_14_R1.EntityTurtle;
-import net.minecraft.server.v1_14_R1.EntityTypes;
-import net.minecraft.server.v1_14_R1.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_14_R1.PacketPlayOutEntityMetadata;
-import net.minecraft.server.v1_14_R1.PacketPlayOutSpawnEntity;
-import net.minecraft.server.v1_14_R1.PacketPlayOutSpawnEntityLiving;
-import net.minecraft.server.v1_14_R1.PlayerConnection;
+import net.minecraft.server.v1_15_R1.ChatMessage;
+import net.minecraft.server.v1_15_R1.EntityArmorStand;
+import net.minecraft.server.v1_15_R1.EntityPig;
+import net.minecraft.server.v1_15_R1.EntityRabbit;
+import net.minecraft.server.v1_15_R1.EntityTurtle;
+import net.minecraft.server.v1_15_R1.EntityTypes;
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntityMetadata;
+import net.minecraft.server.v1_15_R1.PacketPlayOutSpawnEntity;
+import net.minecraft.server.v1_15_R1.PacketPlayOutSpawnEntityLiving;
+import net.minecraft.server.v1_15_R1.PlayerConnection;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -121,7 +121,7 @@ public class InfoBar extends AbstractInfoBar {
 
     final ArrayList<Supplier<DoubleLinkedPacketHost>> newPackets = Lists.newArrayList();
 
-    final net.minecraft.server.v1_14_R1.Entity hostEntity = lines.size() == 0 ?
+    final net.minecraft.server.v1_15_R1.Entity hostEntity = lines.size() == 0 ?
         ((CraftEntity) entity).getHandle() : lines.get(lines.size() - 1);
 
     newPackets.add(() -> spacingPart.getLivingPacket());
@@ -158,8 +158,8 @@ public class InfoBar extends AbstractInfoBar {
     }
   }
 
-  private DoubleLinkedPacketHost getMountPacket(final net.minecraft.server.v1_14_R1.Entity mount,
-      final net.minecraft.server.v1_14_R1.Entity rider) {
+  private DoubleLinkedPacketHost getMountPacket(final net.minecraft.server.v1_15_R1.Entity mount,
+      final net.minecraft.server.v1_15_R1.Entity rider) {
     final WrapperPlayServerMount packet = new WrapperPlayServerMount();
     packet.setEntityID(mount.getId());
     packet.setPassengerIds(new int[]{rider.getId()});
@@ -174,7 +174,7 @@ public class InfoBar extends AbstractInfoBar {
 
   static interface LinePart {
 
-    public net.minecraft.server.v1_14_R1.Entity getHandle();
+    public net.minecraft.server.v1_15_R1.Entity getHandle();
 
     public DoubleLinkedPacketHost getSpawnPacket();
 
@@ -237,7 +237,7 @@ public class InfoBar extends AbstractInfoBar {
     }
 
     @Override
-    public net.minecraft.server.v1_14_R1.Entity getHandle() {
+    public net.minecraft.server.v1_15_R1.Entity getHandle() {
       return this;
     }
 
@@ -286,7 +286,7 @@ public class InfoBar extends AbstractInfoBar {
     }
 
     @Override
-    public net.minecraft.server.v1_14_R1.Entity getHandle() {
+    public net.minecraft.server.v1_15_R1.Entity getHandle() {
       return this;
     }
 
@@ -335,7 +335,7 @@ public class InfoBar extends AbstractInfoBar {
     }
 
     @Override
-    public net.minecraft.server.v1_14_R1.Entity getHandle() {
+    public net.minecraft.server.v1_15_R1.Entity getHandle() {
       return this;
     }
 
@@ -384,7 +384,7 @@ public class InfoBar extends AbstractInfoBar {
     }
 
     @Override
-    public net.minecraft.server.v1_14_R1.Entity getHandle() {
+    public net.minecraft.server.v1_15_R1.Entity getHandle() {
       return this;
     }
 

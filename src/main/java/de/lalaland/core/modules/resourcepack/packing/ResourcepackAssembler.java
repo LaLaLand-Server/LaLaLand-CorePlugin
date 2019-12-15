@@ -31,6 +31,7 @@ import net.crytec.libs.protocol.skinclient.PlayerSkinManager;
 import net.crytec.libs.protocol.skinclient.PlayerSkinManager.ConsumingCallback;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
+import org.bukkit.plugin.SimplePluginManager;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -43,9 +44,9 @@ import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
  */
 public class ResourcepackAssembler {
 
-  private static final int META_FORMAT = 4;
+  private static final int META_FORMAT = 5;
   // TODO pack description
-  private static final String META_DESC = "AC v1.0.0 - Unix: " + System.currentTimeMillis();
+  private static final String META_DESC = "- -";
 
   public ResourcepackAssembler(final CorePlugin plugin) {
     this.plugin = plugin;
@@ -67,7 +68,7 @@ public class ResourcepackAssembler {
     packFolderSet.add(particlesFolder = new File(minecraftFolder + File.separator + "particles"));
     packFolderSet.add(soundsFolder = new File(minecraftFolder + File.separator + "sounds"));
     packFolderSet.add(texturesFolder = new File(minecraftFolder + File.separator + "textures"));
-
+    SimplePluginManager pl;
     mcmetaFile = new File(packFolder, "pack.mcmeta");
     soundsFile = new File(assetFolder, "sounds.json");
     resourceZipFile = new File(plugin.getDataFolder(), "serverpack.zip");
@@ -185,7 +186,7 @@ public class ResourcepackAssembler {
         variantsJson = new JsonObject();
       }
       final JsonObject modelJson = new JsonObject();
-      modelJson.addProperty("model", "block/" + modelBlock.toString());
+      modelJson.addProperty("model", "block/" + modelBlock.toString().toLowerCase());
       variantsJson.add(modelBlock.getBlockStateApplicant(), modelJson);
       stateJson.add("variants", variantsJson);
 
@@ -196,7 +197,7 @@ public class ResourcepackAssembler {
       customModelJson.add("textures", textureJson);
       FileUtils.copyFile(modelBlockImage, new File(texturesFolder, modelBlock.toString().toLowerCase() + ".png"));
       final OutputStreamWriter osw = new OutputStreamWriter(
-          new FileOutputStream(new File(blockModelFolder, modelBlock.toString() + ".json")), "UTF-8");
+          new FileOutputStream(new File(blockModelFolder, modelBlock.toString().toLowerCase() + ".json")), "UTF-8");
       osw.write(plugin.getGson().toJson(customModelJson));
       osw.close();
     }
@@ -292,7 +293,7 @@ public class ResourcepackAssembler {
     for (final File cModelFileFolder : customTempModelFolder.listFiles()) {
       for (final File cModelFile : cModelFileFolder.listFiles()) {
         Model.valueOf(cModelFile.getName().replace(".json", ""));
-        FileUtils.copyFile(cModelFile, new File(customModelFolder, cModelFile.getName()));
+        FileUtils.copyFile(cModelFile, new File(customModelFolder, cModelFile.getName().toLowerCase()));
       }
     }
   }
@@ -413,7 +414,7 @@ public class ResourcepackAssembler {
       final JsonObject overrideObject = new JsonObject();
       final String customModelName;
       if (model.isCustomModelDataEnabled()) {
-        customModelName = assetLibrary.getAssetModelLayer0(nmsName).split("/")[0] + "/custom/" + model.toString();
+        customModelName = assetLibrary.getAssetModelLayer0(nmsName).split("/")[0] + "/custom/" + model.toString().toLowerCase();
       } else {
         customModelName = assetLibrary.getAssetModelLayer0(nmsName).split("/")[0] + "/" + nmsName + "/" + model.getModelID();
       }

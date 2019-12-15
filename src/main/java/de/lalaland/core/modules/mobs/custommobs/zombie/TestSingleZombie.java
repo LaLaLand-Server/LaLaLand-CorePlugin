@@ -2,8 +2,8 @@ package de.lalaland.core.modules.mobs.custommobs.zombie;
 
 import de.lalaland.core.modules.mobs.modeledentities.MobModelManager;
 import de.lalaland.core.modules.mobs.modeledentities.singlemodel.SingleModel;
-import net.minecraft.server.v1_14_R1.EntityArmorStand;
-import net.minecraft.server.v1_14_R1.World;
+import net.minecraft.server.v1_15_R1.EntityArmorStand;
+import net.minecraft.server.v1_15_R1.World;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com

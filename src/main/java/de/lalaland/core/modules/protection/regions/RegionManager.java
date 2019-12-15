@@ -67,7 +67,6 @@ public class RegionManager {
     }
   }
 
-  // TODO check if vector 1 1 0 or 1 0 1 for ground scalar
   public ProtectedRegion createFor(final Schematic schematic, final Location groundLocation) {
     final World world = groundLocation.getWorld();
     Vector dimension = schematic.getDimension();

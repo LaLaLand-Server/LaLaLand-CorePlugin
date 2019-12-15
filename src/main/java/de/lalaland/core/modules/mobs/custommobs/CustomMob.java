@@ -1,6 +1,6 @@
 package de.lalaland.core.modules.mobs.custommobs;
 
-import net.minecraft.server.v1_14_R1.EntityLiving;
+import net.minecraft.server.v1_15_R1.EntityLiving;
 import org.bukkit.entity.LivingEntity;
 
 /*******************************************************

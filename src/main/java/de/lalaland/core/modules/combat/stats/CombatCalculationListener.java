@@ -5,6 +5,7 @@ import de.lalaland.core.modules.combat.items.StatItem;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -109,6 +110,9 @@ public class CombatCalculationListener implements Listener {
 
   @EventHandler
   public void onEntityDeath(final EntityDeathEvent event) {
+    if (event.getEntity() instanceof Player) {
+      return;
+    }
     combatStatManager.terminateEntity(event.getEntity());
   }
 

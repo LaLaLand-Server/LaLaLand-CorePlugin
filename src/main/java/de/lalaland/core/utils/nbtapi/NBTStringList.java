@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import net.minecraft.server.v1_14_R1.NBTTagList;
-import net.minecraft.server.v1_14_R1.NBTTagString;
+import net.minecraft.server.v1_15_R1.NBTTagList;
+import net.minecraft.server.v1_15_R1.NBTTagString;
 import org.jetbrains.annotations.NotNull;
 
 /*******************************************************
@@ -79,7 +79,7 @@ public class NBTStringList implements List<String> {
 
   @Override
   public boolean add(final String element) {
-    return nmsList.add(new NBTTagString(element));
+    return nmsList.add(NBTTagString.a(element));
   }
 
   @Override
@@ -132,12 +132,12 @@ public class NBTStringList implements List<String> {
 
   @Override
   public String set(final int index, final String element) {
-    return nmsList.set(index, new NBTTagString(element)).asString();
+    return nmsList.set(index, NBTTagString.a(element)).asString();
   }
 
   @Override
   public void add(final int index, final String element) {
-    nmsList.add(index, new NBTTagString(element));
+    nmsList.add(index, NBTTagString.a(element));
   }
 
   @Override

@@ -2,10 +2,10 @@ package de.lalaland.core.modules.mobs.custommobs.zombie;
 
 import de.lalaland.core.modules.mobs.custommobs.ComplexModelFactory;
 import de.lalaland.core.modules.mobs.modeledentities.MobModelManager;
-import net.minecraft.server.v1_14_R1.World;
+import net.minecraft.server.v1_15_R1.World;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftArmorStand;
+import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftArmorStand;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 

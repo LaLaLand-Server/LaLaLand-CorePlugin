@@ -4,10 +4,10 @@ import de.lalaland.core.modules.mobs.modeledentities.MobModelManager;
 import de.lalaland.core.modules.mobs.modeledentities.bipiped.BipipedModel;
 import de.lalaland.core.modules.mobs.modeledentities.bipiped.IBiPiped;
 import java.util.UUID;
-import net.minecraft.server.v1_14_R1.EntityArmorStand;
-import net.minecraft.server.v1_14_R1.EnumMoveType;
-import net.minecraft.server.v1_14_R1.Vec3D;
-import net.minecraft.server.v1_14_R1.World;
+import net.minecraft.server.v1_15_R1.EntityArmorStand;
+import net.minecraft.server.v1_15_R1.EnumMoveType;
+import net.minecraft.server.v1_15_R1.Vec3D;
+import net.minecraft.server.v1_15_R1.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 

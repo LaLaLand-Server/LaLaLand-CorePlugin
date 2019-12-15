@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
 @AllArgsConstructor
 public enum BaseTool implements BaseItemProvider {
 
-  WOODEN_PICKAXE("Holz Spitzhacke", JobType.MINER, 5D, 1, 200, Model.RED_X),
+  WOODEN_PICKAXE("Holz Spitzhacke", JobType.MINING, 5D, 1, 200, Model.RED_X),
   WOODEN_WOODCUTTING_AXE("Holz Axt", JobType.WOODCUTTER, 5D, 1, 200, Model.RED_X),
   WOODEN_SPADE("Holz Spaten", JobType.HERBLORE, 5D, 1, 200, Model.RED_X);
 

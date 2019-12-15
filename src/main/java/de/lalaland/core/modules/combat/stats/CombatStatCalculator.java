@@ -70,6 +70,8 @@ public class CombatStatCalculator {
       mergeStats(StatItem.of(item), statMap);
     }
 
+    holder.applyStatBuffs(statMap);
+
     statMap.forEach((stat, value) -> holder.setExtraValue(stat, value));
   }
 
@@ -100,6 +102,8 @@ public class CombatStatCalculator {
       }
       mergeStats(StatItem.of(item), statMap);
     }
+
+    holder.applyStatBuffs(statMap);
 
     statMap.forEach((stat, value) -> holder.setExtraValue(stat, value));
   }
