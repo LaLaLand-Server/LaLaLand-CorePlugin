@@ -5,10 +5,9 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
-import com.google.common.collect.ImmutableMap;
 import de.lalaland.core.modules.combat.CombatModule;
+import de.lalaland.core.ui.Message;
 import de.lalaland.core.utils.common.UtilMath;
-import de.lalaland.core.utils.tuples.Pair;
 import org.bukkit.entity.Player;
 
 /*******************************************************
@@ -24,35 +23,53 @@ import org.bukkit.entity.Player;
 @CommandPermission("user")
 public class CombatStatsCommand extends BaseCommand {
 
-  public CombatStatsCommand(CombatModule module) {
-    this.combatStatManager = module.getCombatStatManager();
+  public CombatStatsCommand(final CombatModule module) {
+    combatStatManager = module.getCombatStatManager();
   }
 
   private final CombatStatManager combatStatManager;
 
   @Default
-  public void onStatsCommand(Player sender) {
+  public void onStatsCommand(final Player sender) {
     // TODO open GUI with stats
   }
 
+  @Subcommand("mana show")
+  public void onMana(final Player sender) {
+    final CombatStatHolder holder = combatStatManager.getCombatStatHolder(sender);
+    final int maxMana = (int) holder.getStatValue(CombatStat.MANA);
+    final int mana = holder.getMana();
+    Message.send(sender, CombatModule.class, "" + mana + " / " + maxMana + " Mana");
+  }
+
+  @Subcommand("mana remove")
+  public void onManaRemove(final Player sender, final int amount) {
+    final CombatStatHolder holder = combatStatManager.getCombatStatHolder(sender);
+    holder.removeMana(amount);
+  }
+
+  @Subcommand("mana add")
+  public void onManaShow(final Player sender, final int amount) {
+    final CombatStatHolder holder = combatStatManager.getCombatStatHolder(sender);
+    holder.addMana(amount);
+  }
+
   @Subcommand("chat")
-  public void onStatsChat(Player sender) {
-    CombatStatHolder holder = this.combatStatManager.getCombatStatHolder(sender);
-    Pair<ImmutableMap<CombatStat, Double>, ImmutableMap<CombatStat, Double>> maps = holder
-        .getValueMappings();
+  public void onStatsChat(final Player sender) {
+    final CombatStatHolder holder = combatStatManager.getCombatStatHolder(sender);
 
     sender.sendMessage("§eKampf Stats: ");
 
-    for (CombatStat stat : CombatStat.values()) {
-      double baseValue = maps.getLeft().getOrDefault(stat, 0D);
-      double fullValue = maps.getRight().getOrDefault(stat, 0D);
-      double delta = fullValue - baseValue;
+    for (final CombatStat stat : CombatStat.values()) {
+      double baseValue = holder.getStatBaseValue(stat);
+      double extraValue = holder.getStatExtraValue(stat);
+      double fullValue = baseValue + extraValue;
       baseValue = UtilMath.cut(baseValue, 1);
+      extraValue = UtilMath.cut(extraValue, 1);
       fullValue = UtilMath.cut(fullValue, 1);
-      delta = UtilMath.cut(delta, 1);
 
-      String line =
-          "§f- " + "§9" + stat.getDisplayName() + " §f>> §e" + fullValue + " [§7" + baseValue + " + " + delta
+      final String line =
+          "§f- " + "§9" + stat.getDisplayName() + " §f>> §e" + fullValue + " [§7" + baseValue + " + " + extraValue
               + "§e]";
       sender.sendMessage(line);
     }

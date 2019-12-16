@@ -1,17 +1,20 @@
 package de.lalaland.core.modules.combat.stats;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.gson.JsonObject;
 import de.lalaland.core.modules.combat.stats.buffs.Buff;
 import de.lalaland.core.modules.combat.stats.buffs.BuffEnvironment;
 import de.lalaland.core.modules.combat.stats.buffs.BuffType;
 import de.lalaland.core.modules.combat.stats.buffs.CombatBuff;
 import de.lalaland.core.modules.combat.stats.buffs.StatBuff;
-import de.lalaland.core.utils.tuples.Pair;
+import de.lalaland.core.modules.skills.holder.SkillHolder;
+import de.lalaland.core.modules.skills.skillimpl.SkillTrigger;
+import de.lalaland.core.modules.skills.skillimpl.SkillType;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +30,7 @@ import org.bukkit.entity.Player;
  * permission of the owner.
  *
  */
-public class CombatStatHolder {
+public class CombatStatHolder implements SkillHolder {
 
   protected CombatStatHolder(final LivingEntity bukkitEntity, final CombatStatCalculator combatStatCalculator) {
     this.bukkitEntity = bukkitEntity;
@@ -41,6 +44,7 @@ public class CombatStatHolder {
     this.combatStatCalculator = combatStatCalculator;
     combatBuffMap = new EnumMap<>(BuffType.class);
     statBuffMap = new EnumMap<>(BuffType.class);
+    skillContainer = new SkillContainer(this);
   }
 
   @Setter(AccessLevel.PROTECTED)
@@ -55,6 +59,33 @@ public class CombatStatHolder {
   private final CombatStatCalculator combatStatCalculator;
   private final EnumMap<BuffType, CombatBuff> combatBuffMap;
   private final EnumMap<BuffType, StatBuff> statBuffMap;
+  private final SkillContainer skillContainer;
+  @Getter
+  private int mana = 0;
+
+  public void removeMana(final int amount) {
+    mana -= amount;
+    if (mana < 0) {
+      mana = 0;
+    }
+  }
+
+  public void addMana(final int amount) {
+    mana += amount;
+    final int maxMana = (int) getStatValue(CombatStat.MANA);
+    if (mana > maxMana) {
+      mana = maxMana;
+    }
+  }
+
+  public void applyIfPlayerOnline(final Consumer<Player> playerConsumer) {
+    if (isHuman()) {
+      final Player player = (Player) bukkitEntity;
+      if (player.isOnline()) {
+        playerConsumer.accept(player);
+      }
+    }
+  }
 
   public void applyCombatBuffs(final CombatContext combatContext, final boolean asAttacker) {
     for (final CombatBuff cBuff : combatBuffMap.values()) {
@@ -145,18 +176,6 @@ public class CombatStatHolder {
   }
 
   /**
-   * This will return a Pair of two Maps. The first map includes a copy of the base values of this holder. The second map includes a copy of
-   * the complete calculated combat map.
-   * <p>
-   * Those Maps do not have any reflective impact on the base maps.
-   *
-   * @return a pair of two ImmutableMaps
-   */
-  public Pair<ImmutableMap<CombatStat, Double>, ImmutableMap<CombatStat, Double>> getValueMappings() {
-    return Pair.of(ImmutableMap.copyOf(baseValues), ImmutableMap.copyOf(combatStatMappings));
-  }
-
-  /**
    * Rebases a new value of a stat.
    *
    * @param stat  the stat
@@ -191,6 +210,49 @@ public class CombatStatHolder {
     for (final Buff remover : removers) {
       remover.remove();
     }
+  }
+
+  @Override
+  public void castSkills(final SkillTrigger skillTrigger) {
+    skillContainer.castAll(skillTrigger);
+  }
+
+  @Override
+  public void addSkill(final SkillType skillType, final int lvl) {
+    skillContainer.addSkill(skillType, lvl);
+  }
+
+  @Override
+  public void removeSkill(final SkillType skillType) {
+    skillContainer.removeSkill(skillType);
+  }
+
+  @Override
+  public void levelupSkill(final SkillType skillType) {
+    skillContainer.levelUp(skillType);
+  }
+
+  @Override
+  public int getSkillLevel(final SkillType skillType) {
+    return skillContainer.getSkillLevel(skillType);
+  }
+
+  @Override
+  public boolean canLevelUp(final SkillType skillType) {
+    return skillContainer.canLevelUp(skillType);
+  }
+
+  @Override
+  public JsonObject serializeSkills() {
+    final JsonObject json = skillContainer.serialize();
+    json.addProperty("Mana", mana);
+    return json;
+  }
+
+  @Override
+  public void deserializeSkills(final JsonObject skillJson) {
+    mana = skillJson.get("Mana").getAsInt();
+    skillContainer.deserialize(skillJson);
   }
 
 }

@@ -18,6 +18,7 @@ import de.lalaland.core.modules.protection.ProtectionModule;
 import de.lalaland.core.modules.recipe.RecipeModule;
 import de.lalaland.core.modules.resourcepack.ResourcepackModule;
 import de.lalaland.core.modules.schematics.SchematicModule;
+import de.lalaland.core.modules.skills.SkillModule;
 import de.lalaland.core.modules.structures.StructureModule;
 import de.lalaland.core.tasks.TaskManager;
 import de.lalaland.core.ui.Message;
@@ -100,6 +101,7 @@ public class CorePlugin extends JavaPlugin {
         .put(ResourcepackModule.class, new ResourcepackModule())
         .put(JobModule.class, new JobModule())
         .put(CombatModule.class, new CombatModule())
+        .put(SkillModule.class, new SkillModule())
         .put(MobModule.class, new MobModule())
         .put(ProtectionModule.class, new ProtectionModule())
         .put(SchematicModule.class, new SchematicModule())
