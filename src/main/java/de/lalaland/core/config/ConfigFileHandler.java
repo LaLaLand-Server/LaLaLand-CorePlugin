@@ -2,7 +2,9 @@ package de.lalaland.core.config;
 
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.io.IReader;
+import de.lalaland.core.io.IWriter;
 import de.lalaland.core.io.gson.GsonFileReader;
+import de.lalaland.core.io.gson.GsonFileWriter;
 
 /*******************************************************
  * Copyright (C) 2015-2019 Piinguiin neuraxhd@gmail.com
@@ -26,6 +28,11 @@ public class ConfigFileHandler {
     final IReader reader = new GsonFileReader(corePlugin, corePlugin.getDataFolder(), "config");
     final Config defaultConfig = Config.getDefaultConfig();
     return (Config) reader.read(Config.class, defaultConfig);
+  }
+
+  public void saveConfig(){
+    final IWriter writer = new GsonFileWriter(corePlugin, corePlugin.getDataFolder(),"config");
+    writer.write(corePlugin.getCoreConfig());
   }
 
 }

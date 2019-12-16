@@ -1,8 +1,12 @@
 package de.lalaland.core.config;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 /*******************************************************
  * Copyright (C) 2015-2019 Piinguiin neuraxhd@gmail.com
@@ -28,10 +32,17 @@ public class Config {
   @Getter
   @SerializedName("FillGuis")
   private final boolean fillGuis;
+  @Getter
+  @Setter
+  @SerializedName("MaintenanceEnabled")
+  private boolean maintenanceEnabled;
+  @Getter
+  @SerializedName("MaintenanceUUIDs")
+  private final List<UUID> maintenanceUUIDs;
 
   static Config getDefaultConfig() {
     return new Config(false,
-        5, 10, true);
+        5, 10, true,false,new ArrayList<>());
   }
 
 }
