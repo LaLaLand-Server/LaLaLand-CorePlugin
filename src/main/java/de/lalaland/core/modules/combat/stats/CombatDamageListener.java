@@ -3,6 +3,7 @@ package de.lalaland.core.modules.combat.stats;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import de.lalaland.core.CorePlugin;
+import de.lalaland.core.modules.combat.api.EntityKillEntityEvent;
 import de.lalaland.core.modules.combat.items.StatItem;
 import de.lalaland.core.modules.combat.items.WeaponType;
 import de.lalaland.core.utils.UtilModule;
@@ -354,6 +355,7 @@ public class CombatDamageListener implements Listener {
     double healthLeft = defenderLiving.getHealth() - context.getDamage();
     if (healthLeft <= 0) {
       healthLeft = 0;
+      new EntityKillEntityEvent(context).callEvent();
     }
     defenderLiving.setHealth(healthLeft);
 

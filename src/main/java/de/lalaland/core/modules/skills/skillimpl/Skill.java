@@ -3,6 +3,7 @@ package de.lalaland.core.modules.skills.skillimpl;
 import de.lalaland.core.modules.combat.stats.CombatStatHolder;
 import de.lalaland.core.modules.skills.SkillModule;
 import de.lalaland.core.ui.Message;
+import java.util.List;
 import lombok.Getter;
 import net.crytec.libs.commons.utils.UtilMath;
 
@@ -63,6 +64,10 @@ public abstract class Skill {
 
   }
 
+  protected boolean canCast() {
+    return true;
+  }
+
   public void cast() {
     if (canCast()) {
       final long cdLeft = getCooldownLeft();
@@ -86,13 +91,10 @@ public abstract class Skill {
 
   public abstract long getCooldownms();
 
-  // TODO implement mana cost in CombatStatHolder
   public abstract int getManaCost();
 
   protected abstract void onCast();
 
-  protected boolean canCast() {
-    return true;
-  }
+  public abstract List<String> getDescription(final CombatStatHolder caster);
 
 }
