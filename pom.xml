@@ -6,7 +6,7 @@
 
   <groupId>de.lalaland</groupId>
   <artifactId>coreplugin</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -119,7 +119,7 @@
           <source>11</source>
           <target>11</target>
           <compilerArgs>
-              <arg>-parameters</arg>
+            <arg>-parameters</arg>
           </compilerArgs>
           <forceJavacCompilerUse>true</forceJavacCompilerUse>
         </configuration>
