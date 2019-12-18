@@ -6,6 +6,7 @@ import de.lalaland.core.config.ConfigFileHandler;
 import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
+import org.bukkit.event.player.PlayerLoginEvent;
 
 public class MaintenanceManager {
 
@@ -19,7 +20,7 @@ public class MaintenanceManager {
   @Getter
   private boolean maintenanceEnabled;
 
-  public MaintenanceManager(final CorePlugin corePlugin){
+  public MaintenanceManager(final CorePlugin corePlugin) {
     this.corePlugin = corePlugin;
     final Config config = corePlugin.getCoreConfig();
     acceptedUuids = config.getMaintenanceUUIDs();
@@ -32,9 +33,9 @@ public class MaintenanceManager {
     configFileHandler.saveConfig();
   }
 
-  public void addAcceptedUUID(final UUID uuid){
+  public void addAcceptedUUID(final UUID uuid) {
 
-    if(isAccepted(uuid)){
+    if (isAccepted(uuid)) {
       return;
     }
 
@@ -43,9 +44,9 @@ public class MaintenanceManager {
     configFileHandler.saveConfig();
   }
 
-  public void removeAcceptedUUID(final UUID uuid){
+  public void removeAcceptedUUID(final UUID uuid) {
 
-    if(!isAccepted(uuid)){
+    if (!isAccepted(uuid)) {
       return;
     }
 
@@ -54,11 +55,11 @@ public class MaintenanceManager {
     configFileHandler.saveConfig();
   }
 
-  public boolean isAccepted(final UUID uuid){
+  public boolean isAccepted(final UUID uuid) {
     return acceptedUuids.contains(uuid);
   }
 
-  public void preventJoin(final PlayerLoginEvent loginEvent){
+  public void preventJoin(final PlayerLoginEvent loginEvent) {
 
   }
 
