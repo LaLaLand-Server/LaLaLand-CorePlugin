@@ -6,9 +6,13 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import de.lalaland.core.modules.combat.CombatModule;
-import de.lalaland.core.ui.Message;
+import de.lalaland.core.utils.Message;
 import de.lalaland.core.utils.common.UtilMath;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.util.RayTraceResult;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -32,6 +36,16 @@ public class CombatStatsCommand extends BaseCommand {
   @Default
   public void onStatsCommand(final Player sender) {
     // TODO open GUI with stats
+  }
+
+  @Subcommand("damage")
+  public void onDamage(final Player sender, final DamageCause type, final double amount) {
+    final RayTraceResult trace = sender.getWorld().rayTraceEntities(sender.getLocation(), sender.getLocation().getDirection(), 12, e -> {
+      return e.getType() != EntityType.PLAYER;
+    });
+    if (trace != null && trace.getHitEntity() != null) {
+      final EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(sender, trace.getHitEntity(), type, amount);
+    }
   }
 
   @Subcommand("mana show")

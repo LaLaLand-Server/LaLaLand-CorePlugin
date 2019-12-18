@@ -2,7 +2,7 @@ package de.lalaland.core.modules.jobs.jobdata;
 
 import com.google.gson.JsonObject;
 import de.lalaland.core.modules.jobs.JobModule;
-import de.lalaland.core.ui.Message;
+import de.lalaland.core.utils.Message;
 import de.lalaland.core.utils.common.UtilPlayer;
 import java.util.UUID;
 import lombok.Getter;

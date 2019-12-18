@@ -33,7 +33,10 @@ public class SkillTriggerListener implements Listener {
 
   @EventHandler
   public void onDeath(final EntityDeathEvent event) {
-    combatStatManager.getCombatStatHolder(event.getEntity()).castSkills(SkillTrigger.DEATH);
+    final CombatStatHolder holder = combatStatManager.getCombatStatHolder(event.getEntity());
+    if (holder != null) {
+      holder.castSkills(SkillTrigger.DEATH);
+    }
   }
 
   @EventHandler
@@ -41,10 +44,13 @@ public class SkillTriggerListener implements Listener {
     if (!(event.getEntity() instanceof LivingEntity)) {
       return;
     }
-    if (!(event.getCause() != DamageCause.FALL)) {
+    if (event.getCause() != DamageCause.FALL) {
       return;
     }
-    combatStatManager.getCombatStatHolder((LivingEntity) event.getEntity()).castSkills(SkillTrigger.FALL);
+    final CombatStatHolder holder = combatStatManager.getCombatStatHolder((LivingEntity) event.getEntity());
+    if (holder != null) {
+      holder.castSkills(SkillTrigger.FALL);
+    }
   }
 
   @EventHandler

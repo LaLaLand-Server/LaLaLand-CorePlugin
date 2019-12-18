@@ -1,4 +1,4 @@
-package de.lalaland.core.ui;
+package de.lalaland.core.utils;
 
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;

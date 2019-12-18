@@ -8,7 +8,7 @@ import co.aikar.commands.annotation.Subcommand;
 import de.lalaland.core.modules.schematics.SchematicModule;
 import de.lalaland.core.modules.schematics.core.Schematic;
 import de.lalaland.core.modules.schematics.core.SchematicManager;
-import de.lalaland.core.ui.Message;
+import de.lalaland.core.utils.Message;
 import de.lalaland.core.utils.tuples.Pair;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

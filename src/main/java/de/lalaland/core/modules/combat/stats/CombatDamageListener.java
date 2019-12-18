@@ -19,6 +19,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -63,15 +64,15 @@ public class CombatDamageListener implements Listener {
       .put(DamageCause.ENTITY_EXPLOSION, 6.5D)
       .put(DamageCause.FALL, 2.5D)
       .put(DamageCause.FALLING_BLOCK, 3.5D)
-      .put(DamageCause.FIRE, 5.0D)
-      .put(DamageCause.FIRE_TICK, 2.5D)
+      .put(DamageCause.FIRE, 9.0D)
+      .put(DamageCause.FIRE_TICK, 4.5D)
       .put(DamageCause.FLY_INTO_WALL, 25.0D)
-      .put(DamageCause.HOT_FLOOR, 3.5D)
+      .put(DamageCause.HOT_FLOOR, 6.5D)
       .put(DamageCause.LAVA, 12.0D)
-      .put(DamageCause.LIGHTNING, 20.0D)
+      .put(DamageCause.LIGHTNING, 25.0D)
       .put(DamageCause.MAGIC, 5.0D)
       .put(DamageCause.MELTING, 3.33D)
-      .put(DamageCause.POISON, 1.0D)
+      .put(DamageCause.POISON, 2.5D)
       .put(DamageCause.PROJECTILE, 3.0D)
       .put(DamageCause.STARVATION, 5.0D)
       .put(DamageCause.SUFFOCATION, 4.5D)
@@ -112,12 +113,11 @@ public class CombatDamageListener implements Listener {
     final LivingEntity defenderLiving = (LivingEntity) defender;
 
     final CombatContext context = new CombatContext();
-    context.setDamage(event.getDamage() * ENVIRONMENTAL_BASE_PERCENTAGE.get(event.getCause()));
+    final double maxHealth = defenderLiving.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+    context.setDamage(event.getDamage() * ENVIRONMENTAL_BASE_PERCENTAGE.get(event.getCause()) * (maxHealth / 100D));
     context.setCause(event.getCause());
-    context.setDamage(defenderLiving.getHealth() / 100D * context.getDamage());
 
-    final CombatStatHolder holderDefender = combatStatManager
-        .getCombatStatHolder(defender.getUniqueId());
+    final CombatStatHolder holderDefender = combatStatManager.getCombatStatHolder(defender.getUniqueId());
 
     context.setDefenderHolder(holderDefender);
 
@@ -132,6 +132,7 @@ public class CombatDamageListener implements Listener {
       healthLeft = 0;
     }
 
+    createDamageHologram(defender, context.isCrit(), context.getDamage(), CombatDamageType.ofBukkit(event.getCause()));
     defenderLiving.setHealth(healthLeft);
 
     final List<Entity> pass = defenderLiving.getPassengers();
@@ -347,10 +348,7 @@ public class CombatDamageListener implements Listener {
 
     context.setDamage(UtilMath.cut(context.getDamage(), 1));
 
-    if (isPlayerAttacker) {
-      final Player attackerPlayer = (Player) attacker;
-      createDamageHologram(attackerPlayer, defender, context.isCrit(), context.getDamage());
-    }
+    createDamageHologram(defender, context.isCrit(), context.getDamage(), CombatDamageType.ofBukkit(event.getCause()));
 
     double healthLeft = defenderLiving.getHealth() - context.getDamage();
     if (healthLeft <= 0) {
@@ -373,13 +371,10 @@ public class CombatDamageListener implements Listener {
 
   }
 
-  private void createDamageHologram(final Player attackerPlayer, final Entity def,
-      final boolean crit, final double dmg) {
-    final String holoMsg = (crit ? "§c" : "§e") + dmg;
+  private void createDamageHologram(final Entity def, final boolean crit, final double dmg, final CombatDamageType damageType) {
+    final String holoMsg = (crit ? "§c" : "§e") + UtilMath.cut(dmg, 1) + " " + damageType.getIndicator();
     final Location defLoc = def.getLocation().clone().add(0, 0.5, 0);
-    final Vector directionAdjustVec = attackerPlayer.getLocation().getDirection().clone()
-        .multiply(BASE_SCALAR_XZ).normalize().multiply(0.05);
-    final Vector holoVel = BASE_HOLOGRAM_VELOCITY.clone().add(directionAdjustVec);
+    final Vector holoVel = BASE_HOLOGRAM_VELOCITY.clone();
     final MovingHologram moving = hologramManager
         .createMovingHologram(defLoc, holoVel, HOLOGRAM_LIFE_TICKS);
     moving.getHologram().appendTextLine(holoMsg);

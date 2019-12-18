@@ -7,7 +7,7 @@ import de.lalaland.core.modules.jobs.JobModule;
 import de.lalaland.core.modules.jobs.jobdata.JobDataManager;
 import de.lalaland.core.modules.jobs.jobdata.JobHolder;
 import de.lalaland.core.modules.jobs.jobdata.JobType;
-import de.lalaland.core.ui.Message;
+import de.lalaland.core.utils.Message;
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
 

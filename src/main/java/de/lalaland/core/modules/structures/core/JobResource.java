@@ -8,8 +8,8 @@ import de.lalaland.core.modules.jobs.jobdata.JobHolder;
 import de.lalaland.core.modules.jobs.jobdata.JobType;
 import de.lalaland.core.modules.protection.regions.ProtectedRegion;
 import de.lalaland.core.modules.schematics.core.Schematic;
-import de.lalaland.core.ui.Message;
 import de.lalaland.core.user.UserManager;
+import de.lalaland.core.utils.Message;
 import de.lalaland.core.utils.actionbar.ActionBarBoard;
 import de.lalaland.core.utils.actionbar.ActionBarBoard.Section;
 import de.lalaland.core.utils.actionbar.ActionBarManager;
@@ -200,7 +200,9 @@ public class JobResource extends Structure implements Healthed, Comparable<JobRe
     mov.getHologram().appendTextLine("§e-" + dmg);
 
     if (isDepleted()) {
+      // TODO play break sound / add break sound to resource enum
       jobHolder.getJobData(jobType).addExp(resource.getJobExp());
+      resource.drop(player.getInventory(), player.getLocation());
     }
   }
 

@@ -5,6 +5,7 @@ import com.google.common.collect.TreeRangeMap;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.resourcepack.skins.Model;
 import de.lalaland.core.utils.nbtapi.NBTItem;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
@@ -21,6 +22,9 @@ import org.bukkit.inventory.ItemStack;
  */
 public class MoneyDropManager {
 
+  @Getter
+  private static MoneyDropManager instance;
+
   public MoneyDropManager(final CorePlugin plugin) {
     moneyDropModels = TreeRangeMap.create();
     moneyKey = "_MONEY";
@@ -33,6 +37,7 @@ public class MoneyDropManager {
     moneyDropModels.put(Range.openClosed(20000, 250000), Model.COINPILE_BAR_SMALL);
     moneyDropModels.put(Range.openClosed(250000, 1000000), Model.COINPILE_BAR_MEDIUM);
     moneyDropModels.put(Range.atLeast(1000000), Model.COINPILE_BAR_BIG);
+    instance = this;
   }
 
   private final TreeRangeMap<Integer, Model> moneyDropModels;

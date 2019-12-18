@@ -2,7 +2,7 @@ package de.lalaland.core.modules.chat.listeners;
 
 import de.lalaland.core.modules.chat.channels.ChatChannel;
 import de.lalaland.core.modules.chat.channels.ChatChannelManager;
-import de.lalaland.core.ui.Message;
+import de.lalaland.core.utils.Message;
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

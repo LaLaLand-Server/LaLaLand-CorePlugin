@@ -96,6 +96,12 @@
       <artifactId>protocolAPI</artifactId>
       <version>1.1.0</version>
     </dependency>
+    <!--SmartInventoryAPI-->
+    <dependency>
+      <groupId>net.crytec.libs</groupId>
+      <artifactId>InventoryAPI</artifactId>
+      <version>1.1.1</version>
+    </dependency>
   </dependencies>
 
   <build>

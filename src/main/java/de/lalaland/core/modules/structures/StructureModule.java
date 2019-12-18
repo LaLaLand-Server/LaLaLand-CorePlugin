@@ -3,10 +3,13 @@ package de.lalaland.core.modules.structures;
 import com.google.common.collect.Lists;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
+import de.lalaland.core.modules.loot.tables.LootTableManager;
 import de.lalaland.core.modules.protection.ProtectionModule;
 import de.lalaland.core.modules.protection.regions.RegionManager;
 import de.lalaland.core.modules.schematics.SchematicModule;
 import de.lalaland.core.modules.schematics.core.SchematicManager;
+import de.lalaland.core.modules.structures.core.ResourceLoot;
+import de.lalaland.core.modules.structures.core.ResourceType;
 import de.lalaland.core.modules.structures.core.StructureCommand;
 import de.lalaland.core.modules.structures.core.StructureListener;
 import de.lalaland.core.modules.structures.core.StructureManager;
@@ -26,6 +29,13 @@ public class StructureModule implements IModule {
 
   private StructureManager structureManager;
 
+  private void registerResourceLoot() {
+    final LootTableManager lootTableManager = LootTableManager.getInstance();
+    for (final ResourceType resourceType : ResourceType.values()) {
+      lootTableManager.addTableCollection(resourceType.toString(), ResourceLoot.of(resourceType).get());
+    }
+  }
+
   @Override
   public String getModuleName() {
     return "StructureModule";
@@ -33,6 +43,7 @@ public class StructureModule implements IModule {
 
   @Override
   public void enable(final CorePlugin plugin) throws Exception, Exception {
+    registerResourceLoot();
     final RegionManager regionManager = plugin.getModule(ProtectionModule.class).getRegionManager();
     structureManager = new StructureManager(plugin);
     final SchematicManager schematicManager = plugin.getModule(SchematicModule.class).getSchematicManager();

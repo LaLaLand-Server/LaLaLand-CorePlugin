@@ -23,7 +23,7 @@ public enum CombatStat {
   HEALTH("Lebenspunkte", 100, 1, 5E4D,
       false, Model.HEALTH_ICON, Lists.newArrayList("§7Erhöht deine Trefferpunkte.")),
   MANA("Mana", 100, 1, 5E4D,
-      false, Model.RED_X, Lists.newArrayList("§7Erhöht deine Manapunkte.")),
+      false, Model.MANA_ICON, Lists.newArrayList("§7Erhöht deine Manapunkte.")),
   MEELE_DAMAGE("Nahkampfschaden", 5, 0.5, 2E4,
       false, Model.MEELE_DAMAGE_ICON, Lists.newArrayList("§7Erhöht deinen Schaden mit", "§7allen Nahkampfwaffen.")),
   RANGE_DAMAGE("Fernkampfschaden", 4, 0.5, 2E4D,
