@@ -3,7 +3,6 @@ package de.lalaland.core.utils;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
 import de.lalaland.core.utils.actionbar.ActionBarManager;
-import de.lalaland.core.utils.anvilgui.AnvilGUI;
 import de.lalaland.core.utils.common.UtilChunk;
 import de.lalaland.core.utils.common.UtilPlayer;
 import de.lalaland.core.utils.holograms.impl.HologramManager;
@@ -13,6 +12,7 @@ import de.lalaland.core.utils.items.display.ItemDisplayCompiler;
 import de.lalaland.core.utils.packets.adapter.ChunkTracker;
 import de.lalaland.core.utils.packets.adapter.EntityTracker;
 import lombok.Getter;
+import net.crytec.inventoryapi.anvil.AnvilGUI;
 import net.crytec.libs.protocol.ProtocolAPI;
 import net.crytec.libs.protocol.npc.NpcAPI;
 import net.crytec.libs.protocol.skinclient.PlayerSkinManager;
@@ -45,7 +45,6 @@ public class UtilModule implements IModule {
 
   @Override
   public void enable(final CorePlugin plugin) throws Exception {
-    AnvilGUI.initialize(plugin);
     ChunkTracker.init(plugin, plugin.getProtocolManager());
     EntityTracker.init(plugin, plugin.getProtocolManager());
     UtilChunk.init(plugin);

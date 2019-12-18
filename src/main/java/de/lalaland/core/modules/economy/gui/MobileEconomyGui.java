@@ -1,8 +1,8 @@
 package de.lalaland.core.modules.economy.gui;
 
 import de.lalaland.core.CorePlugin;
-import de.lalaland.core.utils.anvilgui.AnvilGUI;
 import lombok.Getter;
+import net.crytec.inventoryapi.anvil.AnvilGUI;
 import org.bukkit.entity.Player;
 
 public class MobileEconomyGui {

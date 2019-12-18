@@ -31,6 +31,8 @@ import de.lalaland.core.utils.items.display.ItemDisplayCompiler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
+import net.crytec.inventoryapi.InventoryAPI;
+import net.crytec.inventoryapi.SmartInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /*******************************************************
@@ -80,6 +82,7 @@ public class CorePlugin extends JavaPlugin {
 
   private void init() {
     BukkitTime.start(this);
+    new InventoryAPI(this);
     Message.init(this);
     gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     coreConfig = new ConfigFileHandler(this).createIfNotExists();
@@ -88,7 +91,6 @@ public class CorePlugin extends JavaPlugin {
     userManager = new UserManager(this);
     commandManager = new PaperCommandManager(this);
     moduleMap = new Object2ObjectLinkedOpenHashMap<>();
-
   }
 
   private void enableModules() {
