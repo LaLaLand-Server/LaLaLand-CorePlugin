@@ -7,7 +7,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import de.lalaland.core.modules.resourcepack.ResourcepackModule;
-import de.lalaland.core.ui.Message;
+import de.lalaland.core.utils.Message;
 import de.lalaland.core.utils.common.UtilMath;
 import org.bukkit.entity.Player;
 

@@ -13,6 +13,7 @@ import de.lalaland.core.modules.chat.ChatModule;
 import de.lalaland.core.modules.combat.CombatModule;
 import de.lalaland.core.modules.economy.EconomyModule;
 import de.lalaland.core.modules.jobs.JobModule;
+import de.lalaland.core.modules.loot.LootModule;
 import de.lalaland.core.modules.mobs.MobModule;
 import de.lalaland.core.modules.protection.ProtectionModule;
 import de.lalaland.core.modules.recipe.RecipeModule;
@@ -21,9 +22,8 @@ import de.lalaland.core.modules.schematics.SchematicModule;
 import de.lalaland.core.modules.skills.SkillModule;
 import de.lalaland.core.modules.structures.StructureModule;
 import de.lalaland.core.tasks.TaskManager;
-import de.lalaland.core.ui.Message;
-import de.lalaland.core.ui.gui.manager.GuiManager;
 import de.lalaland.core.user.UserManager;
+import de.lalaland.core.utils.Message;
 import de.lalaland.core.utils.UtilModule;
 import de.lalaland.core.utils.common.BukkitTime;
 import de.lalaland.core.utils.common.UtilMath;
@@ -59,8 +59,6 @@ public class CorePlugin extends JavaPlugin {
   @Getter
   @Setter
   private ItemDisplayCompiler displayCompiler;
-  @Getter
-  private GuiManager guiManager;
 
   private Object2ObjectLinkedOpenHashMap<Class<? extends IModule>, IModule> moduleMap;
 
@@ -90,7 +88,6 @@ public class CorePlugin extends JavaPlugin {
     userManager = new UserManager(this);
     commandManager = new PaperCommandManager(this);
     moduleMap = new Object2ObjectLinkedOpenHashMap<>();
-    guiManager = new GuiManager(this);
 
   }
 
@@ -102,6 +99,7 @@ public class CorePlugin extends JavaPlugin {
         .put(JobModule.class, new JobModule())
         .put(CombatModule.class, new CombatModule())
         .put(SkillModule.class, new SkillModule())
+        .put(LootModule.class, new LootModule())
         .put(MobModule.class, new MobModule())
         .put(ProtectionModule.class, new ProtectionModule())
         .put(SchematicModule.class, new SchematicModule())

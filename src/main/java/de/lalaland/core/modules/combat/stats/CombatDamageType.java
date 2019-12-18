@@ -18,16 +18,18 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 @AllArgsConstructor
 public enum CombatDamageType {
 
-  PHYSICAL("Physischer Schaden", CombatStat.PHYSICAL_ARMOR),
-  MYSTIC("Mystischer Schaden", CombatStat.MYSTIC_ARMOR),
-  BIO("Biologischer Schaden", CombatStat.BIO_ARMOR);
+  PHYSICAL("Physischer Schaden", CombatStat.PHYSICAL_ARMOR, "§f" + (char) 0x2666),
+  MYSTIC("Mystischer Schaden", CombatStat.MYSTIC_ARMOR, "§9" + (char) 0x1F7C6),
+  BIO("Biologischer Schaden", CombatStat.BIO_ARMOR, "§2§l" + (char) 0x2623);
 
   @Getter
   private final String displayName;
   @Getter
   private final CombatStat defendingStat;
+  @Getter
+  private final String indicator;
 
-  public static CombatDamageType ofBukkit(DamageCause cause){
+  public static CombatDamageType ofBukkit(final DamageCause cause) {
     return VANILLA_MAPPINGS.get(cause);
   }
 

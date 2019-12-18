@@ -1,10 +1,14 @@
 package de.lalaland.core.modules.structures.core;
 
 import de.lalaland.core.modules.jobs.jobdata.JobType;
+import de.lalaland.core.modules.loot.tables.LootTableEntry;
+import de.lalaland.core.modules.loot.tables.LootTableManager;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -16,10 +20,9 @@ import org.bukkit.Material;
  *
  */
 @AllArgsConstructor
-public enum ResourceType {
+public enum ResourceType implements LootTableEntry {
 
-  OAK_TREE("Eichen Baum", 25, JobType.WOODCUTTER, 1, 4,
-      5, 30000L,
+  OAK_TREE("Eichen Baum", 25, JobType.WOODCUTTER, 1, 4, 5, 30000L,
       new Material[]{Material.OAK_LOG});
 
   private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
@@ -42,6 +45,16 @@ public enum ResourceType {
 
   public int getRandomSchematicIndex() {
     return RANDOM.nextInt(schematicCount);
+  }
+
+  @Override
+  public void drop(final Location location) {
+    LootTableManager.getInstance().getTableEntry(toString()).drop(location);
+  }
+
+  @Override
+  public void drop(final Inventory inventory, final Location location) {
+    LootTableManager.getInstance().getTableEntry(toString()).drop(inventory, location);
   }
 
 }

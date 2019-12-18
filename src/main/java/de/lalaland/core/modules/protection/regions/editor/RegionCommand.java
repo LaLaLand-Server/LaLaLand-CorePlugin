@@ -12,7 +12,7 @@ import de.lalaland.core.modules.protection.regions.RegionManager;
 import de.lalaland.core.modules.protection.regions.RegionRule;
 import de.lalaland.core.modules.protection.regions.Relation;
 import de.lalaland.core.modules.protection.regions.RuleSet;
-import de.lalaland.core.ui.Message;
+import de.lalaland.core.utils.Message;
 import java.util.Set;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -68,10 +68,10 @@ public class RegionCommand extends BaseCommand {
   }
 
   @Subcommand("test")
-  public void onRegionCreate(Player sender, int size) {
-    Block loc1 = sender.getLocation().getBlock().getRelative(size, size, size);
-    Block loc2 = sender.getLocation().getBlock().getRelative(-size, -size, -size);
-    ProtectedRegion region = this.regionManager.createRegion(loc1, loc2);
+  public void onRegionCreate(final Player sender, final int size) {
+    final Block loc1 = sender.getLocation().getBlock().getRelative(size, size, size);
+    final Block loc2 = sender.getLocation().getBlock().getRelative(-size, -size, -size);
+    final ProtectedRegion region = regionManager.createRegion(loc1, loc2);
     region.getRuleSet().applyRule(Relation.NEUTRAL, RegionRule.BLOCK_BREAK, Permit.DENY);
     region.getRuleSet().applyRule(Relation.NEUTRAL, RegionRule.BLOCK_PLACE, Permit.DENY);
     Message.send(sender, ProtectionModule.class, "Region wurde erstellt.");

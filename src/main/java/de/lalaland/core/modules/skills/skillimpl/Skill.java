@@ -2,7 +2,7 @@ package de.lalaland.core.modules.skills.skillimpl;
 
 import de.lalaland.core.modules.combat.stats.CombatStatHolder;
 import de.lalaland.core.modules.skills.SkillModule;
-import de.lalaland.core.ui.Message;
+import de.lalaland.core.utils.Message;
 import java.util.List;
 import lombok.Getter;
 import net.crytec.libs.commons.utils.UtilMath;

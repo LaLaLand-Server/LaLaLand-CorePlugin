@@ -4,7 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Subcommand;
 import de.lalaland.core.modules.mobs.MobModule;
-import de.lalaland.core.ui.Message;
+import de.lalaland.core.utils.Message;
 import org.bukkit.entity.Player;
 
 /*******************************************************

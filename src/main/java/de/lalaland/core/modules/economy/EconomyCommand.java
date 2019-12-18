@@ -4,7 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Subcommand;
 import de.lalaland.core.modules.economy.dropapi.MoneyDropManager;
-import de.lalaland.core.ui.Message;
+import de.lalaland.core.utils.Message;
 import lombok.AllArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
