@@ -18,15 +18,11 @@ import lombok.Data;
  *
  *******************************************************/
 
+//TODO Klasse komplett verwerfen und ordentliche Subklassen serialisieren
 @Data
 @AllArgsConstructor
 public class UserData {
 
-  public static long[] NEED_EXP_LEVEL = new long[]{0, 100, 250, 575, 1050, 2250, 5000, 7500, 10000,
-      150000};
-
-  private int level;
-  private long exp;
   private int moneyOnHand;
   private int moneyOnBank;
   private List<OfflineMessage> offlineMessages = Lists.newArrayList();
@@ -38,26 +34,6 @@ public class UserData {
 
   public void addZoneDiscovery(final WorldZone zone) {
     discovoredZones.add(zone);
-  }
-
-  public boolean canLevelup() {
-    return exp >= getNeedExp();
-  }
-
-  public void increaseLevel() {
-    level += 1;
-  }
-
-  public void addExp(final long amount) {
-    exp += amount;
-  }
-
-  public boolean isMaxLevel() {
-    return level >= NEED_EXP_LEVEL.length;
-  }
-
-  public long getNeedExp() {
-    return NEED_EXP_LEVEL[level];
   }
 
 }

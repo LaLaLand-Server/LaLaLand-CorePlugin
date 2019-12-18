@@ -17,7 +17,8 @@ import java.util.function.Supplier;
 public class ResourceLoot {
 
   public static void init() {
-
+    // TODO set loot of resources
+    RESOURCE_LOOT_MAP.put(ResourceType.OAK_TREE, () -> EMPTY_ENTRY);
   }
 
   private static final LootTableEntry EMPTY_ENTRY = LootTable.builder().get();

@@ -23,6 +23,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -34,6 +35,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.Vector;
 
 /*******************************************************
@@ -74,6 +77,14 @@ public class UtilPlayer implements Listener, Runnable {
   public static void forceWait(final Player player, final int ticks, final boolean cancelOnDamage, final Consumer<Player> afterwait,
       final Consumer<Player> onCancel) {
     WAITING_PLAYERS.put(player, new WaitingPlayer(player, ticks, cancelOnDamage, afterwait, onCancel));
+  }
+
+  public static ItemStack getHead(Player player) {
+    ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+    SkullMeta headMeta = (SkullMeta) head.getItemMeta();
+    headMeta.setOwningPlayer(player);
+    head.setItemMeta(headMeta);
+    return head;
   }
 
   @EventHandler

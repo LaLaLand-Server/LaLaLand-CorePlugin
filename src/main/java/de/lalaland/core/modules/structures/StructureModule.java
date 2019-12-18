@@ -1,5 +1,6 @@
 package de.lalaland.core.modules.structures;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
@@ -30,6 +31,7 @@ public class StructureModule implements IModule {
   private StructureManager structureManager;
 
   private void registerResourceLoot() {
+    ResourceLoot.init();
     final LootTableManager lootTableManager = LootTableManager.getInstance();
     for (final ResourceType resourceType : ResourceType.values()) {
       lootTableManager.addTableCollection(resourceType.toString(), ResourceLoot.of(resourceType).get());
@@ -42,7 +44,7 @@ public class StructureModule implements IModule {
   }
 
   @Override
-  public void enable(final CorePlugin plugin) throws Exception, Exception {
+  public void enable(final CorePlugin plugin) throws Exception {
     registerResourceLoot();
     final RegionManager regionManager = plugin.getModule(ProtectionModule.class).getRegionManager();
     structureManager = new StructureManager(plugin);

@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 
 /*******************************************************
@@ -21,6 +22,9 @@ import org.bukkit.Bukkit;
  *
  */
 public class UserManager implements Iterable<User> {
+
+  @Getter
+  private static UserManager instance;
 
   private final CorePlugin corePlugin;
   private final Object2ObjectOpenHashMap<UUID, User> cachedUsers;
@@ -36,6 +40,7 @@ public class UserManager implements Iterable<User> {
     Bukkit.getPluginManager().registerEvents(new PlayerJoinQuit(corePlugin), corePlugin);
     addAllOnlinePlayerToCache(); // in case of reload
     executeTasks();
+    instance = this;
   }
 
   /**

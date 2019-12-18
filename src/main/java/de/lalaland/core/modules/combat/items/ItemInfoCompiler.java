@@ -5,6 +5,7 @@ import de.lalaland.core.modules.combat.stats.CombatStat;
 import de.lalaland.core.modules.jobs.JobModule;
 import de.lalaland.core.modules.jobs.jobdata.JobDataManager;
 import de.lalaland.core.modules.jobs.jobdata.JobType;
+import de.lalaland.core.user.User;
 import de.lalaland.core.user.UserManager;
 import de.lalaland.core.user.data.UserData;
 import de.lalaland.core.utils.common.UtilMath;
@@ -52,8 +53,8 @@ public class ItemInfoCompiler implements DisplayConverter {
     final int levelReq = statItem.getLevelRequirement();
 
     if (levelReq > 0) {
-      final UserData data = userManager.getUser(userID).getUserData();
-      final String color = statItem.canUse(data) ? "§a" : "§c";
+      final User user = userManager.getUser(userID);
+      final String color = statItem.canUse(user) ? "§a" : "§c";
       info.addLore("");
       info.addLore("              §eItem Level " + color + levelReq);
     }

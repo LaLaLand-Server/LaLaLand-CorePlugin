@@ -506,7 +506,7 @@ public class StatItem {
   }
 
   public boolean canUseForJob(final JobDataManager jobManager, final User user) {
-    if (!canUse(user.getUserData())) {
+    if (!canUse(user)) {
       return false;
     }
     final Player player = user.getOnlinePlayer().getValue();
@@ -522,8 +522,8 @@ public class StatItem {
     return true;
   }
 
-  public boolean canUse(final UserData data) {
-    return data.getLevel() >= getLevelRequirement();
+  public boolean canUse(final User user) {
+    return user.getCombatStatHolder().getLevel() >= getLevelRequirement();
   }
 
   public Double getRetailPrice() {

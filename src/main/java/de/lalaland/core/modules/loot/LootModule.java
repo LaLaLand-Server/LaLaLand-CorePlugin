@@ -2,6 +2,8 @@ package de.lalaland.core.modules.loot;
 
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
+import de.lalaland.core.modules.loot.tables.LootTableManager;
+import lombok.Getter;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -14,6 +16,9 @@ import de.lalaland.core.modules.IModule;
  */
 public class LootModule implements IModule {
 
+  @Getter
+  private LootTableManager lootTableManager;
+
   @Override
   public String getModuleName() {
     return "LootModule";
@@ -21,7 +26,7 @@ public class LootModule implements IModule {
 
   @Override
   public void enable(final CorePlugin plugin) throws Exception, Exception {
-
+    lootTableManager = new LootTableManager();
   }
 
   @Override

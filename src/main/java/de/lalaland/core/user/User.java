@@ -1,5 +1,6 @@
 package de.lalaland.core.user;
 
+import com.google.common.collect.Lists;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.io.IReader;
 import de.lalaland.core.io.IWriter;
@@ -8,6 +9,7 @@ import de.lalaland.core.io.gson.GsonFileWriter;
 import de.lalaland.core.io.mongodb.MongoDataReader;
 import de.lalaland.core.io.mongodb.MongoDataWriter;
 import de.lalaland.core.modules.chat.messages.OfflineMessage;
+import de.lalaland.core.modules.combat.stats.CombatStatHolder;
 import de.lalaland.core.modules.economy.EconomyModule;
 import de.lalaland.core.modules.protection.zones.WorldZone;
 import de.lalaland.core.user.data.UserData;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -49,6 +52,9 @@ public class User {
   private final File userDataDirectory;
   @Getter
   private final Unit<Player> onlinePlayer;
+  @Getter
+  @Setter
+  private CombatStatHolder combatStatHolder;
 
   public User(final CorePlugin corePlugin, final UUID uuid) {
     this.corePlugin = corePlugin;
@@ -100,24 +106,7 @@ public class User {
   }
 
   public void addExp(final long amount) {
-
-    userData.addExp(amount);
-    applyWhenOnline(player -> {
-      UtilPlayer.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
-      // TODO show +exp
-    });
-
-    if (userData.canLevelup()) {
-      userData.increaseLevel();
-      applyWhenOnline(player -> {
-        UtilPlayer.playSound(player, Sound.ENTITY_PLAYER_LEVELUP);
-        player.sendTitle("§6Level Up", "§fLevel > " + userData.getLevel(), 20, 60, 20);
-        if (userData.getLevel() % 10 == 0) {
-          UtilPlayer.playSound(player, Sound.UI_TOAST_CHALLENGE_COMPLETE);
-        }
-      });
-    }
-    updateCandidate = true;
+    combatStatHolder.addExp(amount);
   }
 
   public void addMoney(final int amount, final boolean bank) {
@@ -219,7 +208,7 @@ public class User {
   }
 
   private UserData getDefaultUserData() {
-    return new UserData(1, 0, 0, 0, new ArrayList<>(), EnumSet.noneOf(WorldZone.class)); // everything set to 0 and new
+    return new UserData(0, 0, Lists.newArrayList(), EnumSet.noneOf(WorldZone.class));
   }
 
 }
