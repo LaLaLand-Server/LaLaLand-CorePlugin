@@ -10,8 +10,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>13</maven.compiler.source>
-    <maven.compiler.target>13</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
   <repositories>
@@ -115,9 +115,9 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-          <release>12</release>
-          <source>12</source>
-          <target>12</target>
+          <release>11</release>
+          <source>11</source>
+          <target>11</target>
           <compilerArgs>
               <arg>-parameters</arg>
           </compilerArgs>
