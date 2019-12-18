@@ -117,3 +117,6 @@ fabric.properties
 *.iml
 out
 gen
+/target/maven-archiver/
+/target/maven-status/maven-compiler-plugin/compile/default-compile/
+/target/classes/
