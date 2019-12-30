@@ -18,12 +18,12 @@ public enum JobType {
 
   MINING("Bergbau", Model.RED_X),
   WOODCUTTER("Holzfällerei", Model.RED_X),
-  HERBLORE("Botanik", Model.RED_X), // Pflanzenkunde?
+  HERBLORE("Wildhüterei", Model.RED_X), // Pflanzenkunde?
   FISHING("Fischen", Model.RED_X),
 
   CONSTRUCTION("Konstruktion", Model.RED_X),
   SMITHING("Schmieden", Model.RED_X),
-  BREWING("Brauen", Model.RED_X),
+  BREWING("Alchemie", Model.RED_X),
   CRAFTING("Handwerk", Model.RED_X),
   JEWEL_CRAFTING("Schmuck Handwerk", Model.RED_X),
   COOKING("Kochen", Model.RED_X);

@@ -7,6 +7,9 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /*******************************************************
  * Copyright (C) 2015-2019 Piinguiin neuraxhd@gmail.com
@@ -42,7 +45,7 @@ public class Config {
 
   static Config getDefaultConfig() {
     return new Config(false,
-        5, 10, true,false,new ArrayList<>());
+        5, 10, true, false, new ArrayList<>());
   }
 
 }

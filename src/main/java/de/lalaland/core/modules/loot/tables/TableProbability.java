@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 public enum TableProbability {
 
   ALWAYS(1.0D), // 1 in 1
-  COMMON(0.25D), // 1 in 4
+  COMMON(0.125D), // 1 in 8
   UNCOMMON(0.0625D), // 1 in 16
   RARE(0.015625D), // 1 in 64
   VERY_RARE(0.00390625D), // 1 in 512
