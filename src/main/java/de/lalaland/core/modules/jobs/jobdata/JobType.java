@@ -1,8 +1,12 @@
 package de.lalaland.core.modules.jobs.jobdata;
 
+import com.google.common.collect.Lists;
 import de.lalaland.core.modules.resourcepack.skins.Model;
+import de.lalaland.core.utils.items.ItemBuilder;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.bukkit.inventory.ItemStack;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -13,24 +17,45 @@ import lombok.Getter;
  * permission of the owner.
  *
  */
+// TODO descriptions
 @AllArgsConstructor
 public enum JobType {
 
-  MINING("Bergbau", Model.RED_X),
-  WOODCUTTER("Holzfällerei", Model.RED_X),
-  HERBLORE("Wildhüterei", Model.RED_X), // Pflanzenkunde?
-  FISHING("Fischen", Model.RED_X),
+  MINING("Bergbau", Model.JOB_ICON_MINING,
+      Lists.newArrayList("", "")),
+  WOODCUTTER("Holzfällerei", Model.JOB_ICON_WOODCUTTER,
+      Lists.newArrayList("", "")),
+  HERBLORE("Wildhüterei", Model.JOB_ICON_HERBLORE,
+      Lists.newArrayList("", "")), // Pflanzenkunde?
+  FISHING("Fischen", Model.JOB_ICON_FISHING,
+      Lists.newArrayList("", "")),
 
-  CONSTRUCTION("Konstruktion", Model.RED_X),
-  SMITHING("Schmieden", Model.RED_X),
-  BREWING("Alchemie", Model.RED_X),
-  CRAFTING("Handwerk", Model.RED_X),
-  JEWEL_CRAFTING("Schmuck Handwerk", Model.RED_X),
-  COOKING("Kochen", Model.RED_X);
+  CONSTRUCTION("Konstruktion", Model.JOB_ICON_CONSTRUCTION,
+      Lists.newArrayList("", "")),
+  SMITHING("Schmieden", Model.JOB_ICON_SMITHING,
+      Lists.newArrayList("", "")),
+  BREWING("Alchemie", Model.JOB_ICON_BREWING,
+      Lists.newArrayList("", "")),
+  CRAFTING("Handwerk", Model.JOB_ICON_CRAFTING,
+      Lists.newArrayList("", "")),
+  JEWEL_CRAFTING("Schmuck Handwerk", Model.JOB_ICON_JEWEL_CRAFTING,
+      Lists.newArrayList("", "")),
+  COOKING("Kochen", Model.JOB_ICON_COOKING,
+      Lists.newArrayList("", ""));
 
   @Getter
   private final String displayName;
   @Getter
   private final Model model;
+  @Getter
+  private final List<String> description;
+
+  public ItemStack getIcon(final JobHolder jobHolder) {
+    final ItemBuilder itemBuilder = new ItemBuilder(model.getItem());
+    itemBuilder.name("§6" + displayName + " §e[§f" + jobHolder.getJobData(this).getLevel() + "§e]");
+    itemBuilder.lore("");
+    itemBuilder.lore(this.description);
+    return itemBuilder.build();
+  }
 
 }

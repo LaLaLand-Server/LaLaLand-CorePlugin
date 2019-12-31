@@ -82,7 +82,7 @@ public class CombatStatHolder implements SkillHolder {
   @Setter
   private int manaPerUpdate = CombatStatManager.MANA_PER_UPDATE;
 
-  public void tickMana() {
+  void tickMana() {
     manaTickCount--;
     if (manaTickCount < 1) {
       manaTickCount = CombatStatManager.TICKS_PER_MANA;

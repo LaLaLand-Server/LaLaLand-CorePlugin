@@ -6,8 +6,11 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import de.lalaland.core.modules.combat.CombatModule;
+import de.lalaland.core.modules.combat.stats.gui.CombatStatGUI;
 import de.lalaland.core.utils.Message;
 import de.lalaland.core.utils.common.UtilMath;
+import de.lalaland.core.utils.common.UtilPlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -35,7 +38,8 @@ public class CombatStatsCommand extends BaseCommand {
 
   @Default
   public void onStatsCommand(final Player sender) {
-    // TODO open GUI with stats
+    CombatStatGUI.create(combatStatManager.getCombatStatHolder(sender)).open(sender);
+    UtilPlayer.playSound(sender, Sound.UI_BUTTON_CLICK, 0.8F, 1.2F);
   }
 
   @Subcommand("damage")

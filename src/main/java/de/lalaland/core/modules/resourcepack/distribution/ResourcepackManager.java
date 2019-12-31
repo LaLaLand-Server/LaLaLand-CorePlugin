@@ -1,13 +1,11 @@
 package de.lalaland.core.modules.resourcepack.distribution;
 
+import com.google.common.hash.Hashing;
+import com.google.common.io.Files;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.resourcepack.distribution.ResourcepackServer.ResourceServerConnection;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.util.Arrays;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -24,9 +22,8 @@ public class ResourcepackManager {
   public ResourcepackManager(final CorePlugin plugin) {
     pack = new File(plugin.getDataFolder(), "serverpack.zip");
     //Start the HTTP Server.
-    startServer();
-
     hash = getFileHashChecksum(pack);
+    startServer();
   }
 
   public String getResourceHash() {
@@ -94,20 +91,10 @@ public class ResourcepackManager {
   }
 
   private String getFileHashChecksum(final File input) {
-    try (final InputStream in = new FileInputStream(input)) {
-      final MessageDigest digest = MessageDigest.getInstance("SHA1");
-      final byte[] block = new byte[2048];
-      int length;
-
-      while ((length = in.read(block)) > 0) {
-        digest.update(block, 0, length);
-      }
-
-      final byte[] bytes = digest.digest();
-      final String hash = String.format("%040x", new BigInteger(1, bytes));
-      return hash;
-    } catch (final Exception e) {
-      e.printStackTrace();
+    try {
+      return Files.hash(input, Hashing.sha1()).toString();
+    } catch (final IOException e) {
+      Bukkit.getLogger().severe("Failed to calculate resourcepack hashcode - " + e.getMessage());
       return null;
     }
   }

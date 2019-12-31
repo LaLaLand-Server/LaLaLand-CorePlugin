@@ -39,12 +39,12 @@ public enum CombatStat {
   CRIT_DAMAGE("Kritischer Zusatzschaden", 50.0D, 25.0D, 500D,
       true, Model.CRIT_DAMAGE_ICON, Lists.newArrayList("§7Legt den zusätzlichen Schaden von", "§7kritischen Treffern fest.")),
   PHYSICAL_ARMOR("Verteidigung", 20, 0D, 2E4D,
-      false, Model.PHYSICAL_DAMAGE_ICON, Lists.newArrayList("§7Verringert physikalischen Schaden", "§7durch z.B. Waffenangriffe.")),
+      false, Model.PHYSICAL_ARMOR_ICON, Lists.newArrayList("§7Verringert physikalischen Schaden", "§7durch z.B. Waffenangriffe.")),
   MYSTIC_ARMOR("Mystischer Widerstand", 10, 0D, 2E4D,
       false, Model.MAGIC_ARMOR_ICON, Lists.newArrayList("§7Verringert den Schaden durch mystische", "§7Quellen wie z.B. ...")),
   BIO_ARMOR("Bio Widerstand", 10, 0D, 2E4D,
       false, Model.BIO_ARMOR_ICON,
-      Lists.newArrayList("&7Verringert den Schaden durch", "§7Biologische Angriffe wie", "§7Gift oder Radioaktivität.")),
+      Lists.newArrayList("§7Verringert den Schaden durch", "§7Biologische Angriffe wie", "§7Gift oder Radioaktivität.")),
   SPEED("Lauftempo", 100, 0, 500,
       false, Model.SPEED_ICON, Lists.newArrayList("§7Erhöht dein Lauftempo."));
 
@@ -68,7 +68,9 @@ public enum CombatStat {
 
   public ItemStack getIcon(CombatStatHolder combatStatHolder) {
     ItemBuilder itemBuilder = new ItemBuilder(model.getItem());
-
+    itemBuilder.name("§6" + displayName + " §e[§f" + combatStatHolder.getStatValue(this) + "§e]");
+    itemBuilder.lore("");
+    itemBuilder.lore(description);
     return itemBuilder.build();
   }
 

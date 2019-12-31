@@ -1,17 +1,13 @@
 package de.lalaland.core.modules.combat.stats.gui;
 
-import com.google.common.base.Preconditions;
+import de.lalaland.core.modules.combat.stats.CombatStat;
 import de.lalaland.core.modules.combat.stats.CombatStatHolder;
-import de.lalaland.core.user.User;
-import de.lalaland.core.user.UserManager;
-import de.lalaland.core.utils.common.UtilPlayer;
-import de.lalaland.core.utils.items.ItemBuilder;
 import net.crytec.inventoryapi.SmartInventory;
+import net.crytec.inventoryapi.api.ClickableItem;
 import net.crytec.inventoryapi.api.InventoryContent;
 import net.crytec.inventoryapi.api.InventoryProvider;
 import net.crytec.inventoryapi.api.SlotPos;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -37,7 +33,45 @@ public class CombatStatGUI implements InventoryProvider {
   @Override
   public void init(Player player, InventoryContent content) {
 
+    content.set(SlotPos.of(1, 1), ClickableItem.of(CombatStat.HEALTH.getIcon(holder),  (event) ->{
 
+    }));
+    content.set(SlotPos.of(1, 2), ClickableItem.of(CombatStat.MANA.getIcon(holder),  (event) ->{
+
+    }));
+    content.set(SlotPos.of(1, 3), ClickableItem.of(CombatStat.SPEED.getIcon(holder),  (event) ->{
+
+    }));
+
+    content.set(SlotPos.of(1, 5), ClickableItem.of(CombatStat.BIO_ARMOR.getIcon(holder),  (event) ->{
+
+    }));
+    content.set(SlotPos.of(1, 6), ClickableItem.of(CombatStat.PHYSICAL_ARMOR.getIcon(holder),  (event) ->{
+
+    }));
+    content.set(SlotPos.of(1, 7), ClickableItem.of(CombatStat.MYSTIC_ARMOR.getIcon(holder),  (event) ->{
+
+    }));
+
+    content.set(SlotPos.of(2, 1), ClickableItem.of(CombatStat.RANGE_DAMAGE.getIcon(holder),  (event) ->{
+
+    }));
+    content.set(SlotPos.of(2, 2), ClickableItem.of(CombatStat.MEELE_DAMAGE.getIcon(holder),  (event) ->{
+
+    }));
+    content.set(SlotPos.of(2, 3), ClickableItem.of(CombatStat.MIGHT.getIcon(holder),  (event) ->{
+
+    }));
+
+    content.set(SlotPos.of(2, 5), ClickableItem.of(CombatStat.ATTACK_SPEED.getIcon(holder),  (event) ->{
+
+    }));
+    content.set(SlotPos.of(2, 6), ClickableItem.of(CombatStat.CRIT_CHANCE.getIcon(holder),  (event) ->{
+
+    }));
+    content.set(SlotPos.of(2, 7), ClickableItem.of(CombatStat.CRIT_DAMAGE.getIcon(holder),  (event) ->{
+
+    }));
 
   }
 
