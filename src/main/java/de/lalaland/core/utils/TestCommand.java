@@ -3,10 +3,23 @@ package de.lalaland.core.utils;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Subcommand;
+import com.comphenix.protocol.PacketType.Play;
+import de.lalaland.core.CorePlugin;
+import de.lalaland.core.tasks.TaskManager;
+import de.lalaland.core.tasks.TeleportParticleThread;
 import de.lalaland.core.utils.common.UtilPlayer;
 import de.lalaland.core.utils.holograms.MovingHologram;
 import de.lalaland.core.utils.holograms.impl.HologramManager;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
+import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 /*******************************************************
@@ -38,4 +51,16 @@ public class TestCommand extends BaseCommand {
     UtilPlayer.forceWait(sender, ticks, true, pl -> pl.sendMessage("Wait is over."), pl -> pl.sendMessage("Wait cancel."));
   }
 
+
+  @Subcommand("teleport")
+  public void testTeleport(Player sender) {
+    TeleportParticleThread warmup = new TeleportParticleThread(sender);
+    UtilPlayer.forceWait(sender, 200, true, p -> {
+      sender.sendMessage("Erfolgreich");
+      warmup.cancel();
+    }, cancel -> {
+      sender.sendMessage("Abgebrochen");
+      warmup.cancel();
+    });
+  }
 }
