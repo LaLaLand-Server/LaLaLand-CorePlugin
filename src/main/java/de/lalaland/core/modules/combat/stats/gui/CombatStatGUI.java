@@ -9,6 +9,7 @@ import de.lalaland.core.utils.items.ItemBuilder;
 import net.crytec.inventoryapi.SmartInventory;
 import net.crytec.inventoryapi.api.InventoryContent;
 import net.crytec.inventoryapi.api.InventoryProvider;
+import net.crytec.inventoryapi.api.SlotPos;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -35,6 +36,8 @@ public class CombatStatGUI implements InventoryProvider {
 
   @Override
   public void init(Player player, InventoryContent content) {
+
+
 
   }
 

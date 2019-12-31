@@ -3,10 +3,12 @@ package de.lalaland.core.modules.combat.stats;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.lalaland.core.modules.resourcepack.skins.Model;
+import de.lalaland.core.utils.items.ItemBuilder;
 import java.util.List;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.bukkit.inventory.ItemStack;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -63,6 +65,12 @@ public enum CombatStat {
   private final Model model;
   @Getter
   private final List<String> description;
+
+  public ItemStack getIcon(CombatStatHolder combatStatHolder) {
+    ItemBuilder itemBuilder = new ItemBuilder(model.getItem());
+
+    return itemBuilder.build();
+  }
 
   /**
    * Gets the base value of this stat.

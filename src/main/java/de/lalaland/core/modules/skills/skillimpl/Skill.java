@@ -3,9 +3,9 @@ package de.lalaland.core.modules.skills.skillimpl;
 import de.lalaland.core.modules.combat.stats.CombatStatHolder;
 import de.lalaland.core.modules.skills.SkillModule;
 import de.lalaland.core.utils.Message;
+import de.lalaland.core.utils.common.UtilMath;
 import java.util.List;
 import lombok.Getter;
-import net.crytec.libs.commons.utils.UtilMath;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -47,7 +47,7 @@ public abstract class Skill {
 
   protected void onCooldownCast(final long cooldownLeft) {
     caster.applyIfPlayerOnline(player -> {
-      final double left = UtilMath.unsafeRound((cooldownLeft / 1000D), 1);
+      final double left = UtilMath.cut((cooldownLeft / 1000D), 1);
       final String time = Message.elem("" + left + "s");
       Message.error(player, SkillModule.class, "Cooldown: " + time);
     });
