@@ -14,27 +14,36 @@ import org.bukkit.util.Vector;
 
 public class TeleportParticleThread implements Runnable {
 
-  public TeleportParticleThread(Entity entity) {
+  public TeleportParticleThread(Entity entity, int ticks, double radius) {
     CorePlugin plugin = CorePlugin.getPlugin(CorePlugin.class);
+    this.radius = radius;
+    amount = this.radius * 20.0;
+    inc = 6.283185307179586 / this.amount;
+    this.interval = ticks / 25;
+    this.sizePerIncl = 25F / ticks;
     this.entity = entity;
     this.world = entity.getWorld();
     task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this, 1, 1);
   }
+
+  private final double radius;
+  private final double amount;
+  private final double inc;
+  private final float sizePerIncl;
   private final BukkitTask task;
   private final Entity entity;
 
-  private double radius = 1.0;
-  private double amount = this.radius * 20.0;
+
   private double x;
   private double z;
   private double y;
   private double angle;
-  private double inc = 6.283185307179586 / this.amount;
   private final World world;
 
   private int interval = 10;
   private int ticksRun = 0;
-  private float size = 0.2f;
+  private float size = 0.2F;
+
 
   public void cancel() {
     task.cancel();
@@ -44,10 +53,10 @@ public class TeleportParticleThread implements Runnable {
   public void run() {
     if (ticksRun % 10 == 0 && interval > 1) {
       interval -= 1;
-      size += 0.1F;
+      size += sizePerIncl;
     }
 
-    if (ticksRun % interval == 0) {
+    if (interval < 1 || ticksRun % interval == 0) {
       Location location = entity.getLocation();
       this.angle = (double) entity.getTicksLived() * this.inc;
       this.x = this.radius * Math.cos(this.angle);
@@ -57,10 +66,12 @@ public class TeleportParticleThread implements Runnable {
       location.add(vector);
       world.spawnParticle(Particle.REDSTONE, location, 1, 0.0, 0.0, 0.0, 0.0, new DustOptions(Color.PURPLE, size));
       location.subtract(vector);
-      vector.setY(- vector.getY() + 2.0);
+      vector.setY(-vector.getY() + 2.0);
       location.add(vector);
       world.spawnParticle(Particle.REDSTONE, location, 1, 0.0, 0.0, 0.0, 0.0, new DustOptions(Color.PURPLE, size));
-      world.playSound(location, Sound.BLOCK_FIRE_AMBIENT, 0.2F, 1.0F);
+      if (ticksRun % 10 * interval == 0) {
+        world.playSound(location, Sound.BLOCK_PORTAL_AMBIENT, 0.2F, 1.0F);
+      }
     }
     ticksRun++;
   }

@@ -3,6 +3,7 @@ package de.lalaland.core.modules.structures.core;
 import de.lalaland.core.modules.jobs.jobdata.JobType;
 import de.lalaland.core.modules.loot.tables.LootTableEntry;
 import de.lalaland.core.modules.loot.tables.LootTableManager;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -55,6 +56,16 @@ public enum ResourceType implements LootTableEntry {
   @Override
   public void drop(final Inventory inventory, final Location location) {
     LootTableManager.getInstance().getTableEntry(toString()).drop(inventory, location);
+  }
+
+  @Override
+  public void dropProtected(Location location, UUID... uuids) {
+    LootTableManager.getInstance().getTableEntry(toString()).dropProtected(location, uuids);
+  }
+
+  @Override
+  public void dropProtected(Inventory inventory, Location location, UUID... uuids) {
+    LootTableManager.getInstance().getTableEntry(toString()).dropProtected(inventory, location, uuids);
   }
 
 }

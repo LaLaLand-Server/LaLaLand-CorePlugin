@@ -14,42 +14,42 @@ public class ChatChannelManager {
   private final CorePlugin corePlugin;
   @Getter
   private final Object2ObjectOpenHashMap<ChatChannel, ObjectSet<Player>> playerChatChannels;
-@Getter
+  @Getter
   private final Object2ObjectOpenHashMap<Player, ChatChannel> singlePlayerChannels;
 
-  public ChatChannelManager(final CorePlugin corePlugin){
+  public ChatChannelManager(final CorePlugin corePlugin) {
     this.corePlugin = corePlugin;
     playerChatChannels = new Object2ObjectOpenHashMap<>();
     singlePlayerChannels = new Object2ObjectOpenHashMap<>();
-    for(final ChatChannel channel : ChatChannel.values()){
+    for (final ChatChannel channel : ChatChannel.values()) {
       playerChatChannels.put(channel, ObjectSets.emptySet());
     }
-    Bukkit.getPluginManager().registerEvents(new AsyncPlayerChatListener(this),corePlugin);
+    Bukkit.getPluginManager().registerEvents(new AsyncPlayerChatListener(this), corePlugin);
   }
 
-  public ChatChannel getPlayerChatChannel(final Player player){
+  public ChatChannel getPlayerChatChannel(final Player player) {
 
-    if(!singlePlayerChannels.containsKey(player)){
+    if (!singlePlayerChannels.containsKey(player)) {
       return ChatChannel.GLOBAL;
     }
 
     return singlePlayerChannels.get(player);
   }
 
-  private void switchChatChannel(final Player player, final ChatChannel chatChannel){
+  private void switchChatChannel(final Player player, final ChatChannel chatChannel) {
 
     final ChatChannel current = getPlayerChatChannel(player);
 
-    if(current == chatChannel){
+    if (current == chatChannel) {
       return;
     }
 
     playerChatChannels.get(current).remove(player);
     playerChatChannels.get(chatChannel).add(player);
-    singlePlayerChannels.put(player,chatChannel);
+    singlePlayerChannels.put(player, chatChannel);
   }
 
-  public ObjectSet<Player> getReceivers(final ChatChannel chatChannel){
+  public ObjectSet<Player> getReceivers(final ChatChannel chatChannel) {
     return playerChatChannels.get(chatChannel);
   }
 

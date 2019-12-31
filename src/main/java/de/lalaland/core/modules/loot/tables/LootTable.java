@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectMap;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectMap.Entry;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectOpenHashMap;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
@@ -50,6 +51,24 @@ public class LootTable implements LootTableEntry {
     for (final Entry<LootTableEntry> entry : entryMap.double2ObjectEntrySet()) {
       if (entry.getDoubleKey() > random.nextDouble()) {
         entry.getValue().drop(inventory, location);
+      }
+    }
+  }
+
+  @Override
+  public void dropProtected(Location location, UUID... uuids) {
+    for (final Entry<LootTableEntry> entry : entryMap.double2ObjectEntrySet()) {
+      if (entry.getDoubleKey() > random.nextDouble()) {
+        entry.getValue().dropProtected(location, uuids);
+      }
+    }
+  }
+
+  @Override
+  public void dropProtected(Inventory inventory, Location location, UUID... uuids) {
+    for (final Entry<LootTableEntry> entry : entryMap.double2ObjectEntrySet()) {
+      if (entry.getDoubleKey() > random.nextDouble()) {
+        entry.getValue().dropProtected(inventory, location, uuids);
       }
     }
   }

@@ -3,6 +3,7 @@ package de.lalaland.core.modules.loot.tables;
 import com.google.common.collect.Maps;
 import java.util.EnumMap;
 import java.util.Map.Entry;
+import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
 
@@ -47,6 +48,24 @@ public class LootTableCollection implements LootTableEntry {
     for (final Entry<TableProbability, LootTable> entry : lootTables.entrySet()) {
       if (entry.getKey().roll()) {
         entry.getValue().drop(inventory, location);
+      }
+    }
+  }
+
+  @Override
+  public void dropProtected(Location location, UUID... uuids) {
+    for (final Entry<TableProbability, LootTable> entry : lootTables.entrySet()) {
+      if (entry.getKey().roll()) {
+        entry.getValue().dropProtected(location, uuids);
+      }
+    }
+  }
+
+  @Override
+  public void dropProtected(Inventory inventory, Location location, UUID... uuids) {
+    for (final Entry<TableProbability, LootTable> entry : lootTables.entrySet()) {
+      if (entry.getKey().roll()) {
+        entry.getValue().dropProtected(inventory, location, uuids);
       }
     }
   }

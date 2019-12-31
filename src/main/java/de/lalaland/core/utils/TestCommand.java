@@ -52,15 +52,9 @@ public class TestCommand extends BaseCommand {
   }
 
 
-  @Subcommand("teleport")
-  public void testTeleport(Player sender) {
-    TeleportParticleThread warmup = new TeleportParticleThread(sender);
-    UtilPlayer.forceWait(sender, 200, true, p -> {
-      sender.sendMessage("Erfolgreich");
-      warmup.cancel();
-    }, cancel -> {
-      sender.sendMessage("Abgebrochen");
-      warmup.cancel();
-    });
+  @Subcommand("teleportup")
+  public void testTeleport(Player sender, int ticks) {
+    Location dest = sender.getLocation().add(0, 100, 0);
+    UtilPlayer.teleport(sender, ticks, dest);
   }
 }

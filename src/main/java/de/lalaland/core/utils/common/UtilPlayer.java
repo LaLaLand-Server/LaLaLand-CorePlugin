@@ -5,6 +5,8 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.lalaland.core.CorePlugin;
+import de.lalaland.core.tasks.TeleportParticleThread;
+import de.lalaland.core.utils.Message;
 import de.lalaland.core.utils.common.sub.WaitingPlayer;
 import de.lalaland.core.utils.events.PlayerReceiveEntityEvent;
 import de.lalaland.core.utils.events.PlayerUnloadsEntityEvent;
@@ -85,6 +87,25 @@ public class UtilPlayer implements Listener, Runnable {
     headMeta.setOwningPlayer(player);
     head.setItemMeta(headMeta);
     return head;
+  }
+
+  public static void teleport(Player player, int cdTicks, double particleRadius, Location destination) {
+    TeleportParticleThread warmup = new TeleportParticleThread(player, cdTicks, 1.5);
+    double secs = UtilMath.cut((double) cdTicks / 20D, 1);
+    player.sendMessage("§6Teleportiere in §e" + secs + "§6 Sekunden.");
+    UtilPlayer.forceWait(player, cdTicks, true, p -> {
+      player.sendMessage("§6Nicht bewegen.");
+      player.teleport(destination);
+      playSound(player, Sound.BLOCK_PORTAL_TRAVEL, 0.8F, 1.25F);
+      warmup.cancel();
+    }, cancel -> {
+      player.sendMessage("§6Teleport abgebrochen...");
+      warmup.cancel();
+    });
+  }
+
+  public static void teleport(Player player, int cdTicks, Location destination) {
+    teleport(player, cdTicks, 1.5, destination);
   }
 
   @EventHandler
