@@ -1,5 +1,6 @@
 package de.lalaland.core.modules.loot.tables;
 
+import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
 
@@ -16,5 +17,7 @@ public interface LootTableEntry {
 
   public void drop(Location location);
   public void drop(Inventory inventory, Location location);
+  public void dropProtected(Location location, UUID... uuids);
+  public void dropProtected(Inventory inventory, Location location, UUID... uuids);
 
 }

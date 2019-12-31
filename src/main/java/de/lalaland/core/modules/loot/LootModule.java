@@ -2,8 +2,10 @@ package de.lalaland.core.modules.loot;
 
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
+import de.lalaland.core.modules.loot.protection.DropProtectionListener;
 import de.lalaland.core.modules.loot.tables.LootTableManager;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 
 /*******************************************************
  * Copyright (C) Gestankbratwurst suotokka@gmail.com
@@ -27,6 +29,7 @@ public class LootModule implements IModule {
   @Override
   public void enable(final CorePlugin plugin) throws Exception, Exception {
     lootTableManager = new LootTableManager();
+    Bukkit.getPluginManager().registerEvents(new DropProtectionListener(), plugin);
   }
 
   @Override

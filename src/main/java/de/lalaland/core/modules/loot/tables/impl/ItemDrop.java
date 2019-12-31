@@ -1,6 +1,8 @@
 package de.lalaland.core.modules.loot.tables.impl;
 
+import de.lalaland.core.modules.loot.protection.DropProtection;
 import de.lalaland.core.modules.loot.tables.LootTableEntry;
+import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.inventory.Inventory;
@@ -36,6 +38,23 @@ public class ItemDrop implements LootTableEntry {
     for (final ItemStack itemStack : items) {
       inventory.addItem(itemStack).values().forEach(remaining -> {
         location.getWorld().dropItemNaturally(location, remaining);
+      });
+    }
+  }
+
+  @Override
+  public void dropProtected(Location location, UUID... uuids) {
+    final World world = location.getWorld();
+    for (final ItemStack item : items) {
+      DropProtection.protect(location.getWorld().dropItem(location, item), uuids);
+    }
+  }
+
+  @Override
+  public void dropProtected(Inventory inventory, Location location, UUID... uuids) {
+    for (final ItemStack itemStack : items) {
+      inventory.addItem(itemStack).values().forEach(remaining -> {
+        DropProtection.protect(location.getWorld().dropItemNaturally(location, remaining), uuids);
       });
     }
   }

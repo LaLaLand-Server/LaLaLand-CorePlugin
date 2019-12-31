@@ -2,7 +2,9 @@ package de.lalaland.core.modules.loot.tables.impl;
 
 import com.google.common.base.Preconditions;
 import de.lalaland.core.modules.economy.dropapi.MoneyDropManager;
+import de.lalaland.core.modules.loot.protection.DropProtection;
 import de.lalaland.core.modules.loot.tables.LootTableEntry;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
@@ -46,6 +48,16 @@ public class MoneyDrop implements LootTableEntry {
   @Override
   public void drop(final Inventory inventory, final Location location) {
     drop(location);
+  }
+
+  @Override
+  public void dropProtected(Location location, UUID... uuids) {
+    DropProtection.protect(moneyDropManager.dropMoney(location, roll()), uuids);
+  }
+
+  @Override
+  public void dropProtected(Inventory inventory, Location location, UUID... uuids) {
+    DropProtection.protect(moneyDropManager.dropMoney(location, roll()), uuids);
   }
 
 }

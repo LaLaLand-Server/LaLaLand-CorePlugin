@@ -49,7 +49,7 @@ public class MoneyDropManager {
     return nbt.getItem();
   }
 
-  public void dropMoney(final Location location, int amount) {
+  public Item dropMoney(final Location location, int amount) {
     int sum = 0;
     for (final Item nearItem : location.getNearbyEntitiesByType(Item.class, 2)) {
       final int val = getMoneyValue(nearItem);
@@ -65,6 +65,7 @@ public class MoneyDropManager {
     item.getScoreboardTags().add(moneyKey);
     item.setCustomNameVisible(true);
     item.setCustomName("§e" + amount + " Gold");
+    return item;
   }
 
   public int getMoneyValue(final Item item) {

@@ -3,6 +3,7 @@ package de.lalaland.core.utils;
 import de.lalaland.core.CorePlugin;
 import de.lalaland.core.modules.IModule;
 import de.lalaland.core.utils.actionbar.ActionBarManager;
+import de.lalaland.core.utils.common.NameSpaceFactory;
 import de.lalaland.core.utils.common.UtilChunk;
 import de.lalaland.core.utils.common.UtilPlayer;
 import de.lalaland.core.utils.holograms.impl.HologramManager;
@@ -45,6 +46,7 @@ public class UtilModule implements IModule {
 
   @Override
   public void enable(final CorePlugin plugin) throws Exception {
+    NameSpaceFactory.init(plugin);
     ChunkTracker.init(plugin, plugin.getProtocolManager());
     EntityTracker.init(plugin, plugin.getProtocolManager());
     UtilChunk.init(plugin);
