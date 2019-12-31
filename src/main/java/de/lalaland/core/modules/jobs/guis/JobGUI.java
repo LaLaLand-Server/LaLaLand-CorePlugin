@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
  * permission of the owner.
  *
  */
+// TODO progression traversal
 public class JobGUI implements InventoryProvider {
 
   public static SmartInventory create(final JobHolder jobHolder) {
