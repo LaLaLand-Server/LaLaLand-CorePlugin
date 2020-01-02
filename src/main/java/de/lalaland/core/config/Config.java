@@ -42,10 +42,13 @@ public class Config {
   @Getter
   @SerializedName("MaintenanceUUIDs")
   private final List<UUID> maintenanceUUIDs;
+  @Getter
+  @SerializedName("ResourcepackHttp")
+  private final String resourcepackHttpServerAddress;
 
   static Config getDefaultConfig() {
     return new Config(false,
-        5, 10, true, false, new ArrayList<>());
+        5, 10, true, false, new ArrayList<>(), "127.0.0.1");
   }
 
 }

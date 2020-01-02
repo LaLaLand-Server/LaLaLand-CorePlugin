@@ -4,6 +4,7 @@ import de.lalaland.core.modules.combat.stats.CombatStat;
 import de.lalaland.core.modules.combat.stats.CombatStatHolder;
 import de.lalaland.core.modules.mobs.custommobs.CustomMobManager;
 import de.lalaland.core.modules.mobs.implementations.GameMob;
+import de.lalaland.core.modules.skills.skillimpl.SkillType;
 import de.lalaland.core.utils.holograms.infobars.InfoLineSpacing;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;

@@ -9,19 +9,21 @@ import java.io.IOException;
 import java.util.Arrays;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class ResourcepackManager {
 
   private final int port = 9555;
-  private final String host = "127.0.0.1"; //CHANGEME?! D:
+  private final String host;
   private final String hash;
 
   private ResourcepackServer server;
   private final File pack;
 
   public ResourcepackManager(final CorePlugin plugin) {
+    host = plugin.getCoreConfig().getResourcepackHttpServerAddress();
     pack = new File(plugin.getDataFolder(), "serverpack.zip");
-    //Start the HTTP Server.
     hash = getFileHashChecksum(pack);
     startServer();
   }

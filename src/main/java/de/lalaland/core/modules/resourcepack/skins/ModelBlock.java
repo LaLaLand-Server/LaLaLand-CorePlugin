@@ -16,7 +16,10 @@ import org.bukkit.Material;
 @AllArgsConstructor
 public enum ModelBlock {
 
-  COPPER_ORE(Material.ORANGE_GLAZED_TERRACOTTA,"facing=north");
+  COPPER_ORE_BLOCK(Material.ORANGE_GLAZED_TERRACOTTA,"facing=north"),
+  TIN_ORE_BLOCK(Material.GRAY_GLAZED_TERRACOTTA,"facing=north"),
+  IRON_ORE_BLOCK(Material.RED_GLAZED_TERRACOTTA,"facing=north"),
+  STILLIT_ORE_BLOCK(Material.YELLOW_GLAZED_TERRACOTTA,"facing=north");
 
   @Getter
   private final Material baseMaterial;
